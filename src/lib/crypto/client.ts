@@ -12,6 +12,11 @@ import {
   type CryptoRequest,
   type CryptoResponse,
   type VaultKeyRef,
+  type SrpEphemeralRef,
+  type SrpProofRef,
+  type KeypairRef,
+  type VerifierBundle,
+  type PublicKeys,
 } from "./protocol";
 
 /**
@@ -159,6 +164,96 @@ export function decryptVault(
     vaultId,
     version,
   });
+}
+
+// ─── Registration ────────────────────────────────────────────────────────────
+
+/**
+ * Compute the SRP verifier.
+ *
+ * Pass a **trimmed, lowercased** email. It is the SRP identity, mixed into the
+ * verifier, and the server lowercases it — so a capitalised address here
+ * produces a verifier that will not match at login, failing in a way that looks
+ * exactly like a wrong password.
+ */
+export function computeVerifier(
+  email: string,
+  srpPasswordB64: string,
+  srpSaltB64: string,
+) {
+  return call<VerifierBundle>({
+    kind: "computeVerifier",
+    email,
+    srpPasswordB64,
+    srpSaltB64,
+  });
+}
+
+export function generateKeypair() {
+  return call<KeypairRef>({ kind: "generateKeypair" });
+}
+
+export function keypairPublicKeys(keypair: KeypairRef) {
+  return call<PublicKeys>({ kind: "keypairPublicKeys", keypair });
+}
+
+/** Base64 sealed private key, for `encrypted_private_key`. Needs the master key. */
+export function encryptPrivateKey(keypair: KeypairRef) {
+  return call<string>({ kind: "encryptPrivateKey", keypair });
+}
+
+// ─── Login ───────────────────────────────────────────────────────────────────
+
+/** Fresh SRP ephemeral for one login attempt. Never reuse one. */
+export function generateClientEphemeral() {
+  return call<SrpEphemeralRef>({ kind: "generateClientEphemeral" });
+}
+
+/** Hex public `A`, sent as `client_public`. */
+export function ephemeralPublicA(ephemeral: SrpEphemeralRef) {
+  return call<string>({ kind: "ephemeralPublicA", ephemeral });
+}
+
+export function computeClientProof(
+  email: string,
+  srpPasswordB64: string,
+  srpSaltB64: string,
+  serverPublicBHex: string,
+  ephemeral: SrpEphemeralRef,
+) {
+  return call<SrpProofRef>({
+    kind: "computeClientProof",
+    email,
+    srpPasswordB64,
+    srpSaltB64,
+    serverPublicBHex,
+    ephemeral,
+  });
+}
+
+/** Hex `M1`, sent as `client_proof`. */
+export function clientProof(proof: SrpProofRef) {
+  return call<string>({ kind: "clientProof", proof });
+}
+
+/**
+ * Verify the server's `M2`. **Rejects** when the server cannot prove it holds
+ * your verifier.
+ *
+ * Never catch-and-continue here. This is the half of SRP that authenticates the
+ * *server*; skipping it hands a session to anything sitting in the middle.
+ */
+export function verifyServerProof(serverProofHex: string, proof: SrpProofRef) {
+  return call<{ verified: boolean }>({
+    kind: "verifyServerProof",
+    serverProofHex,
+    proof,
+  });
+}
+
+/** Recover the keypair. Failure here means the password was wrong. */
+export function decryptPrivateKey(encryptedB64: string) {
+  return call<KeypairRef>({ kind: "decryptPrivateKey", encryptedB64 });
 }
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────

@@ -33,11 +33,28 @@ import init, {
   unwrapVaultKey,
   encryptVault,
   decryptVault,
+  computeVerifier,
+  generateClientEphemeral,
+  computeClientProof,
+  verifyServerProof,
+  generateKeypair,
+  encryptPrivateKey,
+  decryptPrivateKey,
   type MasterKeyHandle,
   type VaultKeyHandle,
+  type SrpEphemeralHandle,
+  type SrpProofHandle,
+  type KeypairHandle,
 } from "@evnx/crypto-wasm";
 
-import type { CryptoRequest, CryptoResponse, VaultKeyRef } from "./protocol";
+import type {
+  CryptoRequest,
+  CryptoResponse,
+  VaultKeyRef,
+  SrpEphemeralRef,
+  SrpProofRef,
+  KeypairRef,
+} from "./protocol";
 
 let ready: Promise<unknown> | null = null;
 
@@ -46,6 +63,17 @@ let masterKey: MasterKeyHandle | null = null;
 
 /** Vault keys by opaque ref. The main thread holds only the ref strings. */
 const vaultKeys = new Map<VaultKeyRef, VaultKeyHandle>();
+
+/**
+ * Transient auth state, held for the duration of one register or login.
+ *
+ * All three carry private material under `ZeroizeOnDrop` on the Rust side, so
+ * they live here as handles for the same reason vault keys do.
+ */
+const ephemerals = new Map<SrpEphemeralRef, SrpEphemeralHandle>();
+const proofs = new Map<SrpProofRef, SrpProofHandle>();
+const keypairs = new Map<KeypairRef, KeypairHandle>();
+
 let refCounter = 0;
 
 function ensureInit() {
@@ -77,12 +105,35 @@ function storeVaultKey(vk: VaultKeyHandle): VaultKeyRef {
   return ref;
 }
 
+function requireRef<T>(map: Map<string, T>, ref: string, what: string): T {
+  const v = map.get(ref);
+  if (!v) throw new Error(`unknown ${what} ref: ${ref}`);
+  return v;
+}
+
 /** Zeroize everything now, rather than waiting for GC to get round to it. */
 function clearAll() {
   masterKey?.destroy();
   masterKey = null;
   for (const vk of vaultKeys.values()) vk.destroy();
   vaultKeys.clear();
+  clearAuthState();
+}
+
+/**
+ * Drop SRP state and keypairs.
+ *
+ * Called at the end of every login, successful or not. An ephemeral is
+ * single-use: keeping one past its exchange is the sort of thing that later
+ * gets reused by accident, and a reused SRP ephemeral weakens the exchange.
+ */
+function clearAuthState() {
+  for (const e of ephemerals.values()) e.destroy();
+  ephemerals.clear();
+  for (const p of proofs.values()) p.destroy();
+  proofs.clear();
+  for (const k of keypairs.values()) k.destroy();
+  keypairs.clear();
 }
 
 async function handle(req: CryptoRequest): Promise<unknown> {
@@ -135,6 +186,70 @@ async function handle(req: CryptoRequest): Promise<unknown> {
         req.vaultId,
         req.version,
       );
+
+    // ─── Registration ────────────────────────────────────────────────────
+    case "computeVerifier": {
+      const v = computeVerifier(req.email, req.srpPasswordB64, req.srpSaltB64);
+      return { verifier: v.verifier, srpSalt: v.srpSalt };
+    }
+
+    case "generateKeypair": {
+      const ref = `kp_${++refCounter}`;
+      keypairs.set(ref, generateKeypair());
+      return ref;
+    }
+
+    case "keypairPublicKeys": {
+      const kp = requireRef(keypairs, req.keypair, "keypair");
+      return { ed25519: kp.ed25519PublicKey(), x25519: kp.x25519PublicKey() };
+    }
+
+    case "encryptPrivateKey":
+      return encryptPrivateKey(
+        requireRef(keypairs, req.keypair, "keypair"),
+        requireMasterKey(),
+      );
+
+    // ─── Login ───────────────────────────────────────────────────────────
+    case "generateClientEphemeral": {
+      const ref = `eph_${++refCounter}`;
+      ephemerals.set(ref, generateClientEphemeral());
+      return ref;
+    }
+
+    case "ephemeralPublicA":
+      return requireRef(ephemerals, req.ephemeral, "ephemeral").publicA();
+
+    case "computeClientProof": {
+      const ref = `proof_${++refCounter}`;
+      proofs.set(
+        ref,
+        computeClientProof(
+          req.email,
+          req.srpPasswordB64,
+          req.srpSaltB64,
+          req.serverPublicBHex,
+          requireRef(ephemerals, req.ephemeral, "ephemeral"),
+        ),
+      );
+      return ref;
+    }
+
+    case "clientProof":
+      return requireRef(proofs, req.proof, "proof").clientProof();
+
+    case "verifyServerProof": {
+      // Throws when the server cannot prove it holds the verifier. Let it
+      // propagate: a caller that swallows this has given up the guarantee.
+      verifyServerProof(req.serverProofHex, requireRef(proofs, req.proof, "proof"));
+      return { verified: true };
+    }
+
+    case "decryptPrivateKey": {
+      const ref = `kp_${++refCounter}`;
+      keypairs.set(ref, decryptPrivateKey(req.encryptedB64, requireMasterKey()));
+      return ref;
+    }
 
     case "clear":
       clearAll();

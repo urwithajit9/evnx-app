@@ -17,6 +17,37 @@
 /** Opaque reference to a vault key living in Worker memory. */
 export type VaultKeyRef = string;
 
+/** Opaque reference to one login's SRP ephemeral. Single-use. */
+export type SrpEphemeralRef = string;
+
+/**
+ * Opaque reference to the client's SRP proof state.
+ *
+ * Must stay alive between sending `M1` and checking the server's `M2` — it holds
+ * the state that makes that check possible. Releasing it early silently discards
+ * the half of SRP that proves the *server* holds your verifier.
+ */
+export type SrpProofRef = string;
+
+/** Opaque reference to the user's Ed25519 + X25519 keypair. */
+export type KeypairRef = string;
+
+/** What registration sends for the SRP half. Both are safe to transmit. */
+export type VerifierBundle = {
+  /** Hex, for `srp_verifier`. */
+  verifier: string;
+  /** Base64, for `srp_salt`. */
+  srpSalt: string;
+};
+
+/** Public halves of a keypair. Safe to transmit. */
+export type PublicKeys = {
+  /** Base64, for `ed25519_public_key`. */
+  ed25519: string;
+  /** Base64, for `x25519_public_key`. */
+  x25519: string;
+};
+
 export type CryptoRequest =
   | { id: number; kind: "init" }
   /** Derive the master key. Argon2id at 64 MiB — expect ~150 ms on a desktop. */
@@ -48,6 +79,44 @@ export type CryptoRequest =
       /** The version this blob was fetched at. Not "latest" resolved separately. */
       version: number;
     }
+  // ─── Registration ──────────────────────────────────────────────────────────
+  /**
+   * Compute the SRP verifier.
+   *
+   * `email` is the SRP **identity**, mixed into the verifier — so it must be
+   * normalised identically here and at login. The server lowercases it, so send
+   * a trimmed, lowercased address or login will fail looking like a bad password.
+   */
+  | {
+      id: number;
+      kind: "computeVerifier";
+      email: string;
+      srpPasswordB64: string;
+      srpSaltB64: string;
+    }
+  | { id: number; kind: "generateKeypair" }
+  | { id: number; kind: "keypairPublicKeys"; keypair: KeypairRef }
+  /** Seal the private key under the master key. Base64, for the wire. */
+  | { id: number; kind: "encryptPrivateKey"; keypair: KeypairRef }
+
+  // ─── Login ─────────────────────────────────────────────────────────────────
+  | { id: number; kind: "generateClientEphemeral" }
+  | { id: number; kind: "ephemeralPublicA"; ephemeral: SrpEphemeralRef }
+  | {
+      id: number;
+      kind: "computeClientProof";
+      email: string;
+      srpPasswordB64: string;
+      srpSaltB64: string;
+      serverPublicBHex: string;
+      ephemeral: SrpEphemeralRef;
+    }
+  | { id: number; kind: "clientProof"; proof: SrpProofRef }
+  /** Verify the server's `M2`. Throws if the server cannot prove itself. */
+  | { id: number; kind: "verifyServerProof"; serverProofHex: string; proof: SrpProofRef }
+  /** Recover the keypair from `GET /auth/me`. Fails when the password is wrong. */
+  | { id: number; kind: "decryptPrivateKey"; encryptedB64: string }
+
   /** Zeroize everything. Called on logout and on tab close. */
   | { id: number; kind: "clear" };
 
