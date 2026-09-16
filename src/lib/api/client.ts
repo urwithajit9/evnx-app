@@ -76,6 +76,36 @@ async function refreshAccessToken(): Promise<string> {
   return refreshing;
 }
 
+/**
+ * Endpoints where a 401 means "these credentials are wrong", not "your access
+ * token expired".
+ *
+ * Refreshing on one of these is worse than useless. The server **rotates**
+ * refresh tokens, so a failed sign-in attempt would spend the refresh token
+ * belonging to a perfectly good existing session, retry the login with an
+ * `Authorization` header that means nothing to it, 401 again, and then clear the
+ * tokens — signing the user out because someone mistyped a password.
+ *
+ * `/auth/refresh` is listed for completeness; it is issued with bare `axios`
+ * rather than this instance, so it could not recurse anyway.
+ */
+const UNAUTHENTICATED_PATHS = [
+  "/auth/register",
+  "/auth/srp/init",
+  "/auth/srp/verify",
+  "/auth/totp/verify",
+  "/auth/refresh",
+  "/auth/verify-email",
+  "/auth/resend-verification",
+];
+
+function isUnauthenticatedPath(url: string | undefined): boolean {
+  if (!url) return false;
+  // Compare on the path only: `url` here is whatever was passed to the call,
+  // which may be relative to `baseURL` or absolute.
+  return UNAUTHENTICATED_PATHS.some((p) => url.endsWith(p));
+}
+
 api.interceptors.response.use(
   (r) => r,
   async (error: AxiosError) => {
@@ -83,7 +113,12 @@ api.interceptors.response.use(
       _retried?: boolean;
     };
 
-    if (error.response?.status === 401 && original && !original._retried) {
+    if (
+      error.response?.status === 401 &&
+      original &&
+      !original._retried &&
+      !isUnauthenticatedPath(original.url)
+    ) {
       original._retried = true;
       try {
         const token = await refreshAccessToken();

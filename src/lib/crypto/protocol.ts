@@ -117,6 +117,18 @@ export type CryptoRequest =
   /** Recover the keypair from `GET /auth/me`. Fails when the password is wrong. */
   | { id: number; kind: "decryptPrivateKey"; encryptedB64: string }
 
+  // ─── Auth lifecycle ────────────────────────────────────────────────────────
+  /**
+   * Drop the SRP ephemeral and proof state. Call at the end of every login
+   * attempt, successful or not.
+   *
+   * Deliberately narrower than `clear`: it leaves the master key and the
+   * keypair alone, which is the whole point — the session has only just started.
+   * An SRP ephemeral is single-use, and one left lying around is the sort of
+   * thing that gets reused by accident later.
+   */
+  | { id: number; kind: "clearSrpState" }
+
   /** Zeroize everything. Called on logout and on tab close. */
   | { id: number; kind: "clear" };
 

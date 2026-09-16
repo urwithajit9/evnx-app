@@ -117,23 +117,26 @@ function clearAll() {
   masterKey = null;
   for (const vk of vaultKeys.values()) vk.destroy();
   vaultKeys.clear();
-  clearAuthState();
+  clearSrpState();
+  for (const k of keypairs.values()) k.destroy();
+  keypairs.clear();
 }
 
 /**
- * Drop SRP state and keypairs.
+ * Drop the SRP ephemerals and proofs.
  *
- * Called at the end of every login, successful or not. An ephemeral is
- * single-use: keeping one past its exchange is the sort of thing that later
- * gets reused by accident, and a reused SRP ephemeral weakens the exchange.
+ * Separate from the keypairs on purpose. This runs at the end of **every** login
+ * attempt — an ephemeral is single-use, and one kept past its exchange is the
+ * sort of thing that gets reused by accident later, which weakens the exchange.
+ * The keypair recovered during that same login has to survive it, so lumping the
+ * two together (as an earlier revision did) would have destroyed the user's
+ * identity key the moment they signed in.
  */
-function clearAuthState() {
+function clearSrpState() {
   for (const e of ephemerals.values()) e.destroy();
   ephemerals.clear();
   for (const p of proofs.values()) p.destroy();
   proofs.clear();
-  for (const k of keypairs.values()) k.destroy();
-  keypairs.clear();
 }
 
 async function handle(req: CryptoRequest): Promise<unknown> {
@@ -250,6 +253,10 @@ async function handle(req: CryptoRequest): Promise<unknown> {
       keypairs.set(ref, decryptPrivateKey(req.encryptedB64, requireMasterKey()));
       return ref;
     }
+
+    case "clearSrpState":
+      clearSrpState();
+      return { cleared: true };
 
     case "clear":
       clearAll();

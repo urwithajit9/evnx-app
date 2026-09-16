@@ -258,6 +258,16 @@ export function decryptPrivateKey(encryptedB64: string) {
 
 // ─── Lifecycle ───────────────────────────────────────────────────────────────
 
+/**
+ * Drop SRP ephemerals and proofs. Call in a `finally` around every login.
+ *
+ * Leaves the master key and keypair intact — unlike {@link clearKeys}, which
+ * ends the session.
+ */
+export function clearSrpState() {
+  return call<{ cleared: boolean }>({ kind: "clearSrpState" });
+}
+
 /** Zeroize every key in the Worker. Call on logout. */
 export function clearKeys() {
   return call<{ cleared: boolean }>({ kind: "clear" });
