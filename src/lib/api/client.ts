@@ -149,5 +149,18 @@ export function apiErrorCode(e: unknown): string | null {
   return null;
 }
 
+/**
+ * HTTP status, for the cases where it carries meaning the `code` does not.
+ *
+ * Mostly this should be `apiErrorCode`. The exception that matters is **401 vs
+ * 403 on vault routes**: those sit behind `require_verified`, so an
+ * authenticated-but-unverified account is refused with 403. Collapsing the two
+ * into "please sign in" sends someone to re-enter a password that was never the
+ * problem, when what they need is to open an email.
+ */
+export function apiErrorStatus(e: unknown): number | null {
+  return axios.isAxiosError(e) ? (e.response?.status ?? null) : null;
+}
+
 /** 409 on push. Requires re-encryption at the new version — never a plain retry. */
 export const CODE_VERSION_CONFLICT = "VERSION_CONFLICT";

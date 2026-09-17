@@ -1,27 +1,26 @@
 /**
- * Placeholder landing page for a signed-in session.
+ * Vault list.
  *
- * E3 replaces this with the vault list. It exists now because sign-in has to
- * land somewhere, and because it is the only screen that shows the two halves of
- * a session separately — a token *and* a master key in the Worker. They are lost
- * at different moments, and a page that conflates them hides the bug where one
- * survives without the other.
+ * Read-only: creating a vault needs a client-generated vault key wrapped under
+ * the master key, which is the write path and lands with push in E4.
+ *
+ * Everything on this page comes from metadata the server legitimately holds —
+ * names, environments, roles, counts, timestamps. No decryption happens here,
+ * so the list renders without touching the Worker.
  */
 
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { listVaults, type VaultSummary } from "@/lib/api/vaults";
 import { useAuthStore } from "@/stores/authStore";
 import { useKeyStore } from "@/stores/keyStore";
+import { apiErrorStatus } from "@/lib/api/client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function VaultsPage() {
@@ -31,21 +30,27 @@ export default function VaultsPage() {
   const signOut = useAuthStore((s) => s.signOut);
   const unlocked = useKeyStore((s) => s.unlocked);
 
-  // Zustand state does not survive a reload, and neither does the master key —
-  // so an unlocked session cannot be restored, only started again.
-  //
-  // `unlocked` is the render guard on its own; an extra `checked` flag set from
-  // inside the effect would be both redundant and an extra render pass.
+  // A reload drops both the tokens and the master key, and neither can be
+  // restored — so there is nothing to rehydrate, only a sign-in to repeat.
   useEffect(() => {
     if (!unlocked) router.replace("/login/");
   }, [unlocked, router]);
 
+  const vaults = useQuery({
+    queryKey: ["vaults"],
+    queryFn: listVaults,
+    enabled: unlocked,
+  });
+
   if (!unlocked || !user) return null;
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Your vaults</h1>
+    <main className="mx-auto max-w-3xl space-y-6 p-6">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-semibold">Your vaults</h1>
+          <p className="text-sm text-muted-foreground">{user.email}</p>
+        </div>
         <Button
           variant="outline"
           onClick={async () => {
@@ -57,16 +62,6 @@ export default function VaultsPage() {
         </Button>
       </div>
 
-      {!user.emailVerified && (
-        <Alert>
-          <AlertTitle>Verify your email to use vaults</AlertTitle>
-          <AlertDescription>
-            You are signed in, but vault operations stay unavailable until{" "}
-            {user.email} is confirmed.
-          </AlertDescription>
-        </Alert>
-      )}
-
       {backupCodesRemaining !== null && backupCodesRemaining <= 3 && (
         <Alert variant="destructive">
           <AlertTitle>
@@ -74,34 +69,116 @@ export default function VaultsPage() {
             {backupCodesRemaining === 1 ? "" : "s"} left
           </AlertTitle>
           <AlertDescription>
-            Reissue them before you run out. At zero, losing your authenticator
-            locks the account permanently — the server holds only ciphertext and
-            cannot let you back in.
+            Reissue them before you run out. At zero, a lost authenticator locks
+            the account permanently — the server holds only ciphertext and cannot
+            let you back in.
           </AlertDescription>
         </Alert>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Session</CardTitle>
-          <CardDescription>
-            Vault listing arrives in E3. This page currently just shows that the
-            session is real.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
-            <dt className="text-muted-foreground">Email</dt>
-            <dd>{user.email}</dd>
-            <dt className="text-muted-foreground">Verified</dt>
-            <dd>{user.emailVerified ? "yes" : "not yet"}</dd>
-            <dt className="text-muted-foreground">Two-factor</dt>
-            <dd>{user.totpEnabled ? "enabled" : "not enabled"}</dd>
-            <dt className="text-muted-foreground">Keys</dt>
-            <dd>{unlocked ? "in the Worker, not in JavaScript" : "locked"}</dd>
-          </dl>
-        </CardContent>
-      </Card>
+      {!user.emailVerified && (
+        <Alert>
+          <AlertTitle>Verify your email to use vaults</AlertTitle>
+          <AlertDescription>
+            Vault routes stay closed until {user.email} is confirmed, so the list
+            below will be empty or refused.{" "}
+            <Link href="/verify-email/" className="underline underline-offset-4">
+              Resend the email
+            </Link>
+            .
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {vaults.isPending && (
+        <p className="text-sm text-muted-foreground">Loading your vaults…</p>
+      )}
+
+      {vaults.isError && <VaultsError error={vaults.error} />}
+
+      {vaults.data?.length === 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>No vaults yet</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <p>Create one with the CLI, then push a file into it:</p>
+            <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">
+              <code>{"evnx vault create my-app --env production\nevnx cloud push .env --vault my-app"}</code>
+            </pre>
+            <p>Creating vaults from the browser arrives with push, in E4.</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {vaults.data && vaults.data.length > 0 && (
+        <ul className="space-y-3">
+          {vaults.data.map((v) => (
+            <VaultRow key={v.id} vault={v} />
+          ))}
+        </ul>
+      )}
     </main>
   );
+}
+
+function VaultRow({ vault }: { vault: VaultSummary }) {
+  return (
+    <li>
+      <Link
+        href={`/vaults/detail/?id=${encodeURIComponent(vault.id)}`}
+        className="block rounded-lg border p-4 transition-colors hover:bg-accent"
+      >
+        <div className="flex items-baseline justify-between gap-4">
+          <span className="font-medium">{vault.name}</span>
+          <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+            {vault.environment}
+          </span>
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {vault.version_count} version{vault.version_count === 1 ? "" : "s"} ·{" "}
+          {vault.role} · updated {formatWhen(vault.updated_at)}
+        </p>
+      </Link>
+    </li>
+  );
+}
+
+function VaultsError({ error }: { error: unknown }) {
+  // 403 and 401 mean genuinely different things here and must not share a
+  // message. Vault routes are behind `require_verified`: an unverified account
+  // is authenticated but refused, which is a 403 and is fixed by opening an
+  // email — not by signing in again.
+  const status = apiErrorStatus(error);
+  if (status === 403) {
+    return (
+      <Alert variant="destructive">
+        <AlertTitle>Your email is not verified yet</AlertTitle>
+        <AlertDescription>
+          Vault access opens once you confirm your address.{" "}
+          <Link href="/verify-email/" className="underline underline-offset-4">
+            Resend the verification email
+          </Link>
+          .
+        </AlertDescription>
+      </Alert>
+    );
+  }
+  return (
+    <Alert variant="destructive">
+      <AlertTitle>Could not load your vaults</AlertTitle>
+      <AlertDescription>
+        {error instanceof Error ? error.message : "Unknown error."}
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+export function formatWhen(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  // Locale-formatted on the client only. A static export prerenders this file,
+  // and formatting a date during prerender would bake the build machine's
+  // locale and timezone into the HTML.
+  return d.toLocaleString();
 }
