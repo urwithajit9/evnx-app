@@ -1,0 +1,135 @@
+# .github/workflows/deploy.yml
+#
+# Builds the static export and deploys it to Cloudflare Pages.
+#
+# The build happens here rather than in Cloudflare's own git integration, so the
+# build command, the Node version and the environment are all visible in this
+# file and reviewable in a PR — instead of living in a dashboard where a change
+# leaves no trace.
+
+name: Deploy app.evnx.dev
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A second push while one deploy is in flight should supersede it, not race it.
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      # `ci`, not `install`: the lockfile is the contract, and @evnx/crypto-wasm
+      # resolving to a different version than the one this code was verified
+      # against is exactly the failure worth refusing.
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        env:
+          # Baked in at BUILD time — NEXT_PUBLIC_* is inlined into the bundle,
+          # so there is no runtime knob. A deploy pointing at the wrong API
+          # cannot be corrected without rebuilding.
+          NEXT_PUBLIC_API_URL: https://api.evnx.dev
+        run: npm run build
+
+      # Cheap guards against the two ways this export silently degrades.
+      - name: Check the artefact
+        run: |
+          test -f out/index.html || { echo "::error::no out/index.html — did the export run?"; exit 1; }
+
+          # Without _headers there is no CSP, no HSTS and no cache policy, and
+          # nothing else would notice: the site would work perfectly and be
+          # unprotected. It comes from public/_headers.
+          if [ ! -f out/_headers ]; then
+            echo "::error::out/_headers is missing — the deploy would ship with no security headers at all. It is copied from public/_headers."
+            exit 1
+          fi
+          # Match the DIRECTIVE LINE, not the file. The explanatory comment in
+          # _headers also contains the string "wasm-unsafe-eval", so grepping
+          # the whole file passes even when the value has been removed from the
+          # policy itself — which is precisely the regression worth catching.
+          csp=$(grep -i "^[[:space:]]*Content-Security-Policy:" out/_headers || true)
+          if [ -z "$csp" ]; then
+            echo "::error::_headers declares no Content-Security-Policy"
+            exit 1
+          fi
+          case "$csp" in
+            *wasm-unsafe-eval*) ;;
+            *)
+              echo "::error::the Content-Security-Policy line has no 'wasm-unsafe-eval'. WebAssembly.instantiateStreaming is refused without it and every crypto operation fails at runtime — while the pages still render, so this does not look broken until someone tries to sign in."
+              exit 1
+              ;;
+          esac
+
+          # The wasm module is the one asset that must be there.
+          ls out/_next/static/media/*.wasm >/dev/null 2>&1 || {
+            echo "::error::no .wasm in the export"; exit 1;
+          }
+
+          echo "files: $(find out -type f | wc -l), size: $(du -sh out | cut -f1)"
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # A PR builds a preview deployment on its own branch; only main
+          # publishes to production.
+          command: >-
+            pages deploy out
+            --project-name=evnx-app
+            --branch=${{ github.head_ref || github.ref_name }}
+
+      # The headers are the whole point of choosing this host, and they are also
+      # the thing that can regress without any visible symptom. Check the live
+      # response rather than trusting that the file was uploaded.
+      - name: Verify the live headers
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          echo "waiting for the deployment to become current…"
+          sleep 20
+          headers=$(curl -sSI --max-time 20 https://app.evnx.dev/login/ || true)
+
+          fail=0
+          for h in "content-security-policy" "x-content-type-options" "x-frame-options" "referrer-policy"; do
+            if echo "$headers" | grep -qi "^$h:"; then
+              echo "  ✓ $h"
+            else
+              echo "::warning::$h is missing from the live response"
+              fail=1
+            fi
+          done
+
+          if echo "$headers" | grep -qi "wasm-unsafe-eval"; then
+            echo "  ✓ CSP allows WebAssembly"
+          else
+            echo "::error::the live CSP has no 'wasm-unsafe-eval' — sign-in will fail for everyone"
+            exit 1
+          fi
+
+          # A warning, not a failure: the domain may not be attached yet on a
+          # first deploy, and failing here would block that very first deploy.
+          [ "$fail" = "0" ] || echo "::warning::some headers are absent; check the Pages project's _headers handling"

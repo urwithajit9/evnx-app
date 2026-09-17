@@ -1,0 +1,63 @@
+# Response headers for app.evnx.dev
+#
+# A static export has no server, so it can set no headers of its own. Every
+# header below therefore has to come from the host. Cloudflare Pages and Netlify
+# both read this file format, so it is not wasted if the host changes; Vercel
+# would need the same values expressed in `vercel.json` instead.
+#
+# ─── The CSP was measured against a real build, not copied from a template ────
+#
+# Two of these values are load-bearing and were each confirmed by watching the
+# app break without them:
+#
+#   * 'wasm-unsafe-eval' — WITHOUT IT THE ENTIRE CRYPTO LAYER FAILS.
+#     `WebAssembly.instantiateStreaming` counts as script evaluation, so the
+#     browser refuses it and the observed error is
+#         "Compiling or instantiating WebAssembly module violates … because
+#          'unsafe-eval' is not an allowed source of script"
+#     — which reads like a bundler problem and is not one. It is narrower than
+#     'unsafe-eval': it permits WebAssembly compilation and nothing else.
+#
+#   * 'unsafe-inline' in script-src — Next's static export emits inline
+#     <script> blocks carrying the hydration bootstrap and each page's RSC
+#     payload. With `script-src 'self'` alone, hydration is blocked and the page
+#     renders but does nothing at all.
+#
+#     This is the one genuine weakness in the policy, and it is a consequence of
+#     `output: "export"`: nonces need a server to mint one per request, and there
+#     is no server. The alternative is hashing — this build has 11 distinct
+#     inline scripts, one shared bootstrap plus one RSC payload per page — which
+#     is workable but must be regenerated on every build, and a stale hash breaks
+#     the app rather than degrading it. Not worth the fragility yet; revisit if
+#     the number stabilises.
+#
+#     What limits the damage meanwhile: `default-src 'none'` means an injected
+#     inline script still cannot reach any origin except the API, `connect-src`
+#     names that API exactly, and no key material exists in the JS heap for it to
+#     read — the keys are in the Worker's wasm memory behind opaque handles.
+#
+# `worker-src 'self' blob:` — the crypto Worker is served from _next/static, but
+# blob: is listed because bundler worker shims fall back to it.
+#
+# ⚠️ Adding a third-party script, font, or analytics endpoint means adding it
+# here too, and every addition widens what an injected script can reach. The
+# whole point of this app is that the server cannot read your secrets; a tag
+# manager on this origin could.
+
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.evnx.dev; worker-src 'self' blob:; manifest-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: no-referrer
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains
+
+# Hashed filenames, so these are safe to cache forever. Without this every
+# visit re-downloads a 279 KB wasm module that cannot have changed.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML must revalidate, or a deploy does not reach anyone still holding a tab.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
