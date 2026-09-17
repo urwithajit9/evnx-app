@@ -33,6 +33,7 @@ import init, {
   unwrapVaultKey,
   encryptVault,
   decryptVault,
+  blobHash,
   computeVerifier,
   generateClientEphemeral,
   computeClientProof,
@@ -189,6 +190,20 @@ async function handle(req: CryptoRequest): Promise<unknown> {
         req.vaultId,
         req.version,
       );
+
+    case "sealForPush": {
+      const blob = encryptVault(
+        req.plaintext,
+        requireVaultKey(req.vaultKey),
+        req.vaultId,
+        req.version,
+      );
+      // `encryptVault` returns nonce || ciphertext. The wire wants them apart,
+      // and the hash covers only the second half.
+      const nonce = blob.slice(0, 12);
+      const ciphertext = blob.slice(12);
+      return { nonce, ciphertext, blobHash: blobHash(ciphertext) };
+    }
 
     // ─── Registration ────────────────────────────────────────────────────
     case "computeVerifier": {

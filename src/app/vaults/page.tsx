@@ -1,12 +1,14 @@
 /**
  * Vault list.
  *
- * Read-only: creating a vault needs a client-generated vault key wrapped under
- * the master key, which is the write path and lands with push in E4.
+ * Everything rendered here is metadata the server legitimately holds — names,
+ * environments, roles, counts, timestamps. No decryption happens on this page,
+ * so the list draws without touching the Worker.
  *
- * Everything on this page comes from metadata the server legitimately holds —
- * names, environments, roles, counts, timestamps. No decryption happens here,
- * so the list renders without touching the Worker.
+ * Creating a vault does touch it: a fresh 256-bit key is generated and wrapped
+ * under the master key before the request is sent. That is why the form is
+ * gated on a verified email — `/vaults` sits behind `require_verified`, and
+ * offering a form that can only 403 is worse than not offering one.
  */
 
 "use client";
@@ -22,6 +24,7 @@ import { apiErrorStatus } from "@/lib/api/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { CreateVault } from "@/components/vaults/create-vault";
 
 export default function VaultsPage() {
   const router = useRouter();
@@ -90,6 +93,8 @@ export default function VaultsPage() {
         </Alert>
       )}
 
+      {user.emailVerified && <CreateVault />}
+
       {vaults.isPending && (
         <p className="text-sm text-muted-foreground">Loading your vaults…</p>
       )}
@@ -102,11 +107,13 @@ export default function VaultsPage() {
             <CardTitle>No vaults yet</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>Create one with the CLI, then push a file into it:</p>
+            <p>
+              Use <strong>New vault</strong> above, or the CLI — they produce the
+              same thing, and either can read the other&apos;s:
+            </p>
             <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">
               <code>{"evnx vault create my-app --env production\nevnx cloud push .env --vault my-app"}</code>
             </pre>
-            <p>Creating vaults from the browser arrives with push, in E4.</p>
           </CardContent>
         </Card>
       )}

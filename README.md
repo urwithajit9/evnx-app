@@ -65,7 +65,12 @@ keypair. On a 16-core desktop, in Chromium:
 | `deriveSrpPassword` | ≈147 ms |
 | **login total** | **≈296 ms** |
 | wasm init | 25–51 ms |
-| bundle | 111 KB raw, 45 KB gzipped |
+| bundle | 286 KB raw, 126 KB gzipped |
+
+> ⚠️ The 111 KB / 45 KB figure quoted in the Phase 2 plan and on evnx.dev is
+> **0.1.0**, which held only the KDF and vault encryption. Adding SRP-6a and the
+> Ed25519/X25519 keypair in 0.1.1 took it to 275 KB / 123 KB; `blake3` in 0.1.2
+> added a further 10 KB / 3.5 KB. Measured, not estimated — `gzip -c pkg/*_bg.wasm | wc -c`.
 
 Essentially parity with native (304 ms).
 

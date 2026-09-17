@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { formatWhen } from "../page";
+import { PushVersion } from "@/components/vaults/push-version";
 
 export default function VaultDetailPage() {
   return (
@@ -142,13 +143,18 @@ function VaultDetail() {
         <p className="text-sm text-muted-foreground">Loading version history…</p>
       )}
 
+      <PushVersion vaultId={vaultId} />
+
       {versions.data?.length === 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Nothing pushed yet</CardTitle>
             <CardDescription>
-              This vault has no versions. Push one with{" "}
-              <code className="text-xs">evnx cloud push .env --vault {vault?.name ?? ""}</code>.
+              This vault has no versions. Push one above, or from the CLI with{" "}
+              <code className="text-xs">
+                evnx cloud push .env --vault {vault?.name ?? ""}
+              </code>{" "}
+              — either client can read the other&apos;s.
             </CardDescription>
           </CardHeader>
         </Card>

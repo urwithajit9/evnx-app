@@ -166,6 +166,28 @@ export function decryptVault(
   });
 }
 
+/**
+ * Encrypt for a push and return the three wire fields together.
+ *
+ * `version` must be the number the **server** will assign — `base_version + 1`.
+ * It is authenticated into the ciphertext, so a blob sealed at the wrong version
+ * is unopenable by anyone, including the person who pushed it.
+ */
+export function sealForPush(
+  plaintext: Uint8Array,
+  vaultKey: VaultKeyRef,
+  vaultId: string,
+  version: number,
+) {
+  return call<{ nonce: Uint8Array; ciphertext: Uint8Array; blobHash: string }>({
+    kind: "sealForPush",
+    plaintext,
+    vaultKey,
+    vaultId,
+    version,
+  });
+}
+
 // ─── Registration ────────────────────────────────────────────────────────────
 
 /**

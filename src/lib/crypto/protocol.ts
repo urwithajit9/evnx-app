@@ -117,6 +117,26 @@ export type CryptoRequest =
   /** Recover the keypair from `GET /auth/me`. Fails when the password is wrong. */
   | { id: number; kind: "decryptPrivateKey"; encryptedB64: string }
 
+  /**
+   * Encrypt for a push, returning every field the wire needs.
+   *
+   * One message rather than an `encryptVault` + `blobHash` pair on purpose: the
+   * hash covers the **ciphertext alone**, while `encryptVault` hands back
+   * `nonce || ciphertext`. Splitting that at the call site is the one mistake a
+   * new client reliably makes, and the server reports it as a bad `blob_hash`
+   * rather than as a nonce problem. Doing both inside the Worker removes the
+   * opportunity.
+   */
+  | {
+      id: number;
+      kind: "sealForPush";
+      plaintext: Uint8Array;
+      vaultKey: VaultKeyRef;
+      vaultId: string;
+      /** The version the SERVER will assign: `base_version + 1`. */
+      version: number;
+    }
+
   // ─── Auth lifecycle ────────────────────────────────────────────────────────
   /**
    * Drop the SRP ephemeral and proof state. Call at the end of every login
