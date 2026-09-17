@@ -1,69 +1,107 @@
-import Image from "next/image";
+/**
+ * The dashboard's front door.
+ *
+ * Not a marketing page — that is `evnx.dev`. Someone arriving here either has an
+ * account or is about to make one, so the job is to get them to the right place
+ * in one click and say enough about the trust model that the "cannot be reset"
+ * warning on the next screen is not a surprise.
+ *
+ * A signed-in visitor is sent straight to their vaults. In practice that only
+ * happens on a client-side navigation back to `/`, because a reload drops both
+ * the tokens and the master key — but the check costs nothing and avoids showing
+ * a "Sign in" button to someone who already is.
+ */
+
+"use client";
+
+import { useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useKeyStore } from "@/stores/keyStore";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const router = useRouter();
+  const unlocked = useKeyStore((s) => s.unlocked);
+
+  useEffect(() => {
+    if (unlocked) router.replace("/vaults/");
+  }, [unlocked, router]);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
+    <div className="flex min-h-svh flex-col">
+      <header className="flex items-center justify-between px-6 py-4">
+        <span className="flex items-center gap-2 font-semibold">
+          <span className="flex size-7 items-center justify-center rounded-md bg-foreground text-xs font-bold text-background">
+            ev
+          </span>
+          evnx
+        </span>
+        <a
+          href="https://www.evnx.dev"
+          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+        >
+          evnx.dev
+        </a>
+      </header>
+
+      <main className="flex flex-1 items-center justify-center px-6 py-12">
+        <div className="w-full max-w-lg space-y-8">
+          <div className="space-y-3">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Your encrypted <code className="font-mono">.env</code> files
+            </h1>
+            <p className="text-muted-foreground">
+              Everything is encrypted in this browser before it is uploaded. The
+              server stores ciphertext and nothing else — it cannot read your
+              secrets with full database access, and neither can we.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button asChild>
+              <Link href="/login/">Sign in</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/register/">Create an account</Link>
+            </Button>
+          </div>
+
+          <div className="space-y-3 rounded-lg border p-4 text-sm text-muted-foreground">
+            <p>
+              <strong className="font-medium text-foreground">
+                Your master password cannot be reset.
+              </strong>{" "}
+              It never leaves your device, and the server holds nothing that
+              could rebuild it. That is the point — and it means losing it loses
+              the data.
+            </p>
+            <p>
+              Already using the CLI? The same account works in both, and a file
+              pushed from one comes out of the other byte for byte.
+            </p>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            Prefer a terminal?{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+              evnx cloud push .env
             </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+            —{" "}
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://www.evnx.dev/docs"
+              className="underline underline-offset-4"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+              read the docs
+            </a>
+            .
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
       </main>
+
+      <footer className="px-6 py-6 text-center text-xs text-muted-foreground">
+        Encrypted in this browser. The server only ever holds ciphertext.
+      </footer>
     </div>
   );
 }
