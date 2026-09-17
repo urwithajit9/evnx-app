@@ -54,15 +54,20 @@ export default function VaultsPage() {
           <h1 className="text-xl font-semibold">Your vaults</h1>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
-        <Button
-          variant="outline"
-          onClick={async () => {
-            await signOut();
-            router.push("/login/");
-          }}
-        >
-          Sign out
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/settings/">Settings</Link>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={async () => {
+              await signOut();
+              router.push("/login/");
+            }}
+          >
+            Sign out
+          </Button>
+        </div>
       </div>
 
       {backupCodesRemaining !== null && backupCodesRemaining <= 3 && (
