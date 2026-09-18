@@ -64,15 +64,19 @@
    The canonical set lives in evnx-web/app/globals.css and is mirrored here so
    app.evnx.dev and evnx.dev are one product rather than two.
 
-   DARK ONLY, deliberately. evnx.dev has no light theme, and inventing one here
-   would make the surfaces diverge again. A light theme stays cheap as long as
-   one rule holds:
+   DARK IS CANONICAL and is the default — evnx.dev is dark-only, and a
+   dashboard that silently followed the OS would leave someone on a light
+   desktop with a light app beside a dark marketing site. Light is an explicit
+   opt-in, remembered per browser.
+
+   That this cost one token block rather than a rewrite is the whole return on
+   the rule the first pass held to:
 
        Components reference SEMANTIC TOKENS, never a raw hex and never a
        Tailwind palette shade. `bg-card`, not `bg-zinc-900`.
 
-   Follow that and light mode is one extra token block. Break it and light mode
-   is a rewrite. This is the single most important constraint in this file.
+   Keep holding it. Every raw shade added is a component that will look wrong
+   in one of the two themes, and nobody will notice until a user reports it.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -196,6 +200,73 @@
   color-scheme: dark;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Light theme — an override layer, not a second system
+   ───────────────────────────────────────────────────────────────────────────
+   Only the tokens whose VALUES differ are restated. Everything structural —
+   radius, the type scale, spacing, the shadcn mapping — is inherited from
+   :root above, so the two themes cannot drift apart in anything but colour.
+
+   ⚠️ THE BRAND ORANGE FAILS AA ON WHITE. Measured, not assumed:
+
+       #E8652A on #FFFFFF   3.32:1   fails (AA text needs 4.5:1)
+       #C9541F on #FFFFFF   4.40:1   fails, narrowly
+       #A8441A on #FFFFFF   5.99:1   passes
+
+   So brand-as-TEXT uses a darker step on light. Brand-as-GROUND is unchanged,
+   because the dark theme already puts near-black text on orange rather than
+   white, and that same pairing measures 5.70:1 here. The button looks identical
+   in both themes and is legible in both — which is luck worth keeping.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root[data-theme="light"] {
+  --bg-void:       #EAEEF2;
+  --bg-base:       #FFFFFF;
+  --bg-surface:    #F6F8FA;
+  --bg-overlay:    #EAEEF2;
+  --bg-elevated:   #FFFFFF;
+
+  --border-subtle:  #D8DEE4;
+  --border-muted:   #D0D7DE;
+  --border-default: #8C959F;
+
+  --text-primary:   #1F2328;   /* 15.80:1 on white */
+  --text-secondary: #59636E;   /*  6.11:1 */
+  --text-muted:     #818B98;
+
+  /* Ground stays the same orange; TEXT steps down to clear AA. */
+  --brand-600: #A8441A;
+  --brand-500: #E8652A;
+  --brand-400: #C9541F;
+  --brand-300: #A8441A;
+  --brand-glow: rgba(232, 101, 42, 0.18);
+
+  /* The dark theme's semantic colours are tuned for a dark ground and are too
+     light here — #3FB950 on white is 2.2:1. These are their light counterparts. */
+  --success: #1A7F37;
+  --warning: #9A6700;
+  --danger:  #CF222E;
+  --info:    #0969DA;
+
+  /* Terminals stay dark in both themes. A light terminal block would not look
+     like a terminal, and these reproduce real CLI output. */
+  --terminal-bg:     #010409;
+  --terminal-text:   #C9D1D9;
+  --terminal-prompt: #E8652A;
+
+  --zk-accent: #1A7F37;
+
+  --tier-free:       var(--text-secondary);
+  --tier-pro:        var(--brand-600);
+  --tier-team:       var(--brand-600);
+  --tier-enterprise: #1F2328;
+
+  --primary-foreground: #0D1117;   /* 5.70:1 on brand-500 */
+  --sidebar-primary-foreground: #0D1117;
+
+  color-scheme: light;
+}
 
 @layer base {
   * {

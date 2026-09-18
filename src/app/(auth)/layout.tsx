@@ -6,6 +6,7 @@
  */
 
 import { BrandMark } from "@/components/shell/brand-mark";
+import { ThemeToggle } from "@/components/shell/theme-toggle";
 
 export default function AuthLayout({
   children,
@@ -14,12 +15,15 @@ export default function AuthLayout({
     <div className="flex min-h-svh flex-col">
       <header className="flex items-center justify-between px-6 py-4">
         <BrandMark />
-        <a
-          href="https://www.evnx.dev/docs"
-          className="text-sm text-muted-foreground underline-offset-4 hover:underline"
-        >
-          Docs
-        </a>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <a
+            href="https://www.evnx.dev/docs"
+            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+          >
+            Docs
+          </a>
+        </div>
       </header>
 
       <main className="flex flex-1 items-center justify-center px-4 py-8">

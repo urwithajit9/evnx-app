@@ -27,6 +27,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./brand-mark";
+import { ThemeToggle } from "./theme-toggle";
 
 const NAV = [
   { href: "/vaults/", label: "Vaults" },
@@ -76,6 +77,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span className="hidden truncate text-xs text-muted-foreground md:block">
               {user?.email}
             </span>
+            <ThemeToggle />
             <Button
               size="sm"
               variant="outline"
