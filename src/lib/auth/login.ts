@@ -41,13 +41,16 @@ import {
   deriveSrpPassword,
   ephemeralPublicA,
   generateClientEphemeral,
+  keypairPublicKeys,
   verifyServerProof,
 } from "@/lib/crypto/client";
+import type { KeypairRef } from "@/lib/crypto/protocol";
 import {
   getMe,
   postSrpInit,
   postSrpVerify,
   postTotpVerify,
+  putPublicKeys,
   type MeResult,
 } from "@/lib/api/auth";
 import { setTokens } from "@/lib/api/client";
@@ -232,12 +235,40 @@ async function unlock(password: string): Promise<MeResult> {
     await deriveMasterKey(password, me.argon2_salt);
     // Fails exactly when the password is wrong — which SRP has already ruled
     // out, so a failure here means the stored blob does not match the account.
-    await decryptPrivateKey(me.encrypted_private_key);
+    const keypair = await decryptPrivateKey(me.encrypted_private_key);
+    await backfillMlkemKey(keypair, me);
     return me;
   } catch (e) {
     // Never leave a half-unlocked session: a master key with no keypair reads as
     // signed in to the key store and cannot actually complete a vault operation.
     await clearKeys().catch(() => {});
     throw e;
+  }
+}
+
+/**
+ * One-time F1 migration: register the ML-KEM-768 public key.
+ *
+ * ─── Why it happens here ────────────────────────────────────────────────────
+ *
+ * The key is derived from the Ed25519 seed, which only a client holding the
+ * master password can unseal. The server cannot derive it. `unlock` is the one
+ * moment the keypair is in hand, and — unlike the CLI, which would need a second
+ * Argon2id pass — the work is already done by the line above, so this costs one
+ * request and nothing else.
+ *
+ * ─── Why a failure here does not fail the login ─────────────────────────────
+ *
+ * ⚠️ Everything except *being shared with* works without this key. Throwing would
+ * turn a successful sign-in into a failure over a migration detail, which is a
+ * strictly worse outcome for the user. It is retried on the next login.
+ */
+async function backfillMlkemKey(keypair: KeypairRef, me: MeResult): Promise<void> {
+  if (me.has_mlkem_key) return;
+  try {
+    const { mlkem } = await keypairPublicKeys(keypair);
+    await putPublicKeys(mlkem);
+  } catch {
+    // Deliberately swallowed — see above.
   }
 }

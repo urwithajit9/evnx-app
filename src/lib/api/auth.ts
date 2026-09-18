@@ -12,6 +12,7 @@
  * | `srp_verifier`, `client_public`, `client_proof`, `server_proof` | **hex** |
  * | `srp_salt`, `argon2_salt` | **base64** (44 chars = 32 bytes) |
  * | `ed25519_public_key`, `x25519_public_key` | **base64** (44 chars) |
+ * | `mlkem_public_key` | **base64** (1580 chars) |
  * | `encrypted_private_key` | **base64** |
  *
  * The WASM bindings already return each value in the form its field wants, so
@@ -31,6 +32,8 @@ export type RegisterBody = {
   argon2_salt: string;
   ed25519_public_key: string;
   x25519_public_key: string;
+  /** base64, exactly 1580 chars (1184 bytes). ML-KEM-768. */
+  mlkem_public_key: string;
   encrypted_private_key: string;
 };
 
@@ -152,6 +155,17 @@ export type MeResult = {
   /** base64 */
   argon2_salt: string;
   totp_enabled: boolean;
+  /**
+   * Whether the server holds this account's ML-KEM-768 public key.
+   *
+   * `false` on accounts created before evnx-crypto 0.2 — they cannot be shared
+   * with until the key is uploaded, and only a client holding the master password
+   * can produce it, because it is derived from the sealed Ed25519 seed.
+   *
+   * Optional here so this client still works against a server predating the
+   * field; `undefined` is treated as "missing" and the backfill simply runs.
+   */
+  has_mlkem_key?: boolean;
 };
 
 /**
@@ -164,6 +178,20 @@ export type MeResult = {
 export async function getMe() {
   const { data } = await api.get<MeResult>("/auth/me");
   return data;
+}
+
+/**
+ * Upload this account's ML-KEM-768 public key — the F1 backfill.
+ *
+ * ⚠️ **Write-once on the server.** A second, different key is refused with 409.
+ * An open update would be a key-substitution primitive: anyone holding a session
+ * could point the account at their own key, and every vault shared with it
+ * afterwards would be wrapped to them.
+ *
+ * Safe to call on every login: the same value returns `unchanged`.
+ */
+export async function putPublicKeys(mlkemPublicKey: string) {
+  await api.put("/auth/public-keys", { mlkem_public_key: mlkemPublicKey });
 }
 
 export async function postLogout() {

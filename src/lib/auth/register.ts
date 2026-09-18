@@ -92,6 +92,9 @@ export async function register({
       argon2_salt: argon2SaltB64,
       ed25519_public_key: publicKeys.ed25519,
       x25519_public_key: publicKeys.x25519,
+      // Required since evnx-crypto 0.2. Derived from the same seed, so producing
+      // it costs nothing — and an account without it cannot be shared with.
+      mlkem_public_key: publicKeys.mlkem,
       encrypted_private_key: encryptedPrivateKey,
     });
   } finally {

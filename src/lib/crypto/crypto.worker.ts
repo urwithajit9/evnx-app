@@ -41,6 +41,7 @@ import init, {
   generateKeypair,
   encryptPrivateKey,
   decryptPrivateKey,
+  wrapVaultKeyForUser,
   type MasterKeyHandle,
   type VaultKeyHandle,
   type SrpEphemeralHandle,
@@ -173,6 +174,34 @@ async function handle(req: CryptoRequest): Promise<unknown> {
     case "unwrapVaultKey":
       return storeVaultKey(unwrapVaultKey(req.wrapped, requireMasterKey()));
 
+    // ─── Sharing — hybrid X25519 + ML-KEM-768 ────────────────────────────
+    case "wrapVaultKeyForUser": {
+      const bundle = wrapVaultKeyForUser(
+        requireVaultKey(req.vaultKey),
+        req.recipientX25519B64,
+        req.recipientMlkemB64,
+      );
+      return {
+        encryptedVaultKey: bundle.encryptedVaultKey(),
+        ephPubKey: bundle.ephPubKey(),
+        mlkemCiphertext: bundle.mlkemCiphertext(),
+      };
+    }
+
+    case "unwrapSharedVaultKey": {
+      // ⚠️ A failure here is the correct outcome for a tampered blob, a wrap
+      // meant for someone else, or a server that substituted a public key. It is
+      // not transient and must never be retried into a weaker path.
+      const kp = requireRef(keypairs, req.keypair, "keypair");
+      return storeVaultKey(
+        kp.unwrapSharedVaultKey(
+          req.encryptedVaultKeyB64,
+          req.ephPubKeyB64,
+          req.mlkemCiphertextB64,
+        ),
+      );
+    }
+
     case "encryptVault":
       return encryptVault(
         req.plaintext,
@@ -219,7 +248,11 @@ async function handle(req: CryptoRequest): Promise<unknown> {
 
     case "keypairPublicKeys": {
       const kp = requireRef(keypairs, req.keypair, "keypair");
-      return { ed25519: kp.ed25519PublicKey(), x25519: kp.x25519PublicKey() };
+      return {
+        ed25519: kp.ed25519PublicKey(),
+        x25519: kp.x25519PublicKey(),
+        mlkem: kp.mlkemPublicKey(),
+      };
     }
 
     case "encryptPrivateKey":

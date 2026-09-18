@@ -46,6 +46,24 @@ export type PublicKeys = {
   ed25519: string;
   /** Base64, for `x25519_public_key`. */
   x25519: string;
+  /**
+   * Base64, for `mlkem_public_key`. 1580 characters.
+   *
+   * The post-quantum half of the sharing keypair. Derived from the same Ed25519
+   * seed as `x25519`, so it costs nothing extra to produce — and an account
+   * without it on file cannot be shared with at all.
+   */
+  mlkem: string;
+};
+
+/** A vault key wrapped for one recipient — the three fields `vault_members` holds. */
+export type WrappedVaultKey = {
+  /** Base64. */
+  encryptedVaultKey: string;
+  /** Base64, 44 characters. The sender's ephemeral X25519 public key. */
+  ephPubKey: string;
+  /** Base64, 1452 characters. The ML-KEM-768 ciphertext. */
+  mlkemCiphertext: string;
 };
 
 export type CryptoRequest =
@@ -61,6 +79,34 @@ export type CryptoRequest =
   | { id: number; kind: "wrapVaultKey"; vaultKey: VaultKeyRef }
   /** Recover a vault key from the server's wrapped copy. Returns a ref. */
   | { id: number; kind: "unwrapVaultKey"; wrapped: Uint8Array }
+  /**
+   * Wrap a vault key for ANOTHER user — hybrid X25519 + ML-KEM-768.
+   *
+   * Both of the recipient's public keys are required. There is no binding that
+   * accepts only the X25519 one, because a wrap missing its post-quantum half is
+   * one a quantum computer opens — including from a recording made today.
+   */
+  | {
+      id: number;
+      kind: "wrapVaultKeyForUser";
+      vaultKey: VaultKeyRef;
+      recipientX25519B64: string;
+      recipientMlkemB64: string;
+    }
+  /**
+   * Open a vault key someone shared with us. Returns a vault key ref.
+   *
+   * Needs the keypair, not the master key: a shared copy is wrapped to our
+   * public keys rather than sealed under our password.
+   */
+  | {
+      id: number;
+      kind: "unwrapSharedVaultKey";
+      keypair: KeypairRef;
+      encryptedVaultKeyB64: string;
+      ephPubKeyB64: string;
+      mlkemCiphertextB64: string;
+    }
   | {
       id: number;
       kind: "encryptVault";
