@@ -10,6 +10,15 @@
   --font-sans: var(--font-mono);
   --font-mono: var(--font-mono);
   --font-heading: var(--font-display);
+
+  /* Point Tailwind's size utilities at the tokens, so `text-sm` in a component
+     resolves through the scale rather than around it. Changing density is then
+     one token, not a search-and-replace. */
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -118,6 +127,31 @@
 
   --radius: 0.5rem;
 
+  /* ── Type scale ───────────────────────────────────────────────────────────
+     Tokenised so density is one edit rather than a hundred. Sizes were per
+     component Tailwind classes, which made "make the dashboard tighter" a
+     search-and-replace across every file.
+
+     Deliberately compressed at the top: a dashboard has no 48px headings, and
+     a monospace face runs wider than a proportional one at the same size, so
+     evnx.dev's marketing scale would overflow here. */
+  --text-xs:   0.75rem;    /* metadata, timestamps, helper text */
+  --text-sm:   0.8125rem;  /* body default on this surface */
+  --text-base: 0.875rem;   /* emphasis within body */
+  --text-lg:   1rem;       /* card titles */
+  --text-xl:   1.25rem;    /* page titles */
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.55;  /* mono needs more than a proportional face */
+
+  /* ── Spacing ──────────────────────────────────────────────────────────────
+     A 4px base. Named by role rather than size so a density change does not
+     require deciding what each number meant. */
+  --space-gap:     0.5rem;   /* within a control */
+  --space-stack:   0.75rem;  /* between related lines */
+  --space-block:   1.5rem;   /* between blocks in a card */
+  --space-section: 2rem;     /* between cards */
+
   /* ── shadcn variable mapping ──────────────────────────────────────────────
      shadcn components consume these names. Pointing them at evnx tokens is
      what makes the existing component library inherit the brand without any
@@ -174,6 +208,8 @@
        fixed advance width aids scanning, and keeps 0/O and 1/l apart. That is a
        correctness property here, not a style preference. */
     font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }

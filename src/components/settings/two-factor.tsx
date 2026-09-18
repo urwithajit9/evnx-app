@@ -32,6 +32,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { apiErrorCode } from "@/lib/api/client";
 import { TotpQr, groupSecret } from "./totp-qr";
 import { SecretList } from "./secret-list";
+import { ZeroKnowledge } from "@/components/shell/zero-knowledge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -151,10 +152,13 @@ export function TwoFactor() {
                 <code className="block break-all rounded-md bg-muted p-2 font-mono text-sm">
                   {groupSecret(setup.secret_base32)}
                 </code>
-                <p className="text-xs text-muted-foreground">
+                <ZeroKnowledge>
                   This code is drawn in your browser — the key is never sent to
-                  an image service. Setup expires in 10 minutes and nothing
-                  changes on your account until you confirm below.
+                  an image service.
+                </ZeroKnowledge>
+                <p className="text-xs text-muted-foreground">
+                  Setup expires in 10 minutes, and nothing changes on your
+                  account until you confirm below.
                 </p>
               </div>
             </div>

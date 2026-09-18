@@ -44,6 +44,8 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { formatWhen } from "../page";
 import { PushVersion } from "@/components/vaults/push-version";
+import { AppShell } from "@/components/shell/app-shell";
+import { DecryptedHere } from "@/components/shell/zero-knowledge";
 
 export default function VaultDetailPage() {
   return (
@@ -119,7 +121,8 @@ function VaultDetail() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
+    <AppShell>
+      <div className="space-y-6">
       <div>
         <Link
           href="/vaults/"
@@ -193,7 +196,8 @@ function VaultDetail() {
       )}
 
       {opened && <SecretViewer version={opened.version} text={opened.text} />}
-    </main>
+      </div>
+    </AppShell>
   );
 }
 
@@ -248,10 +252,13 @@ function SecretViewer({ version, text }: { version: number; text: string }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>v{version} contents</CardTitle>
+        <CardTitle className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          v{version} contents
+          <DecryptedHere />
+        </CardTitle>
         <CardDescription>
-          Decrypted in this browser, in a Web Worker. Values are masked until you
-          reveal them and are gone when you leave this page.
+          Values are masked until you reveal them, and are gone when you leave
+          this page.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

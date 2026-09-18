@@ -20,13 +20,13 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useKeyStore } from "@/stores/keyStore";
 import { useAuthStore } from "@/stores/authStore";
 import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
 import { ApiTokens } from "@/components/settings/api-tokens";
+import { AppShell } from "@/components/shell/app-shell";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function SettingsPage() {
@@ -41,17 +41,9 @@ export default function SettingsPage() {
   if (!unlocked || !user) return null;
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <div>
-        <Link
-          href="/vaults/"
-          className="text-sm text-muted-foreground underline underline-offset-4"
-        >
-          ← Your vaults
-        </Link>
-        <h1 className="page-title mt-2 text-xl font-semibold">Settings</h1>
-        <p className="text-sm text-muted-foreground">{user.email}</p>
-      </div>
+    <AppShell>
+      <div className="space-y-6">
+      <h1 className="page-title text-xl font-semibold">Settings</h1>
 
       {!user.totpEnabled && (
         <Alert>
@@ -67,6 +59,7 @@ export default function SettingsPage() {
       <TwoFactor />
       <Sessions />
       <ApiTokens />
-    </main>
+      </div>
+    </AppShell>
   );
 }

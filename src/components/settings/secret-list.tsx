@@ -22,7 +22,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Irreversible } from "@/components/shell/zero-knowledge";
 
 export function SecretList({
   title,
@@ -66,29 +66,26 @@ export function SecretList({
   }
 
   return (
-    <Alert>
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription className="space-y-3">
-        <p>{description}</p>
+    <div className="space-y-3">
+      <Irreversible title={title}>{description}</Irreversible>
 
-        <ul className="grid grid-cols-2 gap-x-6 gap-y-1 rounded-md bg-muted p-3 font-mono text-sm">
-          {values.map((v) => (
-            <li key={v}>{v}</li>
-          ))}
-        </ul>
+      <ul className="grid grid-cols-2 gap-x-6 gap-y-1 rounded-md bg-muted p-3 font-mono text-sm">
+        {values.map((v) => (
+          <li key={v}>{v}</li>
+        ))}
+      </ul>
 
-        <div className="flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" onClick={copyAll}>
-            {copied ? "Copied" : "Copy all"}
-          </Button>
-          <Button size="sm" variant="outline" onClick={download}>
-            Download
-          </Button>
-          <Button size="sm" onClick={onAcknowledge} disabled={!saved}>
-            {saved ? "I have saved these" : "Save them first"}
-          </Button>
-        </div>
-      </AlertDescription>
-    </Alert>
+      <div className="flex flex-wrap gap-2">
+        <Button size="sm" variant="outline" onClick={copyAll}>
+          {copied ? "Copied" : "Copy all"}
+        </Button>
+        <Button size="sm" variant="outline" onClick={download}>
+          Download
+        </Button>
+        <Button size="sm" onClick={onAcknowledge} disabled={!saved}>
+          {saved ? "I have saved these" : "Save them first"}
+        </Button>
+      </div>
+    </div>
   );
 }

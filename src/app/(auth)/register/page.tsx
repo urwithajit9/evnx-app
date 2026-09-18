@@ -35,6 +35,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Irreversible, ZeroKnowledge } from "@/components/shell/zero-knowledge";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -72,13 +73,15 @@ export default function RegisterPage() {
       <CardHeader>
         <CardTitle>Create your account</CardTitle>
         <CardDescription>
-          Your keys are generated in this browser. They are never sent anywhere,
-          and the server cannot read your secrets even with full database access.
+          The server cannot read your secrets even with full database access.
         </CardDescription>
       </CardHeader>
 
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <ZeroKnowledge>
+          Your keys are generated in this browser and never sent anywhere.
+        </ZeroKnowledge>
+        <form onSubmit={onSubmit} className="mt-4 space-y-4">
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -112,13 +115,14 @@ export default function RegisterPage() {
             />
             <p className="text-xs text-muted-foreground">
               At least {MIN_PASSWORD_LEN} characters. Four or five unrelated words
-              beat a short complex string — they are easier to remember and much
-              harder to attack.{" "}
-              <strong className="font-medium text-foreground">
-                This password cannot be reset.
-              </strong>{" "}
-              It is the only thing that opens your vaults.
+              beat a short complex string — easier to remember and much harder to
+              attack.
             </p>
+            <Irreversible title="This password cannot be reset.">
+              It never leaves your device and the server holds nothing that could
+              rebuild it. That is the point — and it means losing it loses the
+              vaults.
+            </Irreversible>
           </div>
 
           <div className="space-y-2">

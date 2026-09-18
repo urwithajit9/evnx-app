@@ -21,16 +21,15 @@ import { listVaults, type VaultSummary } from "@/lib/api/vaults";
 import { useAuthStore } from "@/stores/authStore";
 import { useKeyStore } from "@/stores/keyStore";
 import { apiErrorStatus } from "@/lib/api/client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CreateVault } from "@/components/vaults/create-vault";
+import { AppShell } from "@/components/shell/app-shell";
 
 export default function VaultsPage() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const backupCodesRemaining = useAuthStore((s) => s.backupCodesRemaining);
-  const signOut = useAuthStore((s) => s.signOut);
   const unlocked = useKeyStore((s) => s.unlocked);
 
   // A reload drops both the tokens and the master key, and neither can be
@@ -48,27 +47,9 @@ export default function VaultsPage() {
   if (!unlocked || !user) return null;
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="page-title text-xl font-semibold">Your vaults</h1>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/settings/">Settings</Link>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await signOut();
-              router.push("/login/");
-            }}
-          >
-            Sign out
-          </Button>
-        </div>
-      </div>
+    <AppShell>
+      <div className="space-y-6">
+      <h1 className="page-title text-xl font-semibold">Your vaults</h1>
 
       {backupCodesRemaining !== null && backupCodesRemaining <= 3 && (
         <Alert variant="destructive">
@@ -130,7 +111,8 @@ export default function VaultsPage() {
           ))}
         </ul>
       )}
-    </main>
+      </div>
+    </AppShell>
   );
 }
 

@@ -34,6 +34,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ZeroKnowledge } from "@/components/shell/zero-knowledge";
 
 export function PushVersion({ vaultId }: { vaultId: string }) {
   const qc = useQueryClient();
@@ -78,11 +79,13 @@ export function PushVersion({ vaultId }: { vaultId: string }) {
       <CardHeader>
         <CardTitle>Push a new version</CardTitle>
         <CardDescription>
-          Encrypted in this browser before upload. Only the key names travel in
-          the clear, so the vault can be listed without being decrypted.
+          Only the key names travel in the clear, so the vault can be listed
+          without being decrypted.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <ZeroKnowledge>Encrypted in this browser before it is uploaded.</ZeroKnowledge>
+
         {done && (
           <Alert>
             <AlertTitle>Pushed as v{done.version}</AlertTitle>
