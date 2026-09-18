@@ -134,14 +134,14 @@ export default function SelfTest() {
   return (
     <main className="mx-auto max-w-3xl p-8 font-mono text-sm">
       <h1 className="mb-2 text-lg font-bold">evnx crypto self-test</h1>
-      <p className="mb-6 text-neutral-500">
+      <p className="mb-6 text-muted-foreground">
         Runs Argon2id and the full vault round trip inside the crypto Worker.
       </p>
 
       <button
         onClick={run}
         disabled={running}
-        className="mb-6 rounded border border-neutral-400 px-4 py-2 disabled:opacity-50"
+        className="mb-6 rounded border border-border px-4 py-2 disabled:opacity-50"
       >
         {running ? "running…" : "Run self-test"}
       </button>
@@ -149,8 +149,8 @@ export default function SelfTest() {
       <table className="w-full border-collapse">
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} className="border-b border-neutral-200">
-              <td className="py-1 pr-4 align-top text-neutral-500">{r.label}</td>
+            <tr key={i} className="border-b border-border">
+              <td className="py-1 pr-4 align-top text-muted-foreground">{r.label}</td>
               <td
                 className={
                   r.ok === undefined

@@ -48,7 +48,7 @@ export default function Home() {
       <main className="flex flex-1 items-center justify-center px-6 py-12">
         <div className="w-full max-w-lg space-y-8">
           <div className="space-y-3">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="page-title text-2xl font-semibold tracking-tight">
               Your encrypted <code className="font-mono">.env</code> files
             </h1>
             <p className="text-muted-foreground">

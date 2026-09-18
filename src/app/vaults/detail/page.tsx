@@ -127,7 +127,7 @@ function VaultDetail() {
         >
           ← All vaults
         </Link>
-        <h1 className="mt-2 text-xl font-semibold">
+        <h1 className="page-title mt-2 text-xl font-semibold">
           {vault ? vault.name : "Vault"}
         </h1>
         {vault && (

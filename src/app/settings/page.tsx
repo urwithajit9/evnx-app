@@ -49,7 +49,7 @@ export default function SettingsPage() {
         >
           ← Your vaults
         </Link>
-        <h1 className="mt-2 text-xl font-semibold">Settings</h1>
+        <h1 className="page-title mt-2 text-xl font-semibold">Settings</h1>
         <p className="text-sm text-muted-foreground">{user.email}</p>
       </div>
 

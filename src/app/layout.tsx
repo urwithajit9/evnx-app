@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
 import { QueryProvider } from "@/lib/api/query-provider";
 import "./globals.css";
-import { Geist } from "next/font/google";
+import { IBM_Plex_Mono, Fraunces } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+// Self-hosted at build time by next/font — which matters, because the CSP is
+// `font-src 'self'` and a Google Fonts <link> would be blocked SILENTLY,
+// falling back to system sans with no error anywhere.
+const mono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+const display = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "evnx",
@@ -16,7 +30,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" className={cn(mono.variable, display.variable)}>
       <body className="antialiased">
         <QueryProvider>{children}</QueryProvider>
       </body>

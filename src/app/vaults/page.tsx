@@ -51,7 +51,7 @@ export default function VaultsPage() {
     <main className="mx-auto max-w-3xl space-y-6 p-6">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold">Your vaults</h1>
+          <h1 className="page-title text-xl font-semibold">Your vaults</h1>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
         <div className="flex gap-2">

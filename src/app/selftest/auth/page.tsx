@@ -193,7 +193,7 @@ export default function AuthSelfTest() {
   return (
     <main style={{ font: "14px/1.6 ui-monospace, monospace", padding: 24, maxWidth: 900 }}>
       <h1 style={{ font: "600 18px/1.4 ui-sans-serif, system-ui" }}>evnx auth self-test</h1>
-      <p style={{ color: "#666", maxWidth: 60 + "ch" }}>
+      <p style={{ color: "var(--text-secondary)", maxWidth: 60 + "ch" }}>
         Registers a throwaway account and signs into it, against{" "}
         <code>{API_URL}</code>. Run this with the tab <strong>visible</strong> —
         a hidden tab is throttled roughly 3× and the timings are meaningless.
@@ -208,11 +208,11 @@ export default function AuthSelfTest() {
       <table style={{ borderCollapse: "collapse", width: "100%" }}>
         <tbody>
           {rows.map((r, i) => (
-            <tr key={i} style={{ borderTop: "1px solid #eee" }}>
-              <td style={{ padding: "4px 12px 4px 0", color: "#666", whiteSpace: "nowrap", verticalAlign: "top" }}>
+            <tr key={i} style={{ borderTop: "1px solid var(--border-subtle)" }}>
+              <td style={{ padding: "4px 12px 4px 0", color: "var(--text-secondary)", whiteSpace: "nowrap", verticalAlign: "top" }}>
                 {r.label}
               </td>
-              <td style={{ padding: "4px 0", color: r.ok === false ? "#b00" : undefined }}>
+              <td style={{ padding: "4px 0", color: r.ok === false ? "var(--danger)" : undefined }}>
                 {r.ok === true ? "✓ " : r.ok === false ? "✗ " : ""}
                 {r.value}
               </td>

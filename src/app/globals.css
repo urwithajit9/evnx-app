@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-mono);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,83 +48,162 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   evnx design tokens
+   ───────────────────────────────────────────────────────────────────────────
+   The canonical set lives in evnx-web/app/globals.css and is mirrored here so
+   app.evnx.dev and evnx.dev are one product rather than two.
+
+   DARK ONLY, deliberately. evnx.dev has no light theme, and inventing one here
+   would make the surfaces diverge again. A light theme stays cheap as long as
+   one rule holds:
+
+       Components reference SEMANTIC TOKENS, never a raw hex and never a
+       Tailwind palette shade. `bg-card`, not `bg-zinc-900`.
+
+   Follow that and light mode is one extra token block. Break it and light mode
+   is a rewrite. This is the single most important constraint in this file.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  /* Backgrounds */
+  --bg-void:       #080B0F;
+  --bg-base:       #0D1117;
+  --bg-surface:    #161B22;
+  --bg-overlay:    #1C2128;
+  /* One level above overlay, for modals stacked over cards over page. The
+     dashboard needs a fourth surface that the marketing site does not. */
+  --bg-elevated:   #222831;
+
+  /* Borders */
+  --border-subtle:  #21262D;
+  --border-muted:   #30363D;
+  --border-default: #484F58;
+
+  /* Text */
+  --text-primary:   #E6EDF3;
+  --text-secondary: #8B949E;
+  --text-muted:     #484F58;
+
+  /* Brand — rust orange */
+  --brand-600: #C9541F;   /* pressed */
+  --brand-500: #E8652A;   /* rest */
+  --brand-400: #F07840;   /* hover */
+  --brand-300: #F8A07A;   /* soft / on-dark text */
+  --brand-glow: rgba(232, 101, 42, 0.15);
+
+  /* Semantic — same meanings the CLI gives green/cyan/yellow/red */
+  --success: #3FB950;
+  --warning: #D29922;
+  --danger:  #F85149;
+  --info:    #388BFD;
+
+  /* Terminal blocks reproduce CLI output, so they get their own ground */
+  --terminal-bg:     #010409;
+  --terminal-text:   #C9D1D9;
+  --terminal-prompt: #E8652A;
+
+  /* Zero-knowledge affordance. One colour for every "encrypted here" moment,
+     so the guarantee reads as one idea rather than five similar notices.
+     Deliberately NOT a semantic colour: it is not a status. */
+  --zk-accent: #7EE787;
+
+  /* Plan tiers. Kept off the semantic ramp on purpose — a green `Pro` badge
+     would compete with "verified". */
+  --tier-free:       var(--text-secondary);
+  --tier-pro:        var(--brand-400);
+  --tier-team:       var(--brand-500);
+  --tier-enterprise: #C9D1D9;
+
+  --radius: 0.5rem;
+
+  /* ── shadcn variable mapping ──────────────────────────────────────────────
+     shadcn components consume these names. Pointing them at evnx tokens is
+     what makes the existing component library inherit the brand without any
+     component being edited. */
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-overlay);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand-500);
+  --primary-foreground: #0D1117;
+  --secondary: var(--bg-surface);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--bg-surface);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--bg-overlay);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--text-primary);
+  --border: var(--border-muted);
+  --input: var(--border-muted);
+  --ring: var(--brand-500);
+
+  --sidebar: var(--bg-surface);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--brand-500);
+  --sidebar-primary-foreground: #0D1117;
+  --sidebar-accent: var(--bg-overlay);
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-muted);
+  --sidebar-ring: var(--brand-500);
+
+  --chart-1: var(--brand-500);
+  --chart-2: var(--info);
+  --chart-3: var(--success);
+  --chart-4: var(--warning);
+  --chart-5: var(--danger);
+
+  /* The page is dark, so tell the browser — otherwise form controls,
+     scrollbars and autofill render in the light scheme against a dark page. */
+  color-scheme: dark;
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    /* Mono everywhere. A secrets dashboard is keys, hashes, IDs and versions —
+       fixed advance width aids scanning, and keeps 0/O and 1/l apart. That is a
+       correctness property here, not a style preference. */
+    font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  html {
-    @apply font-sans;
+
+  /* Fraunces on PAGE TITLES ONLY — not card headers, not section headings.
+     Enough to tie the dashboard to evnx.dev; not enough to make a dense data
+     surface read like a magazine. Applied via .page-title, deliberately opt-in
+     rather than a bare h1 selector, so a card's h1 does not inherit it. */
+  .page-title {
+    font-family: var(--font-display), Fraunces, Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Terminal blocks reproduce CLI output and get their own ground. */
+  .terminal {
+    background: var(--terminal-bg);
+    color: var(--terminal-text);
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-base); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-muted);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border-default); }
+
+  ::selection {
+    background: var(--brand-glow);
+    color: var(--text-primary);
   }
 }
