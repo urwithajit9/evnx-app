@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useKeyStore } from "@/stores/keyStore";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "@/components/shell/brand-mark";
 
 export default function Home() {
   const router = useRouter();
@@ -31,12 +32,7 @@ export default function Home() {
   return (
     <div className="flex min-h-svh flex-col">
       <header className="flex items-center justify-between px-6 py-4">
-        <span className="flex items-center gap-2 font-semibold">
-          <span className="flex size-7 items-center justify-center rounded-md bg-foreground text-xs font-bold text-background">
-            ev
-          </span>
-          evnx
-        </span>
+        <BrandMark />
         <a
           href="https://www.evnx.dev"
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"

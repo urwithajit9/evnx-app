@@ -26,6 +26,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
+import { BrandMark } from "./brand-mark";
 
 const NAV = [
   { href: "/vaults/", label: "Vaults" },
@@ -43,12 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--bg-base)]/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-6">
           <div className="flex min-w-0 items-center gap-3">
-            <Link href="/vaults/" className="flex shrink-0 items-center gap-2.5">
-              <span className="flex size-7 items-center justify-center rounded bg-[var(--brand-500)] text-xs font-bold text-[var(--bg-base)]">
-                ev
-              </span>
-              <span className="font-bold">evnx</span>
-            </Link>
+            <BrandMark href="/vaults/" />
 
             <OrgSlot />
 

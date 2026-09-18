@@ -5,7 +5,7 @@
  * `/login` and `/verify-email`.
  */
 
-import Link from "next/link";
+import { BrandMark } from "@/components/shell/brand-mark";
 
 export default function AuthLayout({
   children,
@@ -13,12 +13,7 @@ export default function AuthLayout({
   return (
     <div className="flex min-h-svh flex-col">
       <header className="flex items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center gap-2 font-semibold">
-          <span className="flex size-7 items-center justify-center rounded-md bg-foreground text-xs font-bold text-background">
-            ev
-          </span>
-          evnx
-        </Link>
+        <BrandMark />
         <a
           href="https://www.evnx.dev/docs"
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"

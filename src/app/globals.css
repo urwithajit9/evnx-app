@@ -242,4 +242,28 @@
     background: var(--brand-glow);
     color: var(--text-primary);
   }
+
+  /* Native <select> popups are drawn by the platform, not by us, and they take
+     their colours from the SELECT's computed background. A `bg-transparent`
+     select therefore renders its list on the platform default — white on most
+     desktops — while the option text inherits our near-white --text-primary.
+     The result is invisible options that appear only on hover, which is exactly
+     what was reported for the API-token Scope and Vault fields.
+     
+     Setting both explicitly here fixes every select at once, including any
+     added later, rather than relying on each component remembering. */
+  select {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+  }
+  select option {
+    background-color: var(--bg-surface);
+    color: var(--text-primary);
+  }
+  /* Firefox renders a checked option with its own accent unless told otherwise. */
+  select option:checked,
+  select option:hover {
+    background-color: var(--bg-overlay);
+    color: var(--text-primary);
+  }
 }

@@ -180,7 +180,7 @@ export function ApiTokens() {
               <Label htmlFor="token-scope">Scope</Label>
               <select
                 id="token-scope"
-                className="w-full rounded-md border bg-transparent p-2 text-sm"
+                className="w-full rounded-md border bg-[var(--bg-surface)] p-2 text-sm text-foreground"
                 value={scope}
                 onChange={(e) => setScope(e.target.value as "read" | "read_write")}
               >
@@ -196,7 +196,7 @@ export function ApiTokens() {
               <Label htmlFor="token-vault">Vault</Label>
               <select
                 id="token-vault"
-                className="w-full rounded-md border bg-transparent p-2 text-sm"
+                className="w-full rounded-md border bg-[var(--bg-surface)] p-2 text-sm text-foreground"
                 value={vaultId}
                 onChange={(e) => setVaultId(e.target.value)}
               >

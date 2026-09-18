@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The evnx mark: rust-orange square, page-ground lettering. Matches the
+       BrandMark component and evnx.dev's header, so the browser tab, the
+       dashboard and the marketing site all show the same thing.
+       SVG rather than .ico: it stays crisp at every density, and Next's App
+       Router picks up app/icon.svg automatically. -->
+  <rect width="32" height="32" rx="7" fill="#E8652A"/>
+  <text x="16" y="21.5" font-family="ui-monospace, 'IBM Plex Mono', monospace"
+        font-size="14" font-weight="700" fill="#0D1117" text-anchor="middle">ev</text>
+</svg>
