@@ -38,10 +38,83 @@ export type MyKey = {
    * vault post-quantum safe. A non-null ephemeral means the key was wrapped
    * *for* this user by someone else over X25519, which Shor breaks — so the two
    * cases are cryptographically different, not two encodings of one thing.
-   * Sharing is Phase 3; until then this is always null.
+   * Non-null since Phase 3, when a vault is shared with you.
    */
   eph_pub_key: string | null;
+  /**
+   * The ML-KEM-768 half of a shared wrap. Always present alongside
+   * `eph_pub_key` and always absent without it — the server's
+   * `vault_members_wrap_is_whole` constraint makes any other pairing unstorable.
+   */
+  mlkem_ciphertext?: string | null;
 };
+
+// ─── Members ─────────────────────────────────────────────────────────────────
+
+export type VaultRole = "viewer" | "developer" | "admin" | "owner";
+
+/** Roles that can be assigned. `owner` is set once, by vault creation. */
+export const ASSIGNABLE_ROLES: VaultRole[] = ["viewer", "developer", "admin"];
+
+/** The ladder. A higher number outranks a lower one — mirrors the server's `Role`. */
+export const ROLE_RANK: Record<VaultRole, number> = {
+  viewer: 0,
+  developer: 1,
+  admin: 2,
+  owner: 3,
+};
+
+export type VaultMember = {
+  user_id: string;
+  email: string;
+  role: VaultRole;
+  granted_at: string;
+  granted_by: string | null;
+  /**
+   * `false` for an account created before the post-quantum wrap existed that has
+   * not signed in since. **Such a member cannot be re-wrapped to**, so a re-key
+   * will refuse while they are present — surfaced so the UI can say why before
+   * the action fails rather than after.
+   */
+  has_mlkem_key: boolean;
+  is_you: boolean;
+};
+
+export async function listMembers(vaultId: string): Promise<VaultMember[]> {
+  const { data } = await api.get<{ members: VaultMember[] }>(
+    `/vaults/${vaultId}/members`,
+  );
+  return data.members;
+}
+
+/**
+ * Change a member's role.
+ *
+ * The server refuses unless you outrank both their current role and the new one,
+ * so an admin can move people between viewer and developer while only an owner
+ * can make or unmake an admin.
+ */
+export async function setMemberRole(
+  vaultId: string,
+  userId: string,
+  role: VaultRole,
+): Promise<void> {
+  await api.patch(`/vaults/${vaultId}/members/${userId}`, { role });
+}
+
+/**
+ * Remove a member **without** rotating the vault key.
+ *
+ * ⚠️ They keep the ability to decrypt every version they had access to,
+ * including ones pushed afterwards. Only correct when re-keying separately.
+ * The UI should reach for the re-key flow instead.
+ */
+export async function removeMember(
+  vaultId: string,
+  userId: string,
+): Promise<void> {
+  await api.delete(`/vaults/${vaultId}/members/${userId}`);
+}
 
 export async function getMyKey(vaultId: string): Promise<MyKey> {
   const { data } = await api.get<MyKey>(`/vaults/${vaultId}/my-key`);

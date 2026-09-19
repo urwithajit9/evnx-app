@@ -44,6 +44,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { formatWhen } from "../page";
 import { PushVersion } from "@/components/vaults/push-version";
+import { VaultMembers } from "@/components/vaults/vault-members";
 import { AppShell } from "@/components/shell/app-shell";
 import { DecryptedHere } from "@/components/shell/zero-knowledge";
 
@@ -147,6 +148,8 @@ function VaultDetail() {
       )}
 
       <PushVersion vaultId={vaultId} />
+
+      <VaultMembers vaultId={vaultId} />
 
       {versions.data?.length === 0 && (
         <Card>
