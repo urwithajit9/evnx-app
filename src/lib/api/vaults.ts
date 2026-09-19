@@ -167,3 +167,30 @@ export async function downloadBlob(
   );
   return new Uint8Array(data);
 }
+
+// ─── Audit trail ─────────────────────────────────────────────────────────────
+
+/**
+ * One thing that happened to a vault.
+ *
+ * ⚠️ `ip_hash` and `user_agent_hash` are deliberately **not** returned by the
+ * server. They are stable digests, so they correlate a person's activity across
+ * events without naming them — worth having in the database, not worth handing
+ * to every colleague who shares a vault.
+ */
+export type AuditEvent = {
+  id: string;
+  event_type: string;
+  user_id: string | null;
+  /** `null` when that account has since been deleted. */
+  actor_email: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+};
+
+export async function listAudit(vaultId: string): Promise<AuditEvent[]> {
+  const { data } = await api.get<{ events: AuditEvent[] }>(
+    `/vaults/${vaultId}/audit`,
+  );
+  return data.events;
+}
