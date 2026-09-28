@@ -227,6 +227,82 @@ export async function downloadBlob(
   return new Uint8Array(data);
 }
 
+// ─── Re-keying ───────────────────────────────────────────────────────────────
+//
+// ⚠️ **Two requests, and it cannot be one.** Re-encrypting a vault produces one
+// new blob per version, and `MAX_REQUEST_SIZE_KB` defaults to 64 KB — a single
+// version can approach that, so a vault with any history would be unre-keyable,
+// and an unre-keyable vault is one whose members cannot be revoked.
+//
+// Blobs are staged individually, then **one** request swaps all the metadata in a
+// single transaction. The server validates the whole payload before writing
+// anything, so there is no partial state to recover from: an abandoned re-key
+// leaves orphaned objects in storage — wasted bytes, never referenced — and the
+// vault still opens with its old key.
+
+export type StagedBlob = {
+  version_num: number;
+  /** From the server. Never constructed by the client. */
+  blob_key: string;
+  blob_size_bytes: number;
+};
+
+/** Upload one re-encrypted version. Nothing about the vault changes yet. */
+export async function stageRekeyBlob(
+  vaultId: string,
+  body: {
+    version_num: number;
+    nonce: string;
+    ciphertext: string;
+    blob_hash: string;
+  },
+): Promise<StagedBlob> {
+  const { data } = await api.post<StagedBlob>(
+    `/vaults/${vaultId}/rekey/blobs`,
+    body,
+  );
+  return data;
+}
+
+/**
+ * One member's copy of the **new** vault key.
+ *
+ * Two shapes, and the distinction is load-bearing. Both key-agreement fields
+ * present is a hybrid wrap, produced from someone's public keys. Both absent is a
+ * wrap under the caller's own master key — and **only the caller may use that
+ * shape**, because only they hold their own master key. Supplying it for anyone
+ * else writes a blob nobody can open and locks that member out; the server
+ * rejects it.
+ */
+export type RekeyedMember = {
+  user_id: string;
+  encrypted_vault_key: string;
+  eph_pub_key?: string;
+  mlkem_ciphertext?: string;
+};
+
+/**
+ * Rotate the key: repoint every version and re-wrap for every member, atomically.
+ *
+ * `versions` must cover **exactly** the vault's versions — the server answers 409
+ * otherwise, because a vault split across two keys cannot be opened by anyone.
+ */
+export async function commitRekey(
+  vaultId: string,
+  body: {
+    versions: Array<{
+      version_num: number;
+      blob_key: string;
+      blob_hash: string;
+      blob_size_bytes: number;
+    }>;
+    members: RekeyedMember[];
+    remove_user_id?: string;
+  },
+): Promise<void> {
+  await api.post(`/vaults/${vaultId}/rekey`, body);
+}
+
 // ─── Audit trail ─────────────────────────────────────────────────────────────
 
 /**

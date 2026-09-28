@@ -64,6 +64,15 @@ type KeyState = {
   setKeypair: (ref: KeypairRef) => void;
   setVaultKey: (vaultId: string, ref: VaultKeyRef) => void;
   getVaultKey: (vaultId: string) => VaultKeyRef | undefined;
+  /**
+   * Forget one vault key, leaving the session unlocked.
+   *
+   * ⚠️ Needed after a re-key: the cached ref is the OLD key and every blob is
+   * now under the new one, so the next open would fail on a vault that is
+   * perfectly fine. Dropping it costs one `my-key` round trip and is always
+   * correct.
+   */
+  forgetVaultKey: (vaultId: string) => void;
 
   /** Zeroize in the Worker and drop every local reference. */
   lock: () => Promise<void>;
@@ -81,6 +90,13 @@ export const useKeyStore = create<KeyState>((set, get) => ({
     set((s) => ({ vaultKeys: { ...s.vaultKeys, [vaultId]: ref } })),
 
   getVaultKey: (vaultId) => get().vaultKeys[vaultId],
+
+  forgetVaultKey: (vaultId) =>
+    set((s) => {
+      const next = { ...s.vaultKeys };
+      delete next[vaultId];
+      return { vaultKeys: next };
+    }),
 
   lock: async () => {
     // Clear local state first. If the Worker call throws, the UI must still be

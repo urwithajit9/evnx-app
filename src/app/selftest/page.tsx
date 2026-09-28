@@ -29,6 +29,7 @@ import {
   keypairPublicKeys,
   wrapVaultKeyForUser,
   unwrapSharedVaultKey,
+  sealForPush,
 } from "@/lib/crypto/client";
 
 type Row = { label: string; value: string; ok?: boolean };
@@ -184,6 +185,49 @@ export default function SelfTest() {
         label: "wrong recipient must be REJECTED",
         value: notForAlice ? "rejected" : "ACCEPTED — SHARING IS BROKEN",
         ok: notForAlice,
+      });
+
+      // ─── Rotation: the old key must stop working ─────────────────────────
+      //
+      // ⚠️ The whole point of a re-key. If the old key still opens the rotated
+      // blob, revocation is theatre — the removed member kept that key.
+      const oldK = await createVaultKey();
+      const rotVault = "9a8b7c6d-5e4f-3021-1234-fedcba987654";
+      const before = await encryptVault(enc.encode("ROTATE=me\n"), oldK, rotVault, 3);
+
+      // Exactly what rekey.ts does: decrypt with the old key, re-seal with a new
+      // one at the SAME version, because vault_aad(id, version) is authenticated
+      // into the blob and renumbering would break every client.
+      const newK = await createVaultKey();
+      const plain = await decryptVault(before, oldK, rotVault, 3);
+      const resealed = await sealForPush(plain, newK, rotVault, 3);
+      const after = new Uint8Array(resealed.nonce.length + resealed.ciphertext.length);
+      after.set(resealed.nonce, 0);
+      after.set(resealed.ciphertext, resealed.nonce.length);
+
+      const rotRead = dec.decode(await decryptVault(after, newK, rotVault, 3));
+      push({
+        label: "rotated blob opens with the NEW key",
+        value: rotRead === "ROTATE=me\n" ? "round trip @ v3" : "MISMATCH",
+        ok: rotRead === "ROTATE=me\n",
+      });
+
+      let oldKeyDead = false;
+      try {
+        await decryptVault(after, oldK, rotVault, 3);
+      } catch {
+        oldKeyDead = true;
+      }
+      push({
+        label: "OLD key must no longer open it",
+        value: oldKeyDead ? "rejected" : "ACCEPTED — REVOCATION IS THEATRE",
+        ok: oldKeyDead,
+      });
+
+      push({
+        label: "blake3 for staging is computable here",
+        value: /^[0-9a-f]{64}$/.test(resealed.blobHash) ? "64 hex" : "NOT A HASH",
+        ok: /^[0-9a-f]{64}$/.test(resealed.blobHash),
       });
 
       await clearKeys();
