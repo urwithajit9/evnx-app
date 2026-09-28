@@ -122,6 +122,64 @@ export function unwrapVaultKey(wrapped: Uint8Array) {
   return call<VaultKeyRef>({ kind: "unwrapVaultKey", wrapped });
 }
 
+/** The three pieces a share is made of, all base64. */
+export type SharedKeyBundle = {
+  encryptedVaultKey: string;
+  ephPubKey: string;
+  mlkemCiphertext: string;
+};
+
+/**
+ * Wrap a vault key for someone else — hybrid X25519 + ML-KEM-768.
+ *
+ * ⚠️ Both of the recipient's public keys are required, and there is no binding
+ * that accepts only the X25519 one. A wrap missing its post-quantum half is one a
+ * quantum computer opens, including from a recording made today — and it stays
+ * that way for as long as the row exists, so a later version fixing the algorithm
+ * does not help.
+ *
+ * The three returned fields map exactly onto the server's `encrypted_vault_key`,
+ * `eph_pub_key` and `mlkem_ciphertext`.
+ */
+export function wrapVaultKeyForUser(
+  vaultKey: VaultKeyRef,
+  recipientX25519B64: string,
+  recipientMlkemB64: string,
+) {
+  return call<SharedKeyBundle>({
+    kind: "wrapVaultKeyForUser",
+    vaultKey,
+    recipientX25519B64,
+    recipientMlkemB64,
+  });
+}
+
+/**
+ * Open a vault key someone shared with us — hybrid X25519 + ML-KEM-768.
+ *
+ * Needs the account **keypair**, not the master key: a shared copy is wrapped to
+ * our public keys, while a vault we created ourselves is sealed under our
+ * password. {@link unwrapVaultKey} handles the second case and cannot do this one.
+ *
+ * ⚠️ A failure is the correct outcome for a tampered blob, a wrap meant for
+ * someone else, or a server that substituted a public key. It is not transient
+ * and must never be retried into a weaker path.
+ */
+export function unwrapSharedVaultKey(
+  keypair: KeypairRef,
+  encryptedVaultKeyB64: string,
+  ephPubKeyB64: string,
+  mlkemCiphertextB64: string,
+) {
+  return call<VaultKeyRef>({
+    kind: "unwrapSharedVaultKey",
+    keypair,
+    encryptedVaultKeyB64,
+    ephPubKeyB64,
+    mlkemCiphertextB64,
+  });
+}
+
 // ─── Blobs ───────────────────────────────────────────────────────────────────
 
 /**

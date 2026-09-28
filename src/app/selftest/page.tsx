@@ -25,6 +25,10 @@ import {
   encryptVault,
   decryptVault,
   clearKeys,
+  generateKeypair,
+  keypairPublicKeys,
+  wrapVaultKeyForUser,
+  unwrapSharedVaultKey,
 } from "@/lib/crypto/client";
 
 type Row = { label: string; value: string; ok?: boolean };
@@ -116,6 +120,70 @@ export default function SelfTest() {
         label: "wrong vault id must be REJECTED",
         value: wrongVault ? "rejected" : "ACCEPTED — AAD IS BROKEN",
         ok: wrongVault,
+      });
+
+      // ─── Sharing: wrap for a recipient, open it as them ──────────────────
+      //
+      // ⚠️ This path had both halves implemented in the Worker and no caller, so
+      // the app refused every shared vault with "use the CLI" while being able to
+      // open it. Exercised here because the alternative is two live accounts and
+      // a real share, which is not a check anyone runs before a deploy.
+      const alice = await generateKeypair();
+      const bob = await generateKeypair();
+      const bobPub = await keypairPublicKeys(bob);
+
+      const shareVk = await createVaultKey();
+      const shareBlob = await encryptVault(
+        new TextEncoder().encode("SHARED=works\n"),
+        shareVk,
+        vaultId,
+        1,
+      );
+
+      const bundle = await wrapVaultKeyForUser(
+        shareVk,
+        bobPub.x25519,
+        bobPub.mlkem,
+      );
+      push({
+        label: "wrap for recipient (X25519 + ML-KEM-768)",
+        value: `eph ${bundle.ephPubKey.length}b64 · kem ${bundle.mlkemCiphertext.length}b64`,
+        ok: bundle.ephPubKey.length > 0 && bundle.mlkemCiphertext.length > 0,
+      });
+
+      const bobsKey = await unwrapSharedVaultKey(
+        bob,
+        bundle.encryptedVaultKey,
+        bundle.ephPubKey,
+        bundle.mlkemCiphertext,
+      );
+      const bobsRead = new TextDecoder().decode(
+        await decryptVault(shareBlob, bobsKey, vaultId, 1),
+      );
+      push({
+        label: "recipient opens the shared vault",
+        value: bobsRead === "SHARED=works\n" ? "round trip" : "MISMATCH",
+        ok: bobsRead === "SHARED=works\n",
+      });
+
+      // The important half. A wrap addressed to Bob must not open with Alice's
+      // keypair — if it does, the recipient binding means nothing and a server
+      // that swapped a public key would go unnoticed.
+      let notForAlice = false;
+      try {
+        await unwrapSharedVaultKey(
+          alice,
+          bundle.encryptedVaultKey,
+          bundle.ephPubKey,
+          bundle.mlkemCiphertext,
+        );
+      } catch {
+        notForAlice = true;
+      }
+      push({
+        label: "wrong recipient must be REJECTED",
+        value: notForAlice ? "rejected" : "ACCEPTED — SHARING IS BROKEN",
+        ok: notForAlice,
       });
 
       await clearKeys();

@@ -29,7 +29,7 @@
 
 import { create } from "zustand";
 import { clearKeys } from "@/lib/crypto/client";
-import type { VaultKeyRef } from "@/lib/crypto/protocol";
+import type { KeypairRef, VaultKeyRef } from "@/lib/crypto/protocol";
 
 type KeyState = {
   /**
@@ -45,7 +45,23 @@ type KeyState = {
   /** Vault id → opaque Worker ref. Never a key. */
   vaultKeys: Record<string, VaultKeyRef>;
 
+  /**
+   * Opaque Worker ref to the account keypair. Never a key.
+   *
+   * ⚠️ Needed for **shared** vaults, and nothing else. A vault we created is
+   * sealed under the master key, but a vault shared with us is wrapped to these
+   * public keys, so opening one needs the keypair rather than the password.
+   *
+   * `unlock` already recovered it at login and then dropped the ref on the floor,
+   * which is why the app refused every shared vault with "use the CLI" — the
+   * keypair was sitting in the Worker the whole time, unreachable. The Worker
+   * holds it until `clearKeys`, so this is a reference to something already
+   * alive, not a second copy.
+   */
+  keypair?: KeypairRef;
+
   setUnlocked: (v: boolean) => void;
+  setKeypair: (ref: KeypairRef) => void;
   setVaultKey: (vaultId: string, ref: VaultKeyRef) => void;
   getVaultKey: (vaultId: string) => VaultKeyRef | undefined;
 
@@ -59,6 +75,8 @@ export const useKeyStore = create<KeyState>((set, get) => ({
 
   setUnlocked: (unlocked) => set({ unlocked }),
 
+  setKeypair: (keypair) => set({ keypair }),
+
   setVaultKey: (vaultId, ref) =>
     set((s) => ({ vaultKeys: { ...s.vaultKeys, [vaultId]: ref } })),
 
@@ -68,7 +86,11 @@ export const useKeyStore = create<KeyState>((set, get) => ({
     // Clear local state first. If the Worker call throws, the UI must still be
     // locked — the alternative is showing an unlocked session whose keys may or
     // may not still exist.
-    set({ unlocked: false, vaultKeys: {} });
+    // ⚠️ `keypair` goes too. Leaving it would keep a ref to Worker state that
+    // `clearKeys` is about to destroy, so the next shared-vault open would fail
+    // on a dangling ref rather than on being locked — the same class of
+    // half-unlocked session `unlock` already guards against.
+    set({ unlocked: false, vaultKeys: {}, keypair: undefined });
     try {
       await clearKeys();
     } catch {

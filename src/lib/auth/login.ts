@@ -45,6 +45,7 @@ import {
   verifyServerProof,
 } from "@/lib/crypto/client";
 import type { KeypairRef } from "@/lib/crypto/protocol";
+import { useKeyStore } from "@/stores/keyStore";
 import {
   getMe,
   postSrpInit,
@@ -237,6 +238,13 @@ async function unlock(password: string): Promise<MeResult> {
     // out, so a failure here means the stored blob does not match the account.
     const keypair = await decryptPrivateKey(me.encrypted_private_key);
     await backfillMlkemKey(keypair, me);
+    // ⚠️ Keep the ref. It used to fall out of scope here, and the keypair stayed
+    // alive in the Worker with nothing able to name it — which is why opening a
+    // vault someone shared with you said "this app cannot open it yet, use the
+    // CLI". It could; it just could not reach the key. A shared vault key is
+    // wrapped to these public keys rather than sealed under the password, so this
+    // is the only way to open one.
+    useKeyStore.getState().setKeypair(keypair);
     return me;
   } catch (e) {
     // Never leave a half-unlocked session: a master key with no keypair reads as

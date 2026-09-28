@@ -36,7 +36,11 @@
 
 "use client";
 
-import { decryptVault, unwrapVaultKey } from "@/lib/crypto/client";
+import {
+  decryptVault,
+  unwrapSharedVaultKey,
+  unwrapVaultKey,
+} from "@/lib/crypto/client";
 import { downloadBlob, getMyKey } from "@/lib/api/vaults";
 import { useKeyStore } from "@/stores/keyStore";
 import { b64ToBytes } from "@/lib/api/encoding";
@@ -54,15 +58,49 @@ export async function vaultKeyFor(vaultId: string): Promise<VaultKeyRef> {
   const cached = useKeyStore.getState().getVaultKey(vaultId);
   if (cached) return cached;
 
-  const { encrypted_vault_key, eph_pub_key } = await getMyKey(vaultId);
+  const { encrypted_vault_key, eph_pub_key, mlkem_ciphertext } =
+    await getMyKey(vaultId);
 
+  // ── A vault someone shared with us ───────────────────────────────────────
+  //
+  // Two cryptographically different cases, not two encodings of one. A vault we
+  // created is sealed under the master key; a vault shared with us is wrapped to
+  // our public keys, so it needs the account keypair. `unwrapVaultKey` expects
+  // the first and fails confusingly on the second, which is why the branch
+  // exists at all.
+  //
+  // ⚠️ This used to throw "this app cannot open yet. Use the CLI", on the
+  // reasoning that sharing needed the ML-KEM hybrid from evnx-crypto 0.2.0 and
+  // so no such key could exist. That shipped in F1 along with `evnx vault
+  // share`, and the Worker has carried `unwrapSharedVaultKey` ever since — so
+  // the app was refusing something it could already do, and telling people to go
+  // elsewhere to read their own vault.
   if (eph_pub_key) {
-    // Sharing is Phase 3 and needs the ML-KEM hybrid in evnx-crypto 0.2.0, so
-    // no ECDH-wrapped key should exist yet. Refuse rather than mis-unwrap:
-    // `unwrapVaultKey` expects a master-key wrap and would fail confusingly.
-    throw new Error(
-      "This vault key was shared with you using ECDH, which this app cannot open yet. Use the CLI.",
+    // Both halves or neither. The server's `vault_members_wrap_is_whole`
+    // constraint makes any other pairing unstorable, so an ephemeral without a
+    // ciphertext means the response is not what it claims to be — and the
+    // post-quantum half is the entire point of the hybrid.
+    if (!mlkem_ciphertext) {
+      throw new Error(
+        "This vault was shared with an incomplete key wrap — the post-quantum half is missing. Ask the owner to share it again.",
+      );
+    }
+
+    const keypair = useKeyStore.getState().keypair;
+    if (!keypair) {
+      // Recovered during `unlock`, so its absence means the session is not
+      // really unlocked rather than that anything is wrong with the vault.
+      throw new Error("Session locked — sign in again to open a shared vault.");
+    }
+
+    const shared = await unwrapSharedVaultKey(
+      keypair,
+      encrypted_vault_key,
+      eph_pub_key,
+      mlkem_ciphertext,
     );
+    useKeyStore.getState().setVaultKey(vaultId, shared);
+    return shared;
   }
 
   const ref = await unwrapVaultKey(b64ToBytes(encrypted_vault_key));
