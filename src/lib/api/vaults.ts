@@ -116,6 +116,65 @@ export async function removeMember(
   await api.delete(`/vaults/${vaultId}/members/${userId}`);
 }
 
+/** A recipient's public keys, from `GET /users/{email}/public-key`. */
+export type RecipientKeys = {
+  x25519_public_key: string;
+  ed25519_public_key: string;
+  /**
+   * ⚠️ **Null for an account that predates F1**, and a client must refuse to
+   * share in that case rather than wrapping under X25519 alone. A wrap missing
+   * its post-quantum half is one Shor opens, and it stays that way for as long as
+   * the row exists — an adversary recording it does not care that a later version
+   * fixed the algorithm. The account gets one on its next sign-in.
+   */
+  mlkem_public_key: string | null;
+};
+
+/**
+ * The recipient's public keys.
+ *
+ * ⚠️ **These come from the server.** A malicious server could substitute its own
+ * and read everything shared afterwards. There is no third party to check them
+ * against and out-of-band fingerprint verification is not built, so "the server
+ * cannot read your secrets" becomes "…cannot read them *passively*" the moment
+ * you share. The CLI carries the same caveat.
+ *
+ * A 404 means no account, deliberately — the endpoint does not distinguish
+ * "no such user" from anything else, to avoid confirming which addresses exist.
+ */
+export async function getRecipientKeys(email: string): Promise<RecipientKeys> {
+  const { data } = await api.get<RecipientKeys>(
+    `/users/${encodeURIComponent(email.trim().toLowerCase())}/public-key`,
+  );
+  return data;
+}
+
+/** Body of `POST /vaults/{id}/members`. */
+export type AddMemberBody = {
+  user_email: string;
+  role: VaultRole;
+  /** The vault key wrapped for the recipient — hybrid X25519 + ML-KEM-768. */
+  encrypted_vault_key: string;
+  /** The sender's ephemeral X25519 public key. 44 base64 characters. */
+  eph_pub_key: string;
+  /** The ML-KEM-768 ciphertext. 1452 base64 characters. Required, not optional. */
+  mlkem_ciphertext: string;
+};
+
+/**
+ * Share a vault with another account.
+ *
+ * Requires **admin or above**, and you may only grant a role you outrank — an
+ * admin granting `admin` would create a peer neither could remove, since removal
+ * also requires outranking the target.
+ */
+export async function addMember(
+  vaultId: string,
+  body: AddMemberBody,
+): Promise<void> {
+  await api.post(`/vaults/${vaultId}/members`, body);
+}
+
 export async function getMyKey(vaultId: string): Promise<MyKey> {
   const { data } = await api.get<MyKey>(`/vaults/${vaultId}/my-key`);
   return data;

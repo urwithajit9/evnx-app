@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Irreversible } from "@/components/shell/zero-knowledge";
+import { shareVault } from "@/lib/vaults/share";
 
 export function VaultMembers({ vaultId }: { vaultId: string }) {
   const qc = useQueryClient();
@@ -53,6 +54,8 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<VaultMember | null>(null);
+  const [shareEmail, setShareEmail] = useState("");
+  const [shareRole, setShareRole] = useState<VaultRole>("developer");
 
   const you = members.data?.find((m) => m.is_you);
   const yourRank = you ? ROLE_RANK[you.role] : -1;
@@ -86,6 +89,81 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
+        )}
+
+        {/* ── Share ──────────────────────────────────────────────────────────
+            ⚠️ Owner only, and that is narrower than the server's rule on
+            purpose. The server allows admins to add members, but an admin's own
+            copy of the vault key is itself a share — wrapped to their keypair
+            rather than sealed under their master key — and re-wrapping from that
+            form is not supported. Offering a form that always fails would be
+            worse than explaining why it is absent. */}
+        {you?.role === "owner" && (
+          <form
+            className="space-y-2 rounded-lg border p-3"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const target = shareEmail.trim();
+              if (!target) return;
+              act("share", async () => {
+                await shareVault(vaultId, target, shareRole);
+                setShareEmail("");
+              });
+            }}
+          >
+            <label htmlFor="share-email" className="text-sm font-medium">
+              Share with
+            </label>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                id="share-email"
+                type="email"
+                required
+                autoComplete="off"
+                placeholder="them@example.com"
+                value={shareEmail}
+                disabled={busy === "share"}
+                onChange={(e) => setShareEmail(e.target.value)}
+                className="min-w-0 flex-1 rounded-md border bg-[var(--bg-surface)] p-1.5 text-sm text-foreground"
+              />
+              <select
+                aria-label="Role to grant"
+                value={shareRole}
+                disabled={busy === "share"}
+                onChange={(e) => setShareRole(e.target.value as VaultRole)}
+                className="rounded-md border bg-[var(--bg-surface)] p-1.5 text-xs text-foreground"
+              >
+                {ASSIGNABLE_ROLES.filter((r) => yourRank > ROLE_RANK[r]).map(
+                  (r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ),
+                )}
+              </select>
+              <Button type="submit" size="sm" disabled={busy === "share"}>
+                {busy === "share" ? "Sharing…" : "Share"}
+              </Button>
+            </div>
+            {/* Said where the action is, not buried in a doc. Sharing is the one
+                moment the zero-knowledge guarantee narrows, and the person doing
+                it is the one who should know. */}
+            <p className="text-xs text-muted-foreground">
+              The vault key is re-wrapped in your browser to their public keys,
+              which <strong>the server supplies</strong> — so a malicious server
+              could substitute its own and read what you share from then on.
+              Fingerprint verification is not built yet.
+            </p>
+          </form>
+        )}
+
+        {you && you.role !== "owner" && yourRank >= ROLE_RANK.admin && (
+          <p className="rounded-lg border p-3 text-xs text-muted-foreground">
+            You can change roles and remove members here, but only the owner can
+            add one: your own copy of the vault key is wrapped to your keypair
+            rather than sealed under your password, and re-sharing from that form
+            is not supported.
+          </p>
         )}
 
         {members.isPending && (
