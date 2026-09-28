@@ -28,10 +28,15 @@
  * The server also re-verifies blake3 against its own record before sending.
  *
  * So the blob hash here is a **diagnostic**, and only useful for telling storage
- * corruption apart from a wrong key. `decryptVaultVersion` reports which, when
- * the caller supplies the expected hash — it cannot compute blake3 (the wasm
- * exports none) but it can say that decryption failed on a blob the server
- * vouched for, which points at the key rather than the bytes.
+ * corruption apart from a wrong key. `decryptVaultVersion` does not recompute it;
+ * it reports that decryption failed on a blob the server vouched for, which
+ * points at the key rather than the bytes.
+ *
+ * ⚠️ This used to say the client *cannot* compute blake3, "the wasm exports
+ * none". It exports `blobHash`, and both `push.ts` and `rekey.ts` depend on it —
+ * a push and a re-key staging request each carry a `blob_hash` the server
+ * verifies, so a client that genuinely could not compute one would be unable to
+ * write at all. Not recomputing it on read is a choice, not a limitation.
  */
 
 "use client";
