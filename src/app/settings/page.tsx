@@ -26,6 +26,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
 import { ApiTokens } from "@/components/settings/api-tokens";
+import { DeleteAccount } from "@/components/settings/delete-account";
 import { AppShell } from "@/components/shell/app-shell";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -59,6 +60,8 @@ export default function SettingsPage() {
       <TwoFactor />
       <Sessions />
       <ApiTokens />
+      {/* Last, and visually separate: the one control here that cannot be undone. */}
+      <DeleteAccount />
       </div>
     </AppShell>
   );

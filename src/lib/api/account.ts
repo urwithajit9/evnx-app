@@ -141,3 +141,33 @@ export async function createToken(input: {
 export async function revokeToken(tokenId: string): Promise<void> {
   await api.delete(`/auth/tokens/${tokenId}`);
 }
+
+/**
+ * Delete this account, and everything only it can reach.
+ *
+ * ⚠️ **Irreversible, and not a logout.** Sessions, API tokens, 2FA enrolment and
+ * every vault this account is the only member of are destroyed, ciphertext
+ * included. The server never held anything that could rebuild them.
+ *
+ * Vaults the account owns that other people are members of make the server
+ * refuse with 409, naming them — deleting would take those vaults and everyone
+ * else's access with them. The message is written for a person; show it as-is.
+ *
+ * `confirmEmail` is checked server-side too. It guards against a misclick rather
+ * than an attacker, who would know their own address; `totpCode` is the control,
+ * and the endpoint refuses API tokens entirely.
+ */
+export async function deleteAccount(
+  confirmEmail: string,
+  totpCode?: string,
+): Promise<void> {
+  await api.delete("/auth/account", {
+    // ⚠️ A body on DELETE. Legal but unusual, and some intermediaries drop it —
+    // tolerable only because of which way it fails: without `confirm_email` the
+    // server refuses rather than deletes.
+    data: {
+      confirm_email: confirmEmail,
+      ...(totpCode ? { totp_code: totpCode } : {}),
+    },
+  });
+}
