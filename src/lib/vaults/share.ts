@@ -25,7 +25,6 @@
 
 import {
   addMember,
-  getMyKey,
   getRecipientKeys,
   type VaultRole,
 } from "@/lib/api/vaults";
@@ -74,20 +73,23 @@ export async function shareVault(
     );
   }
 
-  // ── You can only share a vault you created ───────────────────────────────
+  // ⚠️ There used to be a guard here refusing to share a vault that had been
+  // shared *with* you — "re-sharing is not supported" — on the reasoning that our
+  // own copy is sealed under the master key while a shared copy is wrapped to our
+  // keypair, and this path could only re-wrap from the first form.
   //
-  // The two wraps are different: our own copy is sealed under the master key,
-  // while a copy shared *to* us is wrapped to our keypair. Re-sharing would mean
-  // re-wrapping from the second form, which this path does not do. The server
-  // also limits sharing to owners and admins, so this is mostly belt and braces
-  // — but it fails here with a sentence rather than there with a 403.
-  const mine = await getMyKey(vaultId);
-  if (mine.eph_pub_key) {
-    throw new Error(
-      "This vault was shared with you rather than created by you, and re-sharing is not supported. Ask the owner to share it directly.",
-    );
-  }
-
+  // That stopped being true when `vaultKeyFor` learned to unwrap both. It takes
+  // whichever form you hold and returns the same vault key either way, so there is
+  // nothing left to re-wrap *from* — the key is the key, however it arrived.
+  //
+  // Exactly the staleness `open.ts` already records one level down, where the app
+  // threw "use the CLI" for a capability the Worker had carried since F1. Two
+  // guards written against the same missing feature; this is the second one.
+  //
+  // The server has always permitted this: `add_member` is guarded by
+  // `AtLeastAdmin`, with the note that sharing hands out a key and so is not a
+  // developer-level act. Refusing here made the app stricter than the API for no
+  // cryptographic reason.
   const vaultKey = await vaultKeyFor(vaultId);
   const bundle = await wrapVaultKeyForUser(
     vaultKey,

@@ -28,7 +28,12 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { listVaults, listVersions, type VersionMeta } from "@/lib/api/vaults";
+import {
+  listMembers,
+  listVaults,
+  listVersions,
+  type VersionMeta,
+} from "@/lib/api/vaults";
 import { openVersion } from "@/lib/vaults/open";
 import { parseEnv, maskFor, type EnvEntry } from "@/lib/env/parse";
 import { useKeyStore } from "@/stores/keyStore";
@@ -46,6 +51,7 @@ import { formatWhen } from "../page";
 import { PushVersion } from "@/components/vaults/push-version";
 import { VaultMembers } from "@/components/vaults/vault-members";
 import { VaultAudit } from "@/components/vaults/vault-audit";
+import { DeleteVault } from "@/components/vaults/delete-vault";
 import { AppShell } from "@/components/shell/app-shell";
 import { DecryptedHere } from "@/components/shell/zero-knowledge";
 
@@ -72,6 +78,14 @@ function VaultDetail() {
     queryFn: listVaults,
     enabled: unlocked,
   });
+  // Same key the Members card and the audit trail use, so this is a cache read
+  // rather than a third request for the same list.
+  const members = useQuery({
+    queryKey: ["members", vaultId],
+    queryFn: () => listMembers(vaultId!),
+    enabled: !!vaultId,
+  });
+
   const versions = useQuery({
     queryKey: ["versions", vaultId],
     queryFn: () => listVersions(vaultId!),
@@ -153,6 +167,17 @@ function VaultDetail() {
       <VaultMembers vaultId={vaultId} />
 
       <VaultAudit vaultId={vaultId} />
+
+      {/* Last on the page, deliberately: the destructive action is the one you
+          should have to scroll past everything else to reach. */}
+      {vault && (
+        <DeleteVault
+          vaultId={vaultId}
+          vaultName={`${vault.name}/${vault.environment}`}
+          isOwner={vault.role === "owner"}
+          memberCount={members.data?.length ?? 1}
+        />
+      )}
 
       {versions.data?.length === 0 && (
         <Card>

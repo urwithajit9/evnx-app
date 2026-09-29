@@ -19,7 +19,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { listAudit, type AuditEvent } from "@/lib/api/vaults";
+import {
+  listAudit,
+  listMembers,
+  type AuditEvent,
+  type VaultMember,
+} from "@/lib/api/vaults";
 import {
   Card,
   CardContent,
@@ -45,9 +50,33 @@ function plural(n: number | undefined, word: string): string {
   return `${n} ${word}${n === 1 ? "" : "s"}`;
 }
 
-/** A short handle for a uuid — enough to match against the member list. */
-function shortId(id: string | undefined): string {
-  return id ? id.split("-")[0] : "someone";
+/** Turns a user id into something a person recognises. */
+type NameOf = (id: string | undefined) => string;
+
+/**
+ * Resolve a user id against the member list this page already holds.
+ *
+ * ⚠️ **The trail used to print `a332eb89` and stop there** — a uuid prefix, which
+ * says nothing about who was granted access. The obvious fix is to have the server
+ * write the email into `audit_events.metadata`, and that fix is **wrong**: migration
+ * 006 makes the table append-only by trigger, so an email written there could never
+ * be scrubbed — and account deletion would quietly stop being complete.
+ *
+ * So it is resolved here, from data the page has already fetched. No new endpoint,
+ * and in particular no `GET /users/:id → email`, which is an id-to-email mapping and
+ * therefore an enumeration surface the moment its authorisation is anything less
+ * than exact.
+ *
+ * ⚠️ A former member falls back to the short id, and that is the right answer rather
+ * than a gap: they are gone, and the entry is recording that a grant happened, not
+ * offering a way to contact them.
+ */
+function resolver(members: VaultMember[] | undefined): NameOf {
+  const byId = new Map((members ?? []).map((m) => [m.user_id, m.email]));
+  return (id) => {
+    if (!id) return "someone";
+    return byId.get(id) ?? id.split("-")[0];
+  };
 }
 
 /**
@@ -58,7 +87,10 @@ function shortId(id: string | undefined): string {
  * that shows something ugly, because the thing it drops is exactly the thing
  * nobody anticipated.
  */
-function describe(e: AuditEvent): { text: string; tone?: "notable" } {
+function describe(
+  e: AuditEvent,
+  nameOf: NameOf,
+): { text: string; tone?: "notable" } {
   const m = e.metadata;
   switch (e.event_type) {
     case "push":
@@ -67,16 +99,16 @@ function describe(e: AuditEvent): { text: string; tone?: "notable" } {
       return { text: `pulled version ${num(m, "version") ?? "?"}` };
     case "member_grant":
       return {
-        text: `granted ${shortId(str(m, "member_user_id"))} access as ${str(m, "role") ?? "a member"}`,
+        text: `granted ${nameOf(str(m, "member_user_id"))} access as ${str(m, "role") ?? "a member"}`,
         tone: "notable",
       };
     case "member_role_change":
       return {
-        text: `changed ${shortId(str(m, "member_user_id"))} from ${str(m, "from") ?? "?"} to ${str(m, "to") ?? "?"}`,
+        text: `changed ${nameOf(str(m, "member_user_id"))} from ${str(m, "from") ?? "?"} to ${str(m, "to") ?? "?"}`,
         tone: "notable",
       };
     case "member_revoke": {
-      const who = shortId(str(m, "member_user_id"));
+      const who = nameOf(str(m, "member_user_id"));
       const left = m?.voluntary === true;
       // ⚠️ Surfaced rather than buried. A removal without a re-key leaves the
       // old key in that person's hands, so they can still decrypt everything
@@ -95,7 +127,7 @@ function describe(e: AuditEvent): { text: string; tone?: "notable" } {
         text:
           `rotated the vault key — ${plural(num(m, "versions_rekeyed"), "version")} re-encrypted, ` +
           `${plural(num(m, "members_rewrapped"), "member")} re-wrapped` +
-          (removed ? `, removing ${shortId(removed)}` : ""),
+          (removed ? `, removing ${nameOf(removed)}` : ""),
         tone: "notable",
       };
     }
@@ -114,6 +146,18 @@ export function VaultAudit({ vaultId }: { vaultId: string }) {
     queryKey: ["audit", vaultId],
     queryFn: () => listAudit(vaultId),
   });
+
+  // The same key the Members card uses, so this shares its cache rather than
+  // issuing a second request for data already on the page.
+  const members = useQuery({
+    queryKey: ["members", vaultId],
+    queryFn: () => listMembers(vaultId),
+  });
+
+  // ⚠️ Not gated on `members` having loaded. The trail renders with short ids and
+  // fills in names when they arrive — waiting would hide the audit log behind a
+  // second request, and the log is the more important of the two.
+  const nameOf = resolver(members.data);
 
   return (
     <Card>
@@ -140,7 +184,7 @@ export function VaultAudit({ vaultId }: { vaultId: string }) {
         {events.data && events.data.length > 0 && (
           <ul className="divide-y">
             {events.data.map((e) => {
-              const { text, tone } = describe(e);
+              const { text, tone } = describe(e, nameOf);
               return (
                 <li key={e.id} className="flex flex-wrap gap-x-2 gap-y-0.5 py-2.5">
                   <span className="text-sm">

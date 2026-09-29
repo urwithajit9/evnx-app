@@ -103,13 +103,18 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
         )}
 
         {/* ── Share ──────────────────────────────────────────────────────────
-            ⚠️ Owner only, and that is narrower than the server's rule on
-            purpose. The server allows admins to add members, but an admin's own
-            copy of the vault key is itself a share — wrapped to their keypair
-            rather than sealed under their master key — and re-wrapping from that
-            form is not supported. Offering a form that always fails would be
-            worse than explaining why it is absent. */}
-        {you?.role === "owner" && (
+            Admin and above, matching the server: `add_member` is guarded by
+            `AtLeastAdmin`, on the reasoning that handing out a key is not a
+            developer-level act.
+
+            ⚠️ This was owner-only, and the comment here explained why — an
+            admin's own copy is wrapped to their keypair rather than sealed under
+            their master key, and re-wrapping from that form was not supported.
+            That was true when it was written and is not any more: `vaultKeyFor`
+            unwraps either form and returns the same vault key, so there is no
+            longer a form to re-wrap *from*. The matching guard in `share.ts`
+            went with it. */}
+        {yourRank >= ROLE_RANK.admin && (
           <form
             className="space-y-2 rounded-lg border p-3"
             onSubmit={(e) => {
@@ -166,15 +171,6 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
               Fingerprint verification is not built yet.
             </p>
           </form>
-        )}
-
-        {you && you.role !== "owner" && yourRank >= ROLE_RANK.admin && (
-          <p className="rounded-lg border p-3 text-xs text-muted-foreground">
-            You can change roles and remove members here, but only the owner can
-            add one: your own copy of the vault key is wrapped to your keypair
-            rather than sealed under your password, and re-sharing from that form
-            is not supported.
-          </p>
         )}
 
         {members.isPending && (

@@ -116,6 +116,21 @@ export async function removeMember(
   await api.delete(`/vaults/${vaultId}/members/${userId}`);
 }
 
+/**
+ * Delete a vault and every version in it.
+ *
+ * Owner only — the server guards this with `OwnerOnly` rather than `AtLeastAdmin`.
+ * An admin may share, revoke and re-key; destroying the vault, and everyone else's
+ * access with it, stays with the account that created it.
+ *
+ * A **soft** delete: the row is marked rather than removed, so the name stays taken
+ * and the blobs are not immediately unreachable. That is the server's choice, not a
+ * promise to the user — the UI should not imply the data is recoverable.
+ */
+export async function deleteVault(vaultId: string): Promise<void> {
+  await api.delete(`/vaults/${vaultId}`);
+}
+
 /** A recipient's public keys, from `GET /users/{email}/public-key`. */
 export type RecipientKeys = {
   x25519_public_key: string;
