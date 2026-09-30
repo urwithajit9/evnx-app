@@ -66,6 +66,39 @@ export type WrappedVaultKey = {
   mlkemCiphertext: string;
 };
 
+/** One vault key as the server holds it, wrapped under the current master key. */
+export type OwnWrap = {
+  vaultId: string;
+  wrapped: Uint8Array;
+};
+
+/**
+ * Everything a master-password change sends, produced in one step inside the
+ * Worker.
+ *
+ * ⚠️ One message rather than a sequence of smaller ones, for a stronger version
+ * of the reason `sealForPush` exists. A rotation needs the **old and the new
+ * master key alive at the same time** — unwrap with one, re-wrap with the other —
+ * and the Worker holds exactly one. Exposing a second key slot to the main thread
+ * would mean UI code choosing which key wraps what, and getting that wrong
+ * produces a vault nobody can ever open again.
+ *
+ * It also puts the verification where the keys are. Nothing here can be checked
+ * from outside the Worker, because checking means opening what was just produced.
+ */
+export type RotationPayload = {
+  /** Hex, for `srp_verifier`. */
+  verifier: string;
+  /** Base64, for `srp_salt`. */
+  srpSalt: string;
+  /** Base64, for `argon2_salt`. */
+  argon2Salt: string;
+  /** Base64, for `encrypted_private_key`. */
+  encryptedPrivateKey: string;
+  /** In the order they were given, which the server checks as a set. */
+  wraps: OwnWrap[];
+};
+
 export type CryptoRequest =
   | { id: number; kind: "init" }
   /** Derive the master key. Argon2id at 64 MiB — expect ~150 ms on a desktop. */
@@ -182,6 +215,36 @@ export type CryptoRequest =
       /** The version the SERVER will assign: `base_version + 1`. */
       version: number;
     }
+
+  // ─── Changing the master password ──────────────────────────────────────────
+  /**
+   * Re-derive everything the master password protects, and check it opens.
+   *
+   * Uses the master key already in this Worker as the *old* one, so the current
+   * password is not needed here — the session has already proved it. The current
+   * password is still typed by the user, because the **server** requires a fresh
+   * SRP proof before it will accept the result.
+   *
+   * ⚠️ The new key is held pending, not installed. The server may still refuse,
+   * and a Worker holding a key the server does not know would break every vault
+   * in the session until the next sign-in. `commitRotation` installs it once the
+   * server has agreed; `discardRotation` drops it.
+   */
+  | {
+      id: number;
+      kind: "rotateMasterKey";
+      /** SRP identity — normalised exactly as at login, or the proof will not verify. */
+      email: string;
+      newPassword: string;
+      /** `encrypted_private_key` as the server currently holds it. */
+      sealedPrivateKeyB64: string;
+      /** Every vault key wrapped under the master key. Shared-to-you keys are not here. */
+      wraps: OwnWrap[];
+    }
+  /** The server accepted the rotation — install the new master key. */
+  | { id: number; kind: "commitRotation" }
+  /** The server refused, or the user abandoned it — drop the pending key. */
+  | { id: number; kind: "discardRotation" }
 
   // ─── Auth lifecycle ────────────────────────────────────────────────────────
   /**

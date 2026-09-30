@@ -17,6 +17,8 @@ import {
   type KeypairRef,
   type VerifierBundle,
   type PublicKeys,
+  type OwnWrap,
+  type RotationPayload,
 } from "./protocol";
 
 /**
@@ -363,4 +365,40 @@ export function terminateCrypto() {
   worker?.terminate();
   worker = null;
   pending.clear();
+}
+
+// ─── Changing the master password ────────────────────────────────────────────
+
+/**
+ * Re-derive everything the master password protects, and verify it opens.
+ *
+ * ⚠️ One call, because a rotation needs the **old and new master key alive at
+ * once** and the Worker holds exactly one. Splitting it would put the choice of
+ * which key wraps what into UI code, and getting that wrong produces a vault
+ * nobody can open again.
+ *
+ * The new key is held pending. Call {@link commitRotation} once the server has
+ * accepted the payload, or {@link discardRotation} if it has not — a Worker
+ * holding a key the server does not know breaks every vault in the session.
+ *
+ * Costs one Argon2id derivation for the new key plus one per vault for the
+ * re-wrap round trip. Show progress.
+ */
+export function rotateMasterKey(input: {
+  email: string;
+  newPassword: string;
+  sealedPrivateKeyB64: string;
+  wraps: OwnWrap[];
+}) {
+  return call<RotationPayload>({ kind: "rotateMasterKey", ...input });
+}
+
+/** The server accepted it — install the new master key for this session. */
+export function commitRotation() {
+  return call<{ committed: boolean }>({ kind: "commitRotation" });
+}
+
+/** The server refused, or the user abandoned it — drop the pending key. */
+export function discardRotation() {
+  return call<{ discarded: boolean }>({ kind: "discardRotation" });
 }

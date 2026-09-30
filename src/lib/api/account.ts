@@ -171,3 +171,97 @@ export async function deleteAccount(
     },
   });
 }
+
+// ─── Changing the master password ────────────────────────────────────────────
+
+export type ChallengeResult = {
+  session_id: string;
+  /** base64 */
+  srp_salt: string;
+  /** base64 */
+  argon2_salt: string;
+  /** hex — the server's ephemeral `B` */
+  server_public: string;
+};
+
+/**
+ * Start proving the **current** password again, inside a live session.
+ *
+ * ⚠️ A session is not enough to change a master password, and the reason is worth
+ * knowing. Someone holding a stolen session cannot produce a *valid* rotation —
+ * that needs the old password, to unwrap before re-wrapping — but the server
+ * holds only ciphertext and cannot tell a valid one from random bytes. It would
+ * store the garbage, and the account would be unopenable forever.
+ *
+ * A recency check on the access token was considered and rejected: `/auth/refresh`
+ * re-stamps `iat`, so it measures something an attacker with the refresh token
+ * controls. Only a fresh proof of the password means what it needs to mean.
+ *
+ * No email is sent — the server reads it from the session, so unlike `/srp/init`
+ * there is no enumeration surface here.
+ */
+export async function reauthInit(clientPublicHex: string) {
+  const { data } = await api.post<ChallengeResult>("/auth/reauth/init", {
+    client_public: clientPublicHex,
+  });
+  return data;
+}
+
+/**
+ * Finish the proof. On success the server arms the rotation for **this session
+ * only**, for five minutes.
+ *
+ * `totpCode` is required when the account has 2FA, and a backup code is accepted
+ * in its place. The two checks defend against different people: the proof stops
+ * whoever stole a session, the code stops whoever phished the password.
+ */
+export async function reauthVerify(
+  sessionId: string,
+  clientProofHex: string,
+  totpCode?: string,
+): Promise<{ server_proof: string }> {
+  const { data } = await api.post<{ server_proof: string }>(
+    "/auth/reauth/verify",
+    {
+      session_id: sessionId,
+      client_proof: clientProofHex,
+      ...(totpCode ? { totp_code: totpCode } : {}),
+    },
+  );
+  return data;
+}
+
+export type RotateResult = {
+  status: "rotated" | "already_applied";
+  vaults_rewrapped: number;
+  sessions_revoked: number;
+  /** RFC3339, or null when no undo was kept. */
+  undo_available_until: string | null;
+};
+
+/**
+ * Swap the password and every wrap that depends on it, atomically.
+ *
+ * ⚠️ `wraps` must name **every** vault key held under the master key — not a
+ * subset. The server checks the set against locked rows and refuses the whole
+ * request otherwise, because a vault left wrapped under a password nobody holds
+ * any more is simply gone.
+ *
+ * Vaults shared *to* this account are wrapped to its keypair, which a rotation
+ * re-seals rather than replaces. They are untouched, and must not be listed here.
+ *
+ * `reason: "compromised"` keeps no undo. Use it when the old password is believed
+ * to be in someone else's hands — an undo authorised by that password would hand
+ * the account straight back.
+ */
+export async function rotateMasterKey(body: {
+  srp_salt: string;
+  srp_verifier: string;
+  argon2_salt: string;
+  encrypted_private_key: string;
+  vault_wraps: { vault_id: string; encrypted_vault_key: string }[];
+  reason: "routine" | "compromised";
+}): Promise<RotateResult> {
+  const { data } = await api.post<RotateResult>("/auth/master-key", body);
+  return data;
+}

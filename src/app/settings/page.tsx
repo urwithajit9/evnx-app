@@ -8,13 +8,15 @@
  *
  * ─── What is deliberately absent ─────────────────────────────────────────────
  *
- * **Change password.** It looks like a settings toggle and is not one: the
- * master key is derived from the password, so changing it re-derives the key and
- * every wrapped vault key has to be re-wrapped in the same transaction. There is
- * no endpoint, and offering a control that could half-complete would be worse
- * than offering none. Phase 4.
- *
  * **Display name.** `users` has no such column and no endpoint sets one.
+ *
+ * ─── What arrived, and why it was absent so long ─────────────────────────────
+ *
+ * **Change password** used to be listed above as deliberately missing: it looks
+ * like a settings toggle and is not one, and until the endpoint existed a control
+ * that could half-complete would have been worse than none. Both are now built —
+ * the swap is atomic server-side, and the browser verifies its own re-wrapping
+ * before sending it, which is the one check the server structurally cannot make.
  */
 
 "use client";
@@ -26,6 +28,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
 import { ApiTokens } from "@/components/settings/api-tokens";
+import { ChangePassword } from "@/components/settings/change-password";
 import { DeleteAccount } from "@/components/settings/delete-account";
 import { AppShell } from "@/components/shell/app-shell";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -58,6 +61,7 @@ export default function SettingsPage() {
       )}
 
       <TwoFactor />
+      <ChangePassword />
       <Sessions />
       <ApiTokens />
       {/* Last, and visually separate: the one control here that cannot be undone. */}

@@ -255,6 +255,22 @@ export default function LoginPage() {
               Send it again
             </Link>
           </p>
+
+          {/* ⚠️ The one thing on this page that helps someone who cannot sign in
+              at all. If a master password was changed without their knowing, no
+              amount of retrying here will work — and there is no reset, so this
+              link is the only route back. It stays understated because it is
+              rare, and next to the sign-in button because that is where someone
+              will be when they need it. */}
+          <p className="text-center text-sm text-muted-foreground">
+            Password changed without your knowing?{" "}
+            <Link
+              href="/undo-password-change/"
+              className="underline underline-offset-4"
+            >
+              Undo it with your previous password
+            </Link>
+          </p>
         </form>
       </CardContent>
     </Card>

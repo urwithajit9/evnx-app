@@ -197,3 +197,45 @@ export async function putPublicKeys(mlkemPublicKey: string) {
 export async function postLogout() {
   await api.post("/auth/logout");
 }
+
+// ─── Undoing a master-password change ────────────────────────────────────────
+
+/**
+ * Start proving the **previous** password, to restore what a change replaced.
+ *
+ * ⚠️ Unauthenticated, and it has to be. Whoever needs this is whoever the change
+ * locked out — a session is exactly what they do not have. The only credential it
+ * accepts is the one an attacker lacks: the old master password.
+ *
+ * As with `/srp/init`, a 200 means nothing about whether the account exists or
+ * has anything to undo: the server fabricates a challenge when it has nothing to
+ * offer, so all three cases answer identically. Do not add UI that implies
+ * otherwise.
+ */
+export async function postUndoInit(email: string, clientPublicHex: string) {
+  const { data } = await api.post<SrpInitResult>(
+    "/auth/master-key/undo/init",
+    { email, client_public: clientPublicHex },
+  );
+  return data;
+}
+
+export type UndoResult = {
+  /** hex — `M2`. Verify it, or the restore is unauthenticated in one direction. */
+  server_proof: string;
+  vaults_restored: number;
+  /**
+   * Vaults created *after* the change, whose keys are wrapped under the password
+   * being undone. They will not open. Named rather than silently left behind.
+   */
+  vaults_not_in_snapshot: string[];
+  sessions_revoked: number;
+};
+
+export async function postUndoVerify(sessionId: string, clientProofHex: string) {
+  const { data } = await api.post<UndoResult>("/auth/master-key/undo/verify", {
+    session_id: sessionId,
+    client_proof: clientProofHex,
+  });
+  return data;
+}

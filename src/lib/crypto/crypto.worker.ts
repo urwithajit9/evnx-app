@@ -52,6 +52,7 @@ import init, {
 import type {
   CryptoRequest,
   CryptoResponse,
+  RotationPayload,
   VaultKeyRef,
   SrpEphemeralRef,
   SrpProofRef,
@@ -65,6 +66,16 @@ let masterKey: MasterKeyHandle | null = null;
 
 /** Vault keys by opaque ref. The main thread holds only the ref strings. */
 const vaultKeys = new Map<VaultKeyRef, VaultKeyHandle>();
+
+/**
+ * The master key a rotation has produced but the server has not yet accepted.
+ *
+ * ⚠️ Held apart from `masterKey` deliberately. Installing it before the server
+ * agrees would leave the session holding a key the server does not know: every
+ * vault would stop opening, and nothing in the UI would explain why. See
+ * `commitRotation`.
+ */
+let pendingMasterKey: MasterKeyHandle | null = null;
 
 /**
  * Transient auth state, held for the duration of one register or login.
@@ -117,6 +128,8 @@ function requireRef<T>(map: Map<string, T>, ref: string, what: string): T {
 function clearAll() {
   masterKey?.destroy();
   masterKey = null;
+  pendingMasterKey?.destroy();
+  pendingMasterKey = null;
   for (const vk of vaultKeys.values()) vk.destroy();
   vaultKeys.clear();
   clearSrpState();
@@ -301,6 +314,122 @@ async function handle(req: CryptoRequest): Promise<unknown> {
       keypairs.set(ref, decryptPrivateKey(req.encryptedB64, requireMasterKey()));
       return ref;
     }
+
+    // ─── Changing the master password ────────────────────────────────────
+    case "rotateMasterKey": {
+      // The key being replaced. Already in this Worker from sign-in, so the
+      // current password is not re-derived here — the server is what demands a
+      // fresh proof of it, and the UI collects it for that.
+      const old = requireMasterKey();
+
+      // Opening the sealed keypair with the old key is also the local proof that
+      // `old` really is this account's key. If the session were somehow holding
+      // the wrong one, this throws before anything is produced.
+      const keypair = decryptPrivateKey(req.sealedPrivateKeyB64, old);
+
+      // Fresh salts, generated here rather than accepted from the caller: a
+      // reused Argon2id salt would tie the new master key to the old derivation,
+      // and nothing outside this Worker is in a position to notice.
+      const argon2Salt = generateSalt();
+      const srpSalt = generateSalt();
+
+      const next = deriveMasterKey(req.newPassword, argon2Salt);
+      let payload: RotationPayload;
+      const opened: VaultKeyHandle[] = [];
+      const rewrapped: VaultKeyHandle[] = [];
+
+      try {
+        const srpPassword = deriveSrpPassword(req.newPassword, srpSalt);
+        const v = computeVerifier(req.email, srpPassword, srpSalt);
+        const encryptedPrivateKey = encryptPrivateKey(keypair, next);
+
+        // ── Re-wrap ──────────────────────────────────────────────────────
+        const wraps = req.wraps.map((w) => {
+          const vk = unwrapVaultKey(w.wrapped, old);
+          opened.push(vk);
+          return { vaultId: w.vaultId, wrapped: wrapVaultKey(vk, next) };
+        });
+
+        // ── Check it opens, before the main thread can send it ────────────
+        //
+        // ⚠️ The server cannot do this. It holds ciphertext, so a
+        // wrong-but-well-formed wrap is indistinguishable to it from a correct
+        // one and would be stored without complaint — to be discovered by
+        // someone who can no longer open anything, with no way back.
+        const reopened = decryptPrivateKey(encryptedPrivateKey, next);
+        try {
+          // The identity keypair is re-sealed, never replaced. If the public
+          // keys moved, every vault already shared *to* this account would stop
+          // opening and no one would find out until someone tried.
+          if (
+            reopened.ed25519PublicKey() !== keypair.ed25519PublicKey() ||
+            reopened.x25519PublicKey() !== keypair.x25519PublicKey() ||
+            reopened.mlkemPublicKey() !== keypair.mlkemPublicKey()
+          ) {
+            throw new Error(
+              "the re-sealed keypair opened to different public keys — nothing has been sent",
+            );
+          }
+        } finally {
+          reopened.destroy();
+        }
+
+        for (let i = 0; i < wraps.length; i++) {
+          const back = unwrapVaultKey(wraps[i].wrapped, next);
+          rewrapped.push(back);
+          // ⚠️ A round trip rather than a byte comparison, because the key bytes
+          // are deliberately unreachable from here — that is the whole point of
+          // the handle. Encrypting under the original and decrypting under the
+          // re-opened one proves they are the same key: AEAD authentication
+          // fails otherwise, so a mismatch throws rather than returning
+          // something wrong.
+          const probe = crypto.getRandomValues(new Uint8Array(32));
+          const blob = encryptVault(probe, opened[i], req.wraps[i].vaultId, 1);
+          const out = decryptVault(blob, back, req.wraps[i].vaultId, 1);
+          if (out.length !== probe.length || !out.every((b, j) => b === probe[j])) {
+            throw new Error(
+              `the new key for vault ${req.wraps[i].vaultId} did not round-trip — nothing has been sent`,
+            );
+          }
+        }
+
+        payload = {
+          verifier: v.verifier,
+          srpSalt: v.srpSalt,
+          argon2Salt,
+          encryptedPrivateKey,
+          wraps,
+        };
+      } catch (e) {
+        // Nothing is installed and nothing is returned, so the account and this
+        // session are exactly as they were.
+        next.destroy();
+        throw e;
+      } finally {
+        keypair.destroy();
+        for (const vk of opened) vk.destroy();
+        for (const vk of rewrapped) vk.destroy();
+      }
+
+      pendingMasterKey?.destroy();
+      pendingMasterKey = next;
+      return payload;
+    }
+
+    case "commitRotation": {
+      if (!pendingMasterKey) throw new Error("no rotation is pending");
+      masterKey?.destroy();
+      masterKey = pendingMasterKey;
+      pendingMasterKey = null;
+      // Cached vault keys stay valid: a rotation changes how a vault key is
+      // wrapped, never the key itself.
+      return { committed: true };
+    }
+
+    case "discardRotation":
+      pendingMasterKey?.destroy();
+      pendingMasterKey = null;
+      return { discarded: true };
 
     case "clearSrpState":
       clearSrpState();
