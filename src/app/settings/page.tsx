@@ -27,6 +27,7 @@ import { useKeyStore } from "@/stores/keyStore";
 import { useAuthStore } from "@/stores/authStore";
 import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
+import { Devices } from "@/components/settings/devices";
 import { ApiTokens } from "@/components/settings/api-tokens";
 import { ChangePassword } from "@/components/settings/change-password";
 import { PlanUsage } from "@/components/settings/plan-usage";
@@ -68,6 +69,11 @@ export default function SettingsPage() {
       <TwoFactor />
       <ChangePassword />
       <Sessions />
+      {/* Immediately after Sessions, because the two are the pair someone
+          arrives looking for after a login alert — and because the difference
+          between them is easiest to read side by side: a session is a live
+          credential, a device is somewhere you have signed in from. */}
+      <Devices />
       <ApiTokens />
       {/* Before Delete, deliberately: Article 20 and Article 17 are a pair, and
           someone about to erase an account should see that they can take the

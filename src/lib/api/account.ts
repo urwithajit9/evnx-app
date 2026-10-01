@@ -99,6 +99,70 @@ export async function revokeOtherSessions(): Promise<void> {
   await api.delete("/auth/sessions/others");
 }
 
+// ─── Devices ─────────────────────────────────────────────────────────────────
+
+/**
+ * One origin this account has signed in from.
+ *
+ * ⚠️ **A device is not a session, and the two must not be conflated in copy.**
+ * A session is a live credential you can revoke. A device is somewhere you have
+ * signed in from, which may have no session left at all.
+ *
+ * ⚠️ **And it is not a location.** The server identifies an origin by a keyed
+ * BLAKE3 digest of the client address and the user agent — it holds neither
+ * value and can recover neither, so there is no city, no country and no
+ * "impossible travel". Those need a raw IP, and evnx deliberately never stores
+ * one. Anything rendered from this type has to stay inside that.
+ */
+export type DeviceSummary = {
+  /** Stable short handle, derived from the digests. Safe to show. */
+  id: string;
+  first_seen: string;
+  last_seen: string;
+  sign_in_count: number;
+  /** The origin this browser is making the request from. */
+  is_current: boolean;
+  /** Someone has already said this one was not them. */
+  disavowed: boolean;
+  /** Sign-ins where the server could record no origin at all. Not a device. */
+  unknown_origin: boolean;
+};
+
+export async function listDevices(): Promise<DeviceSummary[]> {
+  const { data } = await api.get<{ devices: DeviceSummary[] }>("/auth/devices");
+  return data.devices;
+}
+
+export type DisavowResult = {
+  sessions_revoked: number;
+  /**
+   * ⚠️ Always true, and returned as a fact rather than advice.
+   *
+   * Revoking sessions does **not** protect a vault: the keys are wrapped under
+   * the master key, so whoever had access signs in again a second later, and
+   * anything they already pulled is plaintext in their hands. A UI that showed
+   * "done ✓" and stopped would tell someone they were safe when they are not.
+   */
+  change_master_password: boolean;
+};
+
+/**
+ * "This wasn't me."
+ *
+ * Records the judgement and revokes **every** session on the account —
+ * including the one making this call, so the caller is signed out.
+ *
+ * ⚠️ Every session, not "the others". Revoking the others assumes the caller's
+ * own session is the trustworthy one, and someone who has just found an
+ * unrecognised sign-in does not know that.
+ */
+export async function disavowDevice(deviceId: string): Promise<DisavowResult> {
+  const { data } = await api.post<DisavowResult>("/auth/devices/disavow", {
+    device_id: deviceId,
+  });
+  return data;
+}
+
 // ─── API tokens ──────────────────────────────────────────────────────────────
 
 export type ApiToken = {

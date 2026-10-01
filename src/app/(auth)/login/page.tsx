@@ -19,7 +19,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -55,6 +55,24 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [impostor, setImpostor] = useState(false);
   const [busy, setBusy] = useState(false);
+  // Did we arrive here from reporting a device?
+  //
+  // ⚠️ Not `useSearchParams`: under `output: "export"` that requires a Suspense
+  // boundary around the whole page, and this only decides whether one notice
+  // renders.
+  //
+  // ⚠️ And not `useState` in an effect either, which was the first attempt —
+  // setting state synchronously in an effect causes a cascading render, and
+  // the lint rule says so. `useSyncExternalStore` is the API for reading a
+  // value that lives outside React: the third argument is the prerender
+  // snapshot, which makes the server/client difference explicit rather than a
+  // hydration mismatch. The query string cannot change while this is mounted —
+  // a navigation remounts — so `subscribe` is deliberately inert.
+  const disavowed = useSyncExternalStore(
+    () => () => {},
+    () => new URLSearchParams(window.location.search).has("disavowed"),
+    () => false,
+  );
 
   function finish(result: Parameters<typeof signedIn>[0], remaining: number | null) {
     signedIn(result, remaining);
@@ -195,6 +213,25 @@ export default function LoginPage() {
       </CardHeader>
       <CardContent>
         <form onSubmit={onCredentials} className="space-y-4">
+          {/*
+            Arrived here by reporting a device. ⚠️ The point of this notice is
+            the second sentence, not the first: signing out is the part that
+            feels like action, and changing the password is the part that
+            actually protects the vaults. Someone who reads only the headline
+            should still see that something is left to do.
+          */}
+          {disavowed && !error && (
+            <Alert>
+              <AlertTitle>Signed out everywhere</AlertTitle>
+              <AlertDescription>
+                Every session was ended, including this one.{" "}
+                <strong>Now change your master password.</strong> Your vault keys
+                are wrapped under it, so whoever had access can sign in again
+                until it changes — sign in below and go to Settings.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {error && (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
