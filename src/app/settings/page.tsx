@@ -29,6 +29,7 @@ import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
 import { ApiTokens } from "@/components/settings/api-tokens";
 import { ChangePassword } from "@/components/settings/change-password";
+import { PlanUsage } from "@/components/settings/plan-usage";
 import { ExportData } from "@/components/settings/export-data";
 import { DeleteAccount } from "@/components/settings/delete-account";
 import { AppShell } from "@/components/shell/app-shell";
@@ -61,6 +62,9 @@ export default function SettingsPage() {
         </Alert>
       )}
 
+      {/* First: it is the only read-only card here, and it frames what the
+          rest of the page is operating inside. */}
+      <PlanUsage />
       <TwoFactor />
       <ChangePassword />
       <Sessions />

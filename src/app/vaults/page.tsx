@@ -24,6 +24,8 @@ import { apiErrorStatus } from "@/lib/api/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CreateVault } from "@/components/vaults/create-vault";
+import { getUsage } from "@/lib/api/account";
+import { usageLabel, isFull } from "@/components/settings/plan-usage";
 import { AppShell } from "@/components/shell/app-shell";
 
 export default function VaultsPage() {
@@ -42,6 +44,14 @@ export default function VaultsPage() {
     queryKey: ["vaults"],
     queryFn: listVaults,
     enabled: unlocked,
+  });
+
+  // Additive: a server without /auth/usage simply shows no line, rather than
+  // turning the vault list into an error page.
+  const usage = useQuery({
+    queryKey: ["usage"],
+    queryFn: getUsage,
+    retry: false,
   });
 
   if (!unlocked || !user) return null;
@@ -77,6 +87,25 @@ export default function VaultsPage() {
             .
           </AlertDescription>
         </Alert>
+      )}
+
+      {/* ⚠️ Shown beside the create form, not buried in Settings. A vault limit
+          discovered at the moment it refuses you is a limit nobody could plan
+          around — and this is the moment it applies. */}
+      {user.emailVerified && usage.data && (
+        <p className="text-sm text-muted-foreground">
+          {isFull(usage.data.vaults) ? (
+            <span className="font-medium text-destructive">
+              {usageLabel(usage.data.vaults)} vaults — full. Delete one you no
+              longer need to free a slot.
+            </span>
+          ) : (
+            <>
+              <span className="font-mono">{usageLabel(usage.data.vaults)}</span>{" "}
+              vaults used on the {usage.data.plan} plan
+            </>
+          )}
+        </p>
       )}
 
       {user.emailVerified && <CreateVault />}

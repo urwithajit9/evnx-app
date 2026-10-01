@@ -290,3 +290,41 @@ export async function exportAccount(): Promise<unknown> {
   const { data } = await api.get<unknown>("/auth/account/export");
   return data;
 }
+
+// ─── Plan limits and usage ───────────────────────────────────────────────────
+
+export type UsageCount = {
+  used: number;
+  /** `null` means unlimited — absence rather than a sentinel. */
+  limit: number | null;
+};
+
+export type Usage = {
+  plan: string;
+  vaults: UsageCount;
+  api_tokens: UsageCount;
+  versions_per_vault: {
+    limit: number | null;
+    /** One row per vault you **own**. Versions are capped per vault. */
+    vaults: { id: string; name: string; environment: string; used: number }[];
+  };
+  audit_retention_days: number | null;
+};
+
+/**
+ * What the plan allows and how much is used.
+ *
+ * ⚠️ **Every number is produced by the same predicate the enforcement uses** —
+ * vaults you *own* (not ones shared to you), tokens that are neither revoked nor
+ * expired, versions *per vault*. A display that counts differently is worse than
+ * none: "2 of 3" beside a refusal saying you are full destroys trust in both
+ * numbers, and the reader cannot tell which one lied.
+ *
+ * ⚠️ **`used === limit` means already full.** The server refuses at
+ * `count >= limit`, so at three of three the next create is rejected. Never
+ * render it as one remaining.
+ */
+export async function getUsage(): Promise<Usage> {
+  const { data } = await api.get<Usage>("/auth/usage");
+  return data;
+}
