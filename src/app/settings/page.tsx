@@ -29,6 +29,7 @@ import { TwoFactor } from "@/components/settings/two-factor";
 import { Sessions } from "@/components/settings/sessions";
 import { ApiTokens } from "@/components/settings/api-tokens";
 import { ChangePassword } from "@/components/settings/change-password";
+import { ExportData } from "@/components/settings/export-data";
 import { DeleteAccount } from "@/components/settings/delete-account";
 import { AppShell } from "@/components/shell/app-shell";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -64,6 +65,10 @@ export default function SettingsPage() {
       <ChangePassword />
       <Sessions />
       <ApiTokens />
+      {/* Before Delete, deliberately: Article 20 and Article 17 are a pair, and
+          someone about to erase an account should see that they can take the
+          data with them first — not discover it afterwards. */}
+      <ExportData />
       {/* Last, and visually separate: the one control here that cannot be undone. */}
       <DeleteAccount />
       </div>

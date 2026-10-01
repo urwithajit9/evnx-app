@@ -265,3 +265,28 @@ export async function rotateMasterKey(body: {
   const { data } = await api.post<RotateResult>("/auth/master-key", body);
   return data;
 }
+
+// ─── Data export (GDPR Article 20) ───────────────────────────────────────────
+
+/**
+ * Everything the server holds about this account, as JSON.
+ *
+ * ⚠️ **No secrets, and that is structural rather than a policy choice.** Vault
+ * contents are encrypted on the client under a key derived from the master
+ * password; the server has never held that password, that key, or any plaintext
+ * value, so it has nothing to put here. The document says so itself and names
+ * `evnx cloud pull` — a reader who finds no values needs to learn why from the
+ * artefact, not from a guide they may never open.
+ *
+ * Nothing usable as a credential is included either: not the SRP verifier (which
+ * would be password-equivalent for an offline attack), not the TOTP secret, not
+ * API token values.
+ *
+ * Typed as `unknown` on purpose. A declared shape here would silently drop any
+ * field the server adds later, turning "everything we hold" into "everything
+ * this build knew about" — which is the one promise the feature makes.
+ */
+export async function exportAccount(): Promise<unknown> {
+  const { data } = await api.get<unknown>("/auth/account/export");
+  return data;
+}
