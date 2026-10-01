@@ -46,11 +46,19 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
-/** `evnx-export-2026-10-01.json` — dated, so two downloads do not collide. */
+/**
+ * `evnx-account-data-2026-10-01.json` — dated, so two downloads do not collide.
+ *
+ * ⚠️ Named for what it holds, not "export". The CLI's matching command is
+ * `evnx auth download-data`, renamed away from `export` because
+ * `evnx cloud export` is planned as the escape hatch that writes every vault's
+ * secrets **decrypted** to disk. Two artefacts called "export" with opposite
+ * contents is the trap; the filename is what someone sees months later.
+ */
 function filename(): string {
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
-  return `evnx-export-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.json`;
+  return `evnx-account-data-${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}.json`;
 }
 
 export function ExportData() {
