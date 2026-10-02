@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useKeyStore } from "@/stores/keyStore";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "@/components/shell/brand-mark";
+import { DOCS, docsUrl, webUrl } from "@/lib/config";
 
 export default function Home() {
   const router = useRouter();
@@ -34,7 +35,7 @@ export default function Home() {
       <header className="flex items-center justify-between px-6 py-4">
         <BrandMark />
         <a
-          href="https://www.evnx.dev"
+          href={webUrl("/")}
           className="text-sm text-muted-foreground underline-offset-4 hover:underline"
         >
           evnx.dev
@@ -85,7 +86,7 @@ export default function Home() {
             </code>{" "}
             —{" "}
             <a
-              href="https://www.evnx.dev/docs"
+              href={docsUrl(DOCS.home)}
               className="underline underline-offset-4"
             >
               read the docs

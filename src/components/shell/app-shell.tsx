@@ -28,6 +28,7 @@ import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./brand-mark";
 import { ThemeToggle } from "./theme-toggle";
+import { DOCS, docsUrl } from "@/lib/config";
 
 const NAV = [
   { href: "/vaults/", label: "Vaults" },
@@ -98,10 +99,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
           <span>Encrypted in this browser. The server only ever holds ciphertext.</span>
           <a
-            href="https://www.evnx.dev/docs"
+            href={docsUrl(DOCS.cloudArchitecture)}
             className="underline-offset-4 hover:underline"
           >
-            Docs
+            {/* ⚠️ Labelled for where it goes. This link sits beside a
+                cryptographic claim and now points at the page that
+                substantiates it; "Docs" would send the reader hunting. */}
+            How this works
           </a>
         </div>
       </footer>

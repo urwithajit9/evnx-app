@@ -7,6 +7,7 @@
 
 import { BrandMark } from "@/components/shell/brand-mark";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
+import { DOCS, docsUrl } from "@/lib/config";
 
 export default function AuthLayout({
   children,
@@ -18,7 +19,7 @@ export default function AuthLayout({
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <a
-            href="https://www.evnx.dev/docs"
+            href={docsUrl(DOCS.home)}
             className="text-sm text-muted-foreground underline-offset-4 hover:underline"
           >
             Docs
