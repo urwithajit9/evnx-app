@@ -73,7 +73,7 @@ export default function UndoPasswordChangePage() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Your previous password is back</CardTitle>
+          <CardTitle as="h1">Your previous password is back</CardTitle>
           <CardDescription>
             {done.restored} vault key{done.restored === 1 ? "" : "s"} restored.
             Every session has been signed out, including whoever made the change.
@@ -124,7 +124,7 @@ export default function UndoPasswordChangePage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Undo a master password change</CardTitle>
+        <CardTitle as="h1">Undo a master password change</CardTitle>
         <CardDescription>
           Enter the password you used <strong>before</strong> the change. Nothing
           else can authorise this — evnx has never held your password, and there

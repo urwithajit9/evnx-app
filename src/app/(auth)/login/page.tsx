@@ -208,7 +208,7 @@ export default function LoginPage() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Welcome back</CardTitle>
+        <CardTitle as="h1">Welcome back</CardTitle>
         <CardDescription>Sign in to reach your vaults.</CardDescription>
       </CardHeader>
       <CardContent>

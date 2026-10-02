@@ -32,9 +32,21 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+/**
+ * ⚠️ Renders a `div` by default, which is right for the nineteen places where
+ * a card title is a label inside a larger page. It is wrong for the four auth
+ * pages, where the card title IS the page title — they had no `<h1>` and no
+ * headings at all, so a screen reader opened them with nothing to orient on.
+ *
+ * `as="h1"` opts in. Default unchanged, so no existing card moves.
+ */
+function CardTitle({
+  className,
+  as: Tag = "div",
+  ...props
+}: React.ComponentProps<"div"> & { as?: React.ElementType }) {
   return (
-    <div
+    <Tag
       data-slot="card-title"
       className={cn(
         "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",

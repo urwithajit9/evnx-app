@@ -47,8 +47,20 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 export default function VerifyEmailPage() {
   // `useSearchParams` suspends during prerender, and a static export prerenders
   // every route. Without this boundary the build fails.
+  //
+  // ⚠️ The fallback needs the heading too. Without a `?token=` this is what
+  // renders — so the page a visitor most often lands on, with a mistyped or
+  // expired link, was the one with no <h1> at all.
   return (
-    <Suspense fallback={<Card><CardHeader><CardTitle>Loading…</CardTitle></CardHeader></Card>}>
+    <Suspense
+      fallback={
+        <Card>
+          <CardHeader>
+            <CardTitle as="h1">Loading…</CardTitle>
+          </CardHeader>
+        </Card>
+      }
+    >
       <VerifyEmail />
     </Suspense>
   );
@@ -78,7 +90,7 @@ function VerifyEmail() {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>
+          <CardTitle as="h1">
             {redeem === "done"
               ? "Your email is verified"
               : redeem === "failed"
@@ -107,7 +119,7 @@ function VerifyEmail() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Check your inbox</CardTitle>
+        <CardTitle as="h1">Check your inbox</CardTitle>
         <CardDescription>
           {emailFromRegister ? (
             <>
