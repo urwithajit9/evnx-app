@@ -52,6 +52,10 @@ import { DOCS, docsUrl } from "@/lib/config";
 const NAV = [
   { href: "/vaults/", label: "Vaults" },
   { href: "/organizations/", label: "Organizations" },
+  // ⚠️ Its own entry rather than a tab under Organizations, because
+  // `evnx.dev/pricing` links straight to `/billing/?plan=…` — a destination
+  // with no nav entry is one people cannot find their way back to.
+  { href: "/billing/", label: "Billing" },
   { href: "/settings/", label: "Settings" },
 ];
 

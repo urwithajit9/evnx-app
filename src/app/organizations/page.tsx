@@ -9,6 +9,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useKeyStore } from "@/stores/keyStore";
 import { useAuthStore } from "@/stores/authStore";
@@ -33,7 +34,16 @@ export default function OrganizationsPage() {
           <h1 className="page-title text-xl font-semibold">Organizations</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Billing and a directory. A seat decides which plan&apos;s limits apply
-            to its holder.
+            to its holder.{" "}
+            {/* ⚠️ Seats are assigned here and *paid for* on /billing. Two
+                screens for one number is confusing unless each points at the
+                other, which is why this link is in the description and not
+                buried in a menu. */}
+            {/* ⚠️ `Link`, not `<a>`. A full page load discards the master
+                key and drops the person on the login screen. */}
+            <Link className="underline" href="/billing/">
+              Plans and payment →
+            </Link>
           </p>
         </div>
 
