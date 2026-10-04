@@ -43,6 +43,22 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+const DEFAULT_AFTER_LOGIN = "/vaults/";
+
+/**
+ * Accept only a same-origin absolute path.
+ *
+ * ⚠️ Exported for the test below rather than inlined, because an open redirect
+ * is the kind of bug that is invisible on inspection and obvious in a test.
+ */
+export function safeNext(raw: string | null): string {
+  if (!raw) return DEFAULT_AFTER_LOGIN;
+  if (!raw.startsWith("/")) return DEFAULT_AFTER_LOGIN;
+  if (raw.startsWith("//")) return DEFAULT_AFTER_LOGIN;
+  if (raw.includes("\\")) return DEFAULT_AFTER_LOGIN;
+  return raw;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const signedIn = useAuthStore((s) => s.signedIn);
@@ -74,11 +90,33 @@ export default function LoginPage() {
     () => false,
   );
 
+  // Where to go after signing in.
+  //
+  // ⚠️ **Validated, because `?next=` is an open-redirect hole by default.**
+  // `?next=https://evil.example/login` would turn this page into a credential
+  // phishing hop that a user reaches from a genuine evnx link. Only a
+  // same-origin absolute path is accepted:
+  //
+  //   * must start with `/`             — no scheme, no host
+  //   * must NOT start with `//`        — `//evil.example` is protocol-relative
+  //                                       and browsers treat it as cross-origin
+  //   * must NOT contain `\`           — some parsers normalise it to `/`
+  //
+  // Anything else falls back to `/vaults/` rather than erroring: a malformed
+  // `next` is not worth blocking a sign-in over.
+  //
+  // Read the same way `disavowed` is, and for the same reason — see above.
+  const next = useSyncExternalStore(
+    () => () => {},
+    () => safeNext(new URLSearchParams(window.location.search).get("next")),
+    () => DEFAULT_AFTER_LOGIN,
+  );
+
   function finish(result: Parameters<typeof signedIn>[0], remaining: number | null) {
     signedIn(result, remaining);
     setPassword("");
     setPending(null);
-    router.push("/vaults/");
+    router.push(next);
   }
 
   async function onCredentials(e: React.FormEvent) {

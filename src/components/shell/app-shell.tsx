@@ -12,6 +12,25 @@
  * with the same brand square and wordmark. Someone moving between the marketing
  * site and the dashboard should not feel a seam.
  *
+ * ─── ⚠️ Navigation below 640px, which did not exist ──────────────────────────
+ *
+ * The only `<nav>` here was `hidden … sm:flex` with **nothing replacing it**, so
+ * on a phone there was no clickable path to any page — including Settings, where
+ * two-factor, session revocation, device disavowal and account deletion live.
+ *
+ * It was not a *lost route*: `/settings/` returned 200 and rendered, so anyone
+ * typing the URL got there. It was undiscoverable, which is a different and
+ * smaller bug — but on a security product the specific moment it bites is the
+ * one that matters. The login alert now says "from a device we have not seen
+ * before" and points at disavowal; people read email on phones, and that is
+ * exactly when someone wants to revoke a session *now*.
+ *
+ * ⚠️ A `<details>` element rather than a React-state dropdown, deliberately:
+ * it closes on outside click and on Escape, is keyboard- and
+ * screen-reader-navigable, and needs no effect to tear down on route change.
+ * The one thing it does not do by itself is close after a navigation, which is
+ * why each link clears `open` on click.
+ *
  * ─── The organisation slot ───────────────────────────────────────────────────
  *
  * `<OrgSlot />` renders nothing today. It is here because Phase 3 introduces
@@ -32,6 +51,7 @@ import { DOCS, docsUrl } from "@/lib/config";
 
 const NAV = [
   { href: "/vaults/", label: "Vaults" },
+  { href: "/organizations/", label: "Organizations" },
   { href: "/settings/", label: "Settings" },
 ];
 
@@ -73,6 +93,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex min-w-0 items-center gap-3">
+            <MobileNav pathname={pathname} />
             {/* Truncates rather than wraps — a long address must not change the
                 header's height and shift every page below it. */}
             <span className="hidden truncate text-xs text-muted-foreground md:block">
@@ -110,6 +131,68 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
     </div>
+  );
+}
+
+/**
+ * The phone-width menu.
+ *
+ * ⚠️ `sm:hidden` so it is the exact complement of the desktop nav's `sm:flex` —
+ * one or the other is always present, which is the property that was missing.
+ */
+function MobileNav({ pathname }: { pathname: string }) {
+  return (
+    <details className="relative sm:hidden" aria-label="Menu">
+      <summary
+        className="flex h-8 w-8 cursor-pointer list-none items-center justify-center rounded-md text-muted-foreground transition-colors hover:text-foreground [&::-webkit-details-marker]:hidden"
+        aria-label="Open menu"
+      >
+        {/* Inline SVG rather than an icon dependency — three lines do not
+            justify pulling a package into the shell. */}
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          aria-hidden="true"
+        >
+          <path d="M2 4.5h14M2 9h14M2 13.5h14" />
+        </svg>
+      </summary>
+
+      <nav
+        aria-label="Mobile"
+        className="absolute right-0 z-50 mt-2 min-w-44 overflow-hidden rounded-md border border-[var(--border-subtle)] bg-[var(--bg-base)] py-1 shadow-lg"
+      >
+        {NAV.map(({ href, label }) => {
+          const active = pathname === href || pathname.startsWith(href);
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={active ? "page" : undefined}
+              // ⚠️ Closes the disclosure on navigation. `<details>` has no idea
+              // the route changed, so without this the menu stays open over the
+              // page it just took you to.
+              onClick={(e) => {
+                e.currentTarget.closest("details")?.removeAttribute("open");
+              }}
+              className={
+                "block px-3 py-2 text-sm transition-colors " +
+                (active
+                  ? "bg-[var(--bg-overlay)] text-foreground"
+                  : "text-muted-foreground hover:bg-[var(--bg-overlay)] hover:text-foreground")
+              }
+            >
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+    </details>
   );
 }
 
