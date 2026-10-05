@@ -64,10 +64,26 @@ function findBinary() {
 }
 
 function emit(bin) {
-  const raw = execFileSync(bin, ["surface", "--compact"], {
-    encoding: "utf8",
-    maxBuffer: 32 * 1024 * 1024,
-  });
+  // ⚠️ `commands --json --compact`, not `surface --compact`.
+  //
+  // `surface` is still a working alias, but `--compact` now requires `--json`
+  // — the command became user-facing in 0.10.0 and its default output is prose
+  // for people. An older binary will fail here with evnx's own error, which is
+  // the right outcome: a 0.9.0 binary cannot produce this payload.
+  let raw;
+  try {
+    raw = execFileSync(bin, ["commands", "--json", "--compact"], {
+      encoding: "utf8",
+      maxBuffer: 32 * 1024 * 1024,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+  } catch (e) {
+    throw new Error(
+      `\`${bin} commands --json\` failed. This needs evnx 0.10.0 or later ` +
+        `(0.9.0 had \`evnx surface --compact\` instead).\n` +
+        (e.stderr?.toString().trim() || e.message),
+    );
+  }
   const data = JSON.parse(raw);
 
   // ⚠️ Refuse a default-features build rather than writing a surface that is

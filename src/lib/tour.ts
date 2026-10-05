@@ -142,6 +142,10 @@ const NOTES: Record<string, { note: string; example?: string }> = {
   restore: { note: "Restores one of those backups." },
   update: { note: "Tells you how to upgrade, by the channel you installed from." },
   completions: { note: "Shell completions for bash, zsh, fish and PowerShell." },
+  commands: {
+    note: "What your own build can do — every command it has, and which optional features it was compiled with. ⚠️ Two installs of the same version can differ; this is the only thing that tells you which one you have.",
+    example: "evnx commands",
+  },
 
   auth: {
     note: "Your account: register, sign in, second factor, API tokens for CI, and the devices you have signed in from.",

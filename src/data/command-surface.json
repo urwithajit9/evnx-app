@@ -3633,20 +3633,36 @@
     },
     {
       "path": [
+        "commands"
+      ],
+      "name": "commands",
+      "about": "Every command this build has, and which features it was compiled with",
+      "visible_aliases": [
         "surface"
       ],
-      "name": "surface",
-      "about": "The whole command tree as JSON, for tooling",
-      "visible_aliases": [],
-      "aliases": [],
-      "hidden": true,
-      "docs_url": null,
+      "aliases": [
+        "surface"
+      ],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/commands",
       "args": [
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "The whole command tree as JSON, for tooling",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
         {
           "id": "compact",
           "long": "compact",
           "short": null,
-          "help": "One line instead of indented JSON",
+          "help": "One line instead of indented JSON. Requires `--json`",
           "value_name": null,
           "required": false,
           "takes_value": false,
