@@ -32,6 +32,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SkeletonRows } from "@/components/ui/skeleton";
+import { LoadError } from "@/components/ui/load-error";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export function Sessions() {
   const qc = useQueryClient();
@@ -82,12 +85,27 @@ export function Sessions() {
         )}
 
         {sessions.isPending && (
-          <p className="text-sm text-muted-foreground">Loading sessions…</p>
+          <SkeletonRows count={2} />
         )}
         {sessions.isError && (
-          <Alert variant="destructive">
-            <AlertDescription>Could not load your sessions.</AlertDescription>
-          </Alert>
+          <LoadError
+            title="Could not load your sessions"
+            reassurance="Your sessions are unaffected — this is the list failing to load, not your sign-ins ending."
+            onRetry={() => sessions.refetch()}
+            retrying={sessions.isRefetching}
+          />
+        )}
+
+        {/* ⚠️ One session is the empty case, not zero — you are always looking
+            at this list from inside a session, so a bare list of one answers
+            neither "did this load?" nor "what now?". And the honest answer to
+            the second is nothing, so there is no button: inventing an action
+            here would be worse than offering none. */}
+        {sessions.data?.length === 1 && (
+          <EmptyState title="Only this one">
+            You are signed in here and nowhere else. Other browsers and devices
+            will appear in this list.
+          </EmptyState>
         )}
 
         {sessions.data && (

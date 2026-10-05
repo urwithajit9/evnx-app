@@ -32,6 +32,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SkeletonLines } from "@/components/ui/skeleton";
 
 /** A string field from untyped metadata, or undefined. */
 function str(meta: Record<string, unknown> | null, key: string): string | undefined {
@@ -172,7 +173,7 @@ export function VaultAudit({ vaultId }: { vaultId: string }) {
 
       <CardContent>
         {events.isPending && (
-          <p className="text-sm text-muted-foreground">Loading activity…</p>
+          <SkeletonLines count={4} />
         )}
 
         {events.data?.length === 0 && (

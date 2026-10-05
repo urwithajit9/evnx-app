@@ -54,6 +54,7 @@ import { VaultAudit } from "@/components/vaults/vault-audit";
 import { DeleteVault } from "@/components/vaults/delete-vault";
 import { AppShell } from "@/components/shell/app-shell";
 import { DecryptedHere } from "@/components/shell/zero-knowledge";
+import { SkeletonRows } from "@/components/ui/skeleton";
 
 export default function VaultDetailPage() {
   return (
@@ -159,7 +160,7 @@ function VaultDetail() {
 
       {versions.isError && <LoadError error={versions.error} />}
       {versions.isPending && (
-        <p className="text-sm text-muted-foreground">Loading version history…</p>
+        <SkeletonRows count={3} />
       )}
 
       <PushVersion vaultId={vaultId} />

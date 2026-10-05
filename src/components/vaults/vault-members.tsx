@@ -53,6 +53,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Irreversible } from "@/components/shell/zero-knowledge";
 import { shareVault } from "@/lib/vaults/share";
 import { rekeyVault, type RekeyProgress } from "@/lib/vaults/rekey";
+import { SkeletonRows } from "@/components/ui/skeleton";
 
 export function VaultMembers({ vaultId }: { vaultId: string }) {
   const qc = useQueryClient();
@@ -174,7 +175,7 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
         )}
 
         {members.isPending && (
-          <p className="text-sm text-muted-foreground">Loading members…</p>
+          <SkeletonRows count={2} />
         )}
 
         {members.data && (

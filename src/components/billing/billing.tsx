@@ -65,6 +65,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { LoadError } from "@/components/ui/load-error";
+import { SkeletonLines } from "@/components/ui/skeleton";
 
 /** Said on every state that could worry someone. */
 const SECRETS_UNAFFECTED =
@@ -118,7 +120,7 @@ export function Billing({ preselectPlan }: { preselectPlan?: string }) {
     null;
 
   if (orgs.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <SkeletonLines count={3} />;
   }
   if (orgs.isError) {
     return (
@@ -195,7 +197,7 @@ function OrgBilling({
   };
 
   if (state.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <SkeletonLines count={3} />;
   }
   if (state.isError || !state.data) {
     return (
@@ -375,7 +377,7 @@ function ChoosePlan({
   });
 
   if (catalog.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading plans…</p>;
+    return <SkeletonLines count={4} />;
   }
   if (catalog.isError) {
     return (
@@ -876,7 +878,31 @@ function Invoices({ org }: { org: OrgSummary }) {
     queryFn: () => getInvoices(org.id),
   });
 
-  if (invoices.isLoading || invoices.isError) return null;
+  // ⚠️ Loading and genuinely-empty both stay silent, and that is right: an org
+  // with no invoices should not be shown an empty "Invoices" card, and a card
+  // that appears mid-load would make the page jump for everyone.
+  //
+  // **A failure is different.** Someone who has paid and cannot see their
+  // receipts was being told nothing at all, which reads as "evnx has no record
+  // of your payments" — the worst available reading of a failed GET.
+  if (invoices.isLoading) return null;
+  if (invoices.isError) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Invoices</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <LoadError
+            title="Could not load your invoices"
+            reassurance="Your payments and your plan are unaffected — this is the list failing to load. Paddle also emails every receipt."
+            onRetry={() => invoices.refetch()}
+            retrying={invoices.isRefetching}
+          />
+        </CardContent>
+      </Card>
+    );
+  }
   const rows = invoices.data ?? [];
   if (rows.length === 0) return null;
 

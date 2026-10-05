@@ -27,6 +27,7 @@ import { CreateVault } from "@/components/vaults/create-vault";
 import { getUsage } from "@/lib/api/account";
 import { usageLabel, isFull } from "@/components/settings/plan-usage";
 import { AppShell } from "@/components/shell/app-shell";
+import { SkeletonRows } from "@/components/ui/skeleton";
 import { OnboardingChecklist } from "@/components/vaults/onboarding-checklist";
 import { useOnboarding } from "@/lib/onboarding";
 import { upgradeHref } from "@/lib/config";
@@ -157,8 +158,11 @@ export default function VaultsPage() {
 
       {user.emailVerified && <CreateVault />}
 
+      {/* ⚠️ Row count matches what loaded last time where that is known, so the
+          page does not jump twice — once from 1 line to 3 rows, then from 3 to
+          six. `usage` knows the count and arrives from a different query. */}
       {vaults.isPending && (
-        <p className="text-sm text-muted-foreground">Loading your vaults…</p>
+        <SkeletonRows count={usage.data?.vaults.used || 3} />
       )}
 
       {vaults.isError && <VaultsError error={vaults.error} />}

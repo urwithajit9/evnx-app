@@ -39,6 +39,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SkeletonRows } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export function ApiTokens() {
   const qc = useQueryClient();
@@ -125,7 +127,7 @@ export function ApiTokens() {
         )}
 
         {tokens.isPending && (
-          <p className="text-sm text-muted-foreground">Loading tokens…</p>
+          <SkeletonRows count={2} />
         )}
 
         {tokens.data && tokens.data.length > 0 && (
@@ -155,7 +157,11 @@ export function ApiTokens() {
         )}
 
         {tokens.data?.length === 0 && !creating && (
-          <p className="text-sm text-muted-foreground">No tokens yet.</p>
+          <EmptyState title="No tokens yet">
+            A token lets a CI job pull secrets without a master password. Create
+            one below — you will see its value once, at creation, and never
+            again.
+          </EmptyState>
         )}
 
         {creating ? (

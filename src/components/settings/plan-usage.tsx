@@ -26,6 +26,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getUsage, type UsageCount } from "@/lib/api/account";
+import { apiErrorStatus } from "@/lib/api/client";
+import { SkeletonLines } from "@/components/ui/skeleton";
+import { LoadError } from "@/components/ui/load-error";
 import {
   Card,
   CardContent,
@@ -74,12 +77,26 @@ function Row({ label, count }: { label: string; count: UsageCount }) {
 }
 
 export function PlanUsage() {
-  const usage = useQuery({ queryKey: ["usage"], queryFn: getUsage });
+  // ⚠️ `retry: false` is load-bearing here, not a preference. See the note on
+  // `networkMode` in `lib/api/query-provider.tsx`: with the shared retry policy
+  // a failing query was observed to stall at `fetchStatus: "paused"` forever,
+  // so `isError` never became true and the error branch below was unreachable.
+  // Without retries it fails cleanly and says so. One request is also enough for
+  // a card that is only ever additive information.
+  const usage = useQuery({ queryKey: ["usage"], queryFn: getUsage, retry: false });
 
-  // ⚠️ Silent on failure rather than showing an error card. This is additive
-  // information; a server too old to have the route would otherwise put a red
-  // box on a Settings page where nothing is actually wrong.
-  if (usage.isError) return null;
+  // ⚠️ **A 404 is the only failure worth being silent about**, and the two cases
+  // are genuinely different:
+  //
+  //   • 404 — the server predates `/auth/usage`. Nothing is wrong, the route is
+  //     simply not there, and a red box would be describing our own rollout.
+  //   • anything else — the request failed. Returning `null` here is what made
+  //     a missing quota indistinguishable from a quota of zero, and the scarier
+  //     reading is the one people reach for.
+  //
+  // The old code took the first branch for both.
+  const absent = apiErrorStatus(usage.error) === 404;
+  if (usage.isError && absent) return null;
 
   return (
     <Card>
@@ -93,8 +110,15 @@ export function PlanUsage() {
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {usage.isPending && (
-          <p className="text-sm text-muted-foreground">Loading…</p>
+        {usage.isPending && <SkeletonLines count={3} />}
+
+        {usage.isError && !absent && (
+          <LoadError
+            title="Could not load your usage"
+            reassurance="Your limits are unchanged — this is the display failing, not your plan."
+            onRetry={() => usage.refetch()}
+            retrying={usage.isRefetching}
+          />
         )}
 
         {usage.data && (

@@ -53,6 +53,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { SkeletonRows } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export function Devices() {
   const router = useRouter();
@@ -104,7 +106,7 @@ export function Devices() {
         )}
 
         {devices.isPending && (
-          <p className="text-sm text-muted-foreground">Loading devices…</p>
+          <SkeletonRows count={2} />
         )}
 
         {/*
@@ -122,9 +124,10 @@ export function Devices() {
         )}
 
         {devices.data && real.length === 0 && !devices.isPending && (
-          <p className="text-sm text-muted-foreground">
-            No sign-ins recorded yet.
-          </p>
+          <EmptyState title="No sign-ins recorded yet">
+            Devices appear here after you sign in from them. This one will show
+            up the next time you do.
+          </EmptyState>
         )}
 
         {real.length > 0 && (

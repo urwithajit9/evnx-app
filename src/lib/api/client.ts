@@ -9,6 +9,7 @@
 "use client";
 
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
+import { noteReachable, noteUnreachable } from "@/lib/online";
 
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "https://api.evnx.dev";
@@ -107,8 +108,17 @@ function isUnauthenticatedPath(url: string | undefined): boolean {
 }
 
 api.interceptors.response.use(
-  (r) => r,
+  (r) => {
+    // Something answered, so whatever was in the way is not any more.
+    noteReachable();
+    return r;
+  },
   async (error: AxiosError) => {
+    // ⚠️ No `response` at all is the only shape that means "nothing answered".
+    // A 500 is the server working and saying so, and treating it as offline
+    // would hide a real outage behind a connectivity message.
+    if (!error.response) noteUnreachable();
+
     const original = error.config as InternalAxiosRequestConfig & {
       _retried?: boolean;
     };

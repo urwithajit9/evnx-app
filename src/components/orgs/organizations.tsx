@@ -54,6 +54,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { SkeletonLines } from "@/components/ui/skeleton";
 
 /** Said wherever someone might believe otherwise. */
 const NOT_VAULT_ACCESS =
@@ -74,7 +75,7 @@ export function Organizations() {
     orgs.data?.find((o) => o.id === selected) ?? orgs.data?.[0] ?? null;
 
   if (orgs.isLoading) {
-    return <p className="text-sm text-muted-foreground">Loading…</p>;
+    return <SkeletonLines count={3} />;
   }
 
   if (orgs.isError) {
@@ -302,7 +303,7 @@ function Members({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {loading && <p className="text-sm text-muted-foreground">Loading…</p>}
+        {loading && <SkeletonLines count={2} />}
 
         {members.map((m) => (
           <div

@@ -44,6 +44,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/authStore";
+import { useOnline } from "@/lib/online";
 import { Button } from "@/components/ui/button";
 import { BrandMark } from "./brand-mark";
 import { ThemeToggle } from "./theme-toggle";
@@ -63,6 +64,39 @@ const NAV = [
   { href: "/settings/", label: "Settings" },
 ];
 
+/**
+ * One banner, not five error cards.
+ *
+ * Offline, every query fails independently — the settings page alone can show
+ * five cards each describing a network failure, none of which says the obvious
+ * thing. This says it once, above the header, so it is read first and does not
+ * compete with page content.
+ *
+ * ⚠️ **It must not promise the data is current.** "Showing what was already
+ * loaded" is honest; "cached" invites the reading that something is keeping it
+ * up to date.
+ *
+ * ⚠️ Actions that need the network stay visible and fail with their own message
+ * rather than being hidden — a button that disappears reads as a bug, and the
+ * person cannot tell whether the feature is gone or the connection is.
+ */
+function OfflineBanner() {
+  const online = useOnline();
+  if (online) return null;
+  return (
+    <div
+      role="status"
+      className="border-b border-[var(--border-subtle)] bg-muted px-6 py-2 text-center text-sm"
+    >
+      <span className="font-medium">You are offline.</span>{" "}
+      <span className="text-muted-foreground">
+        Showing what was already loaded. Pushing, pulling and signing in need a
+        connection.
+      </span>
+    </div>
+  );
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -71,6 +105,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-svh flex-col">
+      <OfflineBanner />
       <header className="sticky top-0 z-50 border-b border-[var(--border-subtle)] bg-[var(--bg-base)]/90 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-6">
           <div className="flex min-w-0 items-center gap-3">
