@@ -11,6 +11,9 @@ holds ciphertext.
 npm install
 npm run dev          # http://localhost:3000
 npm run build        # static export into out/
+
+npm run surface:check      # the tour matches a real evnx binary
+npm run onboarding:check   # the /vaults/ checklist rule, every reachable state
 ```
 
 Open **`/selftest/`** first. It runs Argon2id and a full vault round trip through
@@ -112,7 +115,19 @@ Until it is published, `package.json` points at the local build via `file:`. Onc
 
 ```
 NEXT_PUBLIC_API_URL=https://api.evnx.dev    # optional; this is the default
+NEXT_PUBLIC_BILLING_LIVE=true               # optional; defaults to off
 ```
+
+`NEXT_PUBLIC_BILLING_LIVE` is the one switch waiting on Paddle. It does **not**
+hide `/billing/` — that page is deployed, in the nav, and proven against Paddle's
+sandbox — and it cannot charge anyone, which the server's `PADDLE_ENVIRONMENT`
+alone decides. It gates whether a *first-time* user is invited to pay, which is
+exactly one sentence today: the vault-limit message on `/vaults/`.
+
+⚠️ It has a twin that is **not** the same switch. `evnx-web` sets `BILLING_LIVE`
+on the **Vercel** project that builds `apps/web`; this one is set on the
+**Cloudflare Pages** project for `app.evnx.dev`. Flip web first — it owns the
+entry point — then this. Reasoning in `src/lib/config/billing.ts`.
 
 The server must allow this origin in CORS. `FRONTEND_URL` on evnx-server accepts a
 comma-separated list, so one deployment can serve both `https://app.evnx.dev` and a

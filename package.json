@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "surface": "node scripts/sync-command-surface.mjs",
-    "surface:check": "node scripts/sync-command-surface.mjs --check"
+    "surface:check": "node scripts/sync-command-surface.mjs --check",
+    "onboarding:check": "node scripts/check-onboarding.mjs"
   },
   "dependencies": {
     "@evnx/crypto-wasm": "^0.2.0",

@@ -24,6 +24,25 @@
  * verified, or genuinely pending. Anything more specific would let an
  * unauthenticated caller enumerate who has an account. So the confirmation here
  * is conditional ("if that address needs verifying") and must stay that way.
+ *
+ * ─── ⚠️ WHY THIS TAB DOES NOT WATCH FOR VERIFICATION ────────────────────────
+ *
+ * The onboarding design asked for "open it and you will be signed in — this
+ * tab will notice", backed by a poll of `GET /auth/me`. **That cannot be built
+ * here, and the sentence is therefore not on the page.**
+ *
+ * `/register/` does not leave a session: it pushes straight to this route with
+ * the address in the query string, so there is no access token to poll with and
+ * `/auth/me` would answer 401 forever. The only endpoint reachable
+ * unauthenticated is the resend above, which deliberately answers 202 to
+ * everything — it cannot report verification state without becoming the
+ * enumeration oracle the note above exists to prevent.
+ *
+ * So the options were a server change (which would make this a different task)
+ * or saying nothing. A page that claims it is watching and is not is worse than
+ * one that says nothing, so: nothing. What this page does carry instead is
+ * where the person is in the sequence, and what to do when the mail does not
+ * arrive — the two things that were actually missing.
  */
 
 "use client";
@@ -119,6 +138,11 @@ function VerifyEmail() {
   return (
     <Card>
       <CardHeader>
+        {/* ⚠️ The only screen in the flow with a wait in the middle, and so the
+            easiest place to lose someone. It carries the sequence itself,
+            because the checklist on /vaults/ cannot — nobody is signed in yet.
+            The count must match `ONBOARDING_STEPS` in lib/onboarding.ts. */}
+        <p className="text-sm text-muted-foreground">Step 2 of 5</p>
         <CardTitle as="h1">Check your inbox</CardTitle>
         <CardDescription>
           {emailFromRegister ? (
@@ -147,6 +171,14 @@ function VerifyEmail() {
           until your address is confirmed.
         </p>
 
+        <Alert>
+          <AlertDescription>
+            Not there in a minute? Check spam — the sender is{" "}
+            <span className="font-medium text-foreground">noreply@evnx.dev</span>
+            . You can request another email three times an hour.
+          </AlertDescription>
+        </Alert>
+
         <ResendForm initialEmail={emailFromRegister} />
 
         <p className="text-center text-sm text-muted-foreground">
@@ -164,6 +196,15 @@ function ResendForm({ initialEmail }: { initialEmail: string }) {
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
+
+  // Counts down only while a send has just happened; cleared on unmount so a
+  // navigation mid-countdown does not leave an interval running.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((n) => n - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -172,6 +213,7 @@ function ResendForm({ initialEmail }: { initialEmail: string }) {
     try {
       await postResendVerification(email);
       setSent(true);
+      setCooldown(60);
     } catch {
       // A 429 is the only failure worth distinguishing: the server allows three
       // an hour, and "try again later" is actionable where "something failed" is
@@ -186,12 +228,34 @@ function ResendForm({ initialEmail }: { initialEmail: string }) {
 
   if (sent) {
     return (
-      <Alert>
-        <AlertDescription>
-          If that address belongs to an account that still needs verifying, a new
-          link is on its way. Check your spam folder too.
-        </AlertDescription>
-      </Alert>
+      <div className="space-y-3">
+        <Alert>
+          <AlertDescription>
+            If that address belongs to an account that still needs verifying, a
+            new link is on its way. Check your spam folder too.
+          </AlertDescription>
+        </Alert>
+        {/* ⚠️ The limit is stated here rather than discovered by being refused.
+            It is NOT a client-side count of attempts: the window is server-side
+            and per address (`rate:resend_verify`, 3/hour), so another tab or
+            another device spends from the same allowance and any number this
+            page kept would eventually be wrong. A cooldown and the real limit
+            are both true; "1 of 3 used" would not be. */}
+        <p className="text-sm text-muted-foreground">
+          The limit is three an hour.{" "}
+          {cooldown > 0 ? (
+            <>You can try again in {cooldown}s.</>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSent(false)}
+              className="underline underline-offset-4"
+            >
+              Send another
+            </button>
+          )}
+        </p>
+      </div>
     );
   }
 

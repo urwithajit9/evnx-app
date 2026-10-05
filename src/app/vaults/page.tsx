@@ -27,6 +27,9 @@ import { CreateVault } from "@/components/vaults/create-vault";
 import { getUsage } from "@/lib/api/account";
 import { usageLabel, isFull } from "@/components/settings/plan-usage";
 import { AppShell } from "@/components/shell/app-shell";
+import { OnboardingChecklist } from "@/components/vaults/onboarding-checklist";
+import { useOnboarding } from "@/lib/onboarding";
+import { upgradeHref } from "@/lib/config";
 
 export default function VaultsPage() {
   const router = useRouter();
@@ -54,6 +57,19 @@ export default function VaultsPage() {
     retry: false,
   });
 
+  // ⚠️ Derived from the two queries above and nothing else — no third request,
+  // no stored progress. `ready` gates on the vault list having arrived, so the
+  // card cannot flash "create a vault" at someone who has six.
+  const onboarding = useOnboarding({
+    userId: user?.userId ?? "",
+    emailVerified: user?.emailVerified ?? false,
+    vaults: vaults.data,
+    ready: Boolean(user) && vaults.isSuccess,
+  });
+
+  // `null` while billing is sandbox-only — see lib/config/billing.ts.
+  const upgrade = upgradeHref();
+
   if (!unlocked || !user) return null;
 
   return (
@@ -75,7 +91,12 @@ export default function VaultsPage() {
         </Alert>
       )}
 
-      {!user.emailVerified && (
+      {/* ⚠️ Suppressed while the checklist is up, for the same reason the empty
+          state below is: the checklist's own "Email verified" step says this,
+          in sequence and with the rest of the path around it. Two blocks on one
+          page telling someone to go and check the same inbox is not twice the
+          nudge. */}
+      {!user.emailVerified && !onboarding.visible && (
         <Alert>
           <AlertTitle>Verify your email to use vaults</AlertTitle>
           <AlertDescription>
@@ -97,7 +118,27 @@ export default function VaultsPage() {
           {isFull(usage.data.vaults) ? (
             <span className="font-medium text-destructive">
               {usageLabel(usage.data.vaults)} vaults — full. Delete one you no
-              longer need to free a slot.
+              longer need to free a slot
+              {/* ⚠️ THE PADDLE PLACEHOLDER. This is the only spot in the app
+                  where going live changes what a user is told, so it is the
+                  only spot that reads the flag. While billing is sandbox-only
+                  the sentence ends here: a remedy inside the free plan, and no
+                  upsell, because the checkout behind it takes test cards.
+                  Flipping `NEXT_PUBLIC_BILLING_LIVE=true` adds the offer. */}
+              {upgrade ? (
+                <>
+                  , or{" "}
+                  <Link
+                    href={upgrade}
+                    className="underline underline-offset-4"
+                  >
+                    move to a paid plan
+                  </Link>
+                  .
+                </>
+              ) : (
+                "."
+              )}
             </span>
           ) : (
             <>
@@ -108,6 +149,12 @@ export default function VaultsPage() {
         </p>
       )}
 
+      <OnboardingChecklist
+        state={onboarding}
+        vaults={vaults.data}
+        email={user.email}
+      />
+
       {user.emailVerified && <CreateVault />}
 
       {vaults.isPending && (
@@ -116,7 +163,10 @@ export default function VaultsPage() {
 
       {vaults.isError && <VaultsError error={vaults.error} />}
 
-      {vaults.data?.length === 0 && (
+      {/* ⚠️ Suppressed while the checklist is up. Two "you have no vaults, here
+          is how to make one" blocks on one page is worse than either alone —
+          the checklist says it better and in sequence. */}
+      {vaults.data?.length === 0 && !onboarding.visible && (
         <Card>
           <CardHeader>
             <CardTitle>No vaults yet</CardTitle>
