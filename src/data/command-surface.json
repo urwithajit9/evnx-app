@@ -114,6 +114,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -151,6 +187,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -175,6 +247,66 @@
           "required": true,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Output path (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip confirmation prompts",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
           "multiple": false,
           "hidden": false
         }
@@ -215,6 +347,66 @@
           "positional": true,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Output path (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip confirmation prompts",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -241,6 +433,66 @@
           "positional": true,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Output path (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip confirmation prompts",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -255,7 +507,68 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Output path (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip confirmation prompts",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -375,6 +688,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -466,6 +815,42 @@
           "long": "exit-zero",
           "short": null,
           "help": "Always exit 0, even when secrets are found",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -605,6 +990,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -723,6 +1144,42 @@
           "value_name": "MODE",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -991,6 +1448,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1136,6 +1629,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1233,6 +1762,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1318,6 +1883,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1391,6 +1992,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1413,6 +2050,42 @@
           "value_name": "URL",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -1448,6 +2121,54 @@
           "long": "password-stdin",
           "short": null,
           "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1492,6 +2213,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1506,7 +2275,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1519,7 +2337,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1581,6 +2448,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1596,7 +2511,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1634,6 +2598,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1648,7 +2660,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1662,7 +2723,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1676,7 +2786,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1690,7 +2849,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1703,7 +2911,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1717,7 +2974,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1755,6 +3061,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1782,6 +3136,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1796,7 +3198,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1810,7 +3261,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1848,6 +3348,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1862,7 +3410,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -1911,6 +3508,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -1943,6 +3588,54 @@
           "long": "password-stdin",
           "short": null,
           "help": "Read the previous master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1987,6 +3680,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2007,6 +3748,54 @@
           "long": "confirm-stdin",
           "short": null,
           "help": "Read the confirmation email from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2035,6 +3824,42 @@
           "value_name": "URL",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2076,6 +3901,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2090,7 +3963,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -2112,6 +4034,54 @@
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2165,6 +4135,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2188,6 +4206,54 @@
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2229,6 +4295,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2255,6 +4369,54 @@
           "positional": true,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2278,6 +4440,54 @@
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2331,6 +4541,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2369,6 +4627,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2404,6 +4710,54 @@
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2457,6 +4811,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2504,6 +4906,54 @@
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2557,6 +5007,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2595,6 +5093,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2617,6 +5163,42 @@
           "value_name": "URL",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2670,6 +5252,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2684,7 +5314,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -2715,6 +5394,54 @@
           "long": "yes",
           "short": "y",
           "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2783,6 +5510,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2807,6 +5582,54 @@
           "required": true,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
           "multiple": false,
           "hidden": false
         }
@@ -2856,6 +5679,54 @@
           "value_name": "ROLE",
           "required": true,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2933,6 +5804,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -2983,6 +5902,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3005,6 +5972,42 @@
           "value_name": "URL",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -3064,6 +6067,54 @@
           "long": "password-stdin",
           "short": null,
           "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3144,6 +6195,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3218,6 +6317,54 @@
           "positional": true,
           "multiple": true,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3253,6 +6400,54 @@
           "value_name": "LIMIT",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -3306,6 +6501,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3332,6 +6575,54 @@
           "positional": true,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3346,7 +6637,56 @@
       "aliases": [],
       "hidden": false,
       "docs_url": null,
-      "args": []
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -3431,6 +6771,54 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3451,6 +6839,54 @@
           "long": "ping",
           "short": null,
           "help": "Also check that the server is reachable",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3542,6 +6978,30 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3555,7 +7015,44 @@
       "aliases": [],
       "hidden": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/spec",
-      "args": []
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
     },
     {
       "path": [
@@ -3628,6 +7125,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3669,6 +7202,42 @@
           "positional": false,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3694,6 +7263,42 @@
           "positional": true,
           "multiple": false,
           "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
         }
       ]
     },
@@ -3713,6 +7318,42 @@
           "long": "check",
           "short": null,
           "help": "Ask api.github.com for the latest release",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
           "value_name": null,
           "required": false,
           "takes_value": false,
