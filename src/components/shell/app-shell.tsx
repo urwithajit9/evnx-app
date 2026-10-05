@@ -56,6 +56,10 @@ const NAV = [
   // `evnx.dev/pricing` links straight to `/billing/?plan=…` — a destination
   // with no nav entry is one people cannot find their way back to.
   { href: "/billing/", label: "Billing" },
+  // ⚠️ Last before Settings, and reachable without unlocking — it decrypts
+  // nothing, and the person most likely to want it is the one who just
+  // registered and has not installed the CLI yet.
+  { href: "/tour/", label: "Commands" },
   { href: "/settings/", label: "Settings" },
 ];
 

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "surface": "node scripts/sync-command-surface.mjs",
+    "surface:check": "node scripts/sync-command-surface.mjs --check"
   },
   "dependencies": {
     "@evnx/crypto-wasm": "^0.2.0",

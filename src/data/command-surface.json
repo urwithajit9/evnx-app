@@ -1,0 +1,3710 @@
+{
+  "schema": 1,
+  "evnx_version": "0.9.0",
+  "features": [
+    "net",
+    "migrate",
+    "backup",
+    "cloud"
+  ],
+  "commands": [
+    {
+      "path": [
+        "init"
+      ],
+      "name": "init",
+      "about": "Interactive project setup — generates .env.example",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/init",
+      "args": [
+        {
+          "id": "path",
+          "long": "path",
+          "short": null,
+          "help": "Output path for .env files",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip all prompts. Creates blank .env files unless --blueprint names a stack",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "blueprint",
+          "long": "blueprint",
+          "short": null,
+          "help": "Generate from a named stack blueprint, e.g. `t3_modern`",
+          "value_name": "ID",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "with",
+          "long": "with",
+          "short": null,
+          "help": "Name the components directly, e.g. `--with nextjs,postgresql,stripe`",
+          "value_name": "LIST",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "list_components",
+          "long": "list-components",
+          "short": null,
+          "help": "Print every component `--with` accepts, and exit",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "detect",
+          "long": "detect",
+          "short": null,
+          "help": "Accept what the project declares, without asking",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "from_source",
+          "long": "from-source",
+          "short": null,
+          "help": "Build the template from the variables the code actually reads",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Overwrite an existing .env.example",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "add"
+      ],
+      "name": "add",
+      "about": "Add environment variables to existing .env files",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/add",
+      "args": [
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Output path (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip confirmation prompts",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "add",
+        "service"
+      ],
+      "name": "service",
+      "about": "Add variables for a specific service",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "service",
+          "long": null,
+          "short": null,
+          "help": "Service ID (e.g., \"postgresql\", \"redis\", \"stripe\")",
+          "value_name": "SERVICE",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "add",
+        "framework"
+      ],
+      "name": "framework",
+      "about": "Add variables for a framework",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "language",
+          "long": "language",
+          "short": "l",
+          "help": "Language ID (e.g., \"python\", \"javascript_typescript\")",
+          "value_name": "LANGUAGE",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "framework",
+          "long": null,
+          "short": null,
+          "help": "Framework ID (e.g., \"django\", \"nextjs\", \"axum_actix\")",
+          "value_name": "FRAMEWORK",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "add",
+        "blueprint"
+      ],
+      "name": "blueprint",
+      "about": "Add variables from a stack blueprint (without overwriting existing)",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "blueprint",
+          "long": null,
+          "short": null,
+          "help": "Blueprint ID (e.g., \"t3_modern\", \"rust_high_perf\")",
+          "value_name": "BLUEPRINT",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "add",
+        "custom"
+      ],
+      "name": "custom",
+      "about": "Add custom variables interactively",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "validate"
+      ],
+      "name": "validate",
+      "about": "Check .env against .env.example, find issues",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/validate",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "Path to the environment file to check",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Operate on `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "example",
+          "long": "example",
+          "short": null,
+          "help": "The template to compare against",
+          "value_name": "EXAMPLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "strict",
+          "long": "strict",
+          "short": null,
+          "help": "Also report variables that are present but not declared",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "fix",
+          "long": "fix",
+          "short": null,
+          "help": "Repair what can be repaired, instead of only reporting it",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format: `pretty`, `json` or `github-actions`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "exit_zero",
+          "long": "exit-zero",
+          "short": null,
+          "help": "Always exit 0, even when problems are found",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "ignore",
+          "long": "ignore",
+          "short": null,
+          "help": "Comma-separated list of issue types to ignore",
+          "value_name": "IGNORE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "validate_formats",
+          "long": "validate-formats",
+          "short": null,
+          "help": "Validate value formats: url, port, email",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan"
+      ],
+      "name": "scan",
+      "about": "Detect secrets that look real (AWS keys, tokens, etc.)",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/scan",
+      "args": [
+        {
+          "id": "path",
+          "long": null,
+          "short": null,
+          "help": null,
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": null,
+          "value_name": "EXCLUDE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "pattern",
+          "long": "pattern",
+          "short": null,
+          "help": "Also report values matching this regular expression. Repeatable",
+          "value_name": "REGEX",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "ignore_placeholders",
+          "long": "ignore-placeholders",
+          "short": null,
+          "help": "Skip values evnx recognises as filler",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "severity",
+          "long": "severity",
+          "short": null,
+          "help": "Lowest confidence worth reporting: high, medium or low",
+          "value_name": "LEVEL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format: `pretty`, `json`, `sarif` or `github`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "exit_zero",
+          "long": "exit-zero",
+          "short": null,
+          "help": "Always exit 0, even when secrets are found",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "diff"
+      ],
+      "name": "diff",
+      "about": "Compare .env vs .env.example — show missing/extra vars",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/diff",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The environment file on the left of the comparison",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "example",
+          "long": "example",
+          "short": null,
+          "help": "The file on the right of the comparison",
+          "value_name": "EXAMPLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Operate on `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "against",
+          "long": "against",
+          "short": null,
+          "help": "Compare against `.env.<NAME>` instead of `.env.example`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "show_values",
+          "long": "show-values",
+          "short": null,
+          "help": "Print the values, not just which keys differ",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format: `pretty`, `json` or `patch`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "reverse",
+          "long": "reverse",
+          "short": null,
+          "help": "Swap the two sides: compare the example against the environment",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "ignore_keys",
+          "long": "ignore-keys",
+          "short": null,
+          "help": "Ignore these keys (comma-separated) — useful for env-specific vars",
+          "value_name": "IGNORE_KEYS",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "with_stats",
+          "long": "with-stats",
+          "short": null,
+          "help": "Include extended statistics in JSON output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "interactive",
+          "long": "interactive",
+          "short": "i",
+          "help": "Enable interactive merge mode (patch format only)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "convert"
+      ],
+      "name": "convert",
+      "about": "Transform `.env` files into multiple output formats",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/convert",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "Path to input .env file",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Operate on `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "to",
+          "long": "to",
+          "short": null,
+          "help": "Target output format (omit for interactive selection)",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "output",
+          "long": "output",
+          "short": "o",
+          "help": "Write output to file instead of stdout",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "include",
+          "long": "include",
+          "short": null,
+          "help": "Include only variables matching this glob pattern",
+          "value_name": "PATTERN",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": "Exclude variables matching this glob pattern",
+          "value_name": "PATTERN",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "base64",
+          "long": "base64",
+          "short": null,
+          "help": "Base64-encode all values before output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "prefix",
+          "long": "prefix",
+          "short": null,
+          "help": "Prefix to prepend to all variable names",
+          "value_name": "PREFIX",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "transform",
+          "long": "transform",
+          "short": null,
+          "help": "Transform variable name casing",
+          "value_name": "MODE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "migrate"
+      ],
+      "name": "migrate",
+      "about": "Full migration workflow to secret managers",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/migrate",
+      "args": [
+        {
+          "id": "from",
+          "long": "from",
+          "short": null,
+          "help": "Source system: `env-file` (default) or `environment`",
+          "value_name": "FROM",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "source_file",
+          "long": "source-file",
+          "short": null,
+          "help": "Path to the source .env file (used when --from env-file)",
+          "value_name": "SOURCE_FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "to",
+          "long": "to",
+          "short": null,
+          "help": "Destination system: github-actions | aws-secrets-manager | doppler | infisical | gcp-secret-manager | azure-keyvault | vercel | heroku | railway",
+          "value_name": "TO",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Preview what would be migrated without making any changes",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "skip_existing",
+          "long": "skip-existing",
+          "short": null,
+          "help": "Skip secrets that already exist at the destination",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "overwrite",
+          "long": "overwrite",
+          "short": null,
+          "help": "Overwrite secrets that already exist without prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "include",
+          "long": "include",
+          "short": null,
+          "help": "Comma-separated glob patterns — only migrate matching keys. Example: --include \"DB_*,AWS_*\"",
+          "value_name": "INCLUDE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": "Comma-separated glob patterns — skip matching keys. Example: --exclude \"*_LOCAL,*_TEST\"",
+          "value_name": "EXCLUDE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "strip_prefix",
+          "long": "strip-prefix",
+          "short": null,
+          "help": "Strip this prefix from key names before uploading. Example: --strip-prefix \"APP_\"  →  APP_DB_URL becomes DB_URL",
+          "value_name": "STRIP_PREFIX",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "add_prefix",
+          "long": "add-prefix",
+          "short": null,
+          "help": "Add this prefix to key names before uploading. Example: --add-prefix \"PROD_\"",
+          "value_name": "ADD_PREFIX",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "repo",
+          "long": "repo",
+          "short": null,
+          "help": "GitHub repository in owner/repo format",
+          "value_name": "REPO",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "github_token",
+          "long": "github-token",
+          "short": null,
+          "help": "GitHub Personal Access Token (or set GITHUB_TOKEN env var)",
+          "value_name": "GITHUB_TOKEN",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "secret_name",
+          "long": "secret-name",
+          "short": null,
+          "help": "AWS Secrets Manager secret name, e.g. prod/myapp/config",
+          "value_name": "SECRET_NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "aws_profile",
+          "long": "aws-profile",
+          "short": null,
+          "help": "AWS CLI named profile",
+          "value_name": "AWS_PROFILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "project",
+          "long": "project",
+          "short": null,
+          "help": "Doppler project slug or Infisical project ID",
+          "value_name": "PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "doppler_config",
+          "long": "doppler-config",
+          "short": null,
+          "help": "Doppler config name (dev / staging / prd)",
+          "value_name": "DOPPLER_CONFIG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "infisical_env",
+          "long": "infisical-env",
+          "short": null,
+          "help": "Infisical environment name (dev / staging / prod)",
+          "value_name": "INFISICAL_ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vault_name",
+          "long": "vault-name",
+          "short": null,
+          "help": "Azure Key Vault name",
+          "value_name": "VAULT_NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "heroku_app",
+          "long": "heroku-app",
+          "short": null,
+          "help": "Heroku application name",
+          "value_name": "HEROKU_APP",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vercel_project",
+          "long": "vercel-project",
+          "short": null,
+          "help": "Vercel project ID or name",
+          "value_name": "VERCEL_PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "railway_project",
+          "long": "railway-project",
+          "short": null,
+          "help": "Railway project ID",
+          "value_name": "RAILWAY_PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "sync"
+      ],
+      "name": "sync",
+      "about": "Keep .env and .env.example in sync",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/sync",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The environment file to sync from (forward) or into (reverse)",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "example",
+          "long": "example",
+          "short": null,
+          "help": "The template to sync into (forward) or from (reverse)",
+          "value_name": "EXAMPLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Use `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "direction",
+          "long": "direction",
+          "short": null,
+          "help": "Direction of sync operation",
+          "value_name": "DIRECTION",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "placeholder",
+          "long": "placeholder",
+          "short": null,
+          "help": "Use placeholder values when adding new variables",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": "n",
+          "help": "Preview changes without writing to files",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "check",
+          "long": "check",
+          "short": null,
+          "help": "Report whether the files are in step through the exit code.",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format for `--check`: `pretty` (default) or `json`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": "f",
+          "help": "Skip interactive prompts (for CI/CD usage)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "template_config",
+          "long": "template-config",
+          "short": null,
+          "help": "Path to custom placeholder template config (JSON)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "naming_policy",
+          "long": "naming-policy",
+          "short": null,
+          "help": "Warn on non-standard env var naming (default: warn) Defaults to `warn`, or `[sync] naming_policy` from `.evnx.toml`",
+          "value_name": "NAMING_POLICY",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "template"
+      ],
+      "name": "template",
+      "about": "Generate config files from templates",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/template",
+      "args": [
+        {
+          "id": "input",
+          "long": "input",
+          "short": null,
+          "help": "The template to render. `{{ VAR }}` and `${VAR}` are substituted",
+          "value_name": "INPUT",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "output",
+          "long": "output",
+          "short": null,
+          "help": "Where to write the rendered file",
+          "value_name": "OUTPUT",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The environment file to take values from",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Operate on `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "gitignore",
+          "long": "gitignore",
+          "short": null,
+          "help": "Automatically add the output file to .gitignore (no prompt). Useful in CI scripts. Mutually exclusive with --no-gitignore",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_gitignore",
+          "long": "no-gitignore",
+          "short": null,
+          "help": "Skip all .gitignore checks and warnings. Use when you manage .gitignore externally. Mutually exclusive with --gitignore",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "strict",
+          "long": "strict",
+          "short": null,
+          "help": "Refuse to write when a placeholder has no value",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "backup"
+      ],
+      "name": "backup",
+      "about": "Create encrypted backup of .env",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/backup",
+      "args": [
+        {
+          "id": "env",
+          "long": null,
+          "short": null,
+          "help": "Path to the .env file to back up",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Back up `.env.<NAME>` instead",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "output",
+          "long": "output",
+          "short": null,
+          "help": "Destination path for the encrypted backup (default: <env>.backup)",
+          "value_name": "OUTPUT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "key_file",
+          "long": "key-file",
+          "short": null,
+          "help": "Path to a key file to use as the encryption password",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "keep",
+          "long": "keep",
+          "short": null,
+          "help": "Number of previous backups to retain alongside the new one",
+          "value_name": "N",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verify",
+          "long": "verify",
+          "short": null,
+          "help": "Re-decrypt the backup after writing and verify content integrity",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "restore"
+      ],
+      "name": "restore",
+      "about": "Restore from encrypted backup",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/restore",
+      "args": [
+        {
+          "id": "backup",
+          "long": null,
+          "short": null,
+          "help": null,
+          "value_name": "BACKUP",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "output",
+          "long": "output",
+          "short": null,
+          "help": null,
+          "value_name": "OUTPUT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Decrypt and validate but do not write any files",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "inspect",
+          "long": "inspect",
+          "short": null,
+          "help": "List variable names (never values) without writing any files",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_file",
+          "long": "password-file",
+          "short": null,
+          "help": "Read the decryption password from a file instead of prompting",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth"
+      ],
+      "name": "auth",
+      "about": "Manage your evnx cloud account",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/auth",
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "register"
+      ],
+      "name": "register",
+      "about": "Create an evnx cloud account",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "email",
+          "long": "email",
+          "short": null,
+          "help": "Email address. Prompted for when omitted",
+          "value_name": "EMAIL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "login"
+      ],
+      "name": "login",
+      "about": "Sign in to evnx cloud",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "email",
+          "long": "email",
+          "short": null,
+          "help": "Email address. Prompted for when omitted",
+          "value_name": "EMAIL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "logout"
+      ],
+      "name": "logout",
+      "about": "Sign out of evnx cloud",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "token"
+      ],
+      "name": "token",
+      "about": "Manage API tokens for CI/CD",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "token",
+        "create"
+      ],
+      "name": "create",
+      "about": "Mint a token. Shown once, then only revocable",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "name",
+          "long": null,
+          "short": null,
+          "help": "A name you will recognise later, e.g. \"github-actions\"",
+          "value_name": "NAME",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "scope",
+          "long": "scope",
+          "short": null,
+          "help": "`read` or `read_write`",
+          "value_name": "SCOPE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Restrict the token to one vault. Strongly recommended for CI",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "expires_in_days",
+          "long": "expires-in-days",
+          "short": null,
+          "help": "Expire after this many days. Omit for a token that never expires",
+          "value_name": "DAYS",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "token",
+        "list"
+      ],
+      "name": "list",
+      "about": "List the account's live tokens",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "token",
+        "revoke"
+      ],
+      "name": "revoke",
+      "about": "Revoke a token by name or id",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Token name or id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "totp"
+      ],
+      "name": "totp",
+      "about": "Manage two-factor authentication",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "totp",
+        "enable"
+      ],
+      "name": "enable",
+      "about": "Turn on two-factor authentication",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "totp",
+        "disable"
+      ],
+      "name": "disable",
+      "about": "Turn two-factor authentication off",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "totp",
+        "recovery-codes"
+      ],
+      "name": "recovery-codes",
+      "about": "Issue a fresh set of recovery codes, invalidating the old ones",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "sessions"
+      ],
+      "name": "sessions",
+      "about": "List and revoke active sessions",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "sessions",
+        "list"
+      ],
+      "name": "list",
+      "about": "List active sessions",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "sessions",
+        "revoke"
+      ],
+      "name": "revoke",
+      "about": "Revoke one session by id, or by the short form the listing shows",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Session id, or enough of its start to be unambiguous",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "sessions",
+        "revoke-others"
+      ],
+      "name": "revoke-others",
+      "about": "Revoke every session except this one",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "devices"
+      ],
+      "name": "devices",
+      "about": "Networks and browsers this account has signed in from",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "devices",
+        "list"
+      ],
+      "name": "list",
+      "about": "List the networks and browsers this account has signed in from",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "devices",
+        "disavow"
+      ],
+      "name": "disavow",
+      "about": "Report that a device was not you",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "device_id",
+          "long": null,
+          "short": null,
+          "help": "Device id, from `evnx auth devices list`",
+          "value_name": "DEVICE_ID",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "status"
+      ],
+      "name": "status",
+      "about": "Show your account as the server sees it",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "auth",
+        "rotate-master-password"
+      ],
+      "name": "rotate-master-password",
+      "about": "Change your master password",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read both passwords from stdin: the current one on the first line, the new one on the second",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "compromised",
+          "long": "compromised",
+          "short": null,
+          "help": "The current password is believed to be in someone else's hands",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": null,
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "undo-password-change"
+      ],
+      "name": "undo-password-change",
+      "about": "Undo a master password change, by proving the previous password",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "email",
+          "long": "email",
+          "short": null,
+          "help": "Email address. Taken from the stored session, or prompted for",
+          "value_name": "EMAIL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the previous master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "download-data"
+      ],
+      "name": "download-data",
+      "about": "Download everything the server holds about your account, as JSON",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "output",
+          "long": "output",
+          "short": "o",
+          "help": "Where to write it. Defaults to `evnx-account-data-<date>.json` here",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Overwrite the file if it already exists",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "auth",
+        "delete-account"
+      ],
+      "name": "delete-account",
+      "about": "Delete your account and everything only you can reach",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "confirm_stdin",
+          "long": "confirm-stdin",
+          "short": null,
+          "help": "Read the confirmation email from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org"
+      ],
+      "name": "org",
+      "about": "Manage organisations — billing and a directory",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/org",
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "create"
+      ],
+      "name": "create",
+      "about": "Create an organisation. You become its owner",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "name",
+          "long": null,
+          "short": null,
+          "help": "Display name, e.g. \"Acme Corp\"",
+          "value_name": "NAME",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "slug",
+          "long": "slug",
+          "short": null,
+          "help": "Short handle used by `--org`, e.g. `acme`. Lowercase letters, digits and hyphens",
+          "value_name": "SLUG",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "list"
+      ],
+      "name": "list",
+      "about": "List the organisations this account belongs to",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "org",
+        "members"
+      ],
+      "name": "members",
+      "about": "Who is in an organisation, and who holds a seat",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "invite"
+      ],
+      "name": "invite",
+      "about": "Invite someone by email",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "email",
+          "long": null,
+          "short": null,
+          "help": "Email address to invite",
+          "value_name": "EMAIL",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "role",
+          "long": "role",
+          "short": null,
+          "help": "`member` (default) or `admin`. ⚠️ `owner` cannot be granted — an organisation has exactly one, set when it is created",
+          "value_name": "ROLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "invites"
+      ],
+      "name": "invites",
+      "about": "Invitations sent but not yet redeemed",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "uninvite"
+      ],
+      "name": "uninvite",
+      "about": "Withdraw an invitation",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "invite_id",
+          "long": null,
+          "short": null,
+          "help": "Invitation id, from `evnx org invites`",
+          "value_name": "INVITE_ID",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "accept"
+      ],
+      "name": "accept",
+      "about": "Redeem an invitation token",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "token",
+          "long": null,
+          "short": null,
+          "help": "The `evnx_inv_…` token from the invitation",
+          "value_name": "TOKEN",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "billing"
+      ],
+      "name": "billing",
+      "about": "What this organisation is on, and until when",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "seats"
+      ],
+      "name": "seats",
+      "about": "Show or set how many seats are purchased",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "set",
+          "long": "set",
+          "short": null,
+          "help": "Set the purchased seat count",
+          "value_name": "N",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "unlimited",
+          "long": "unlimited",
+          "short": null,
+          "help": "No seat limit",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "assign"
+      ],
+      "name": "assign",
+      "about": "Give someone a seat",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "who",
+          "long": null,
+          "short": null,
+          "help": "Email address, or user id",
+          "value_name": "WHO",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "release"
+      ],
+      "name": "release",
+      "about": "Take a seat back",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "who",
+          "long": null,
+          "short": null,
+          "help": "Email address, or user id",
+          "value_name": "WHO",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "role"
+      ],
+      "name": "role",
+      "about": "Change someone's role",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "who",
+          "long": null,
+          "short": null,
+          "help": "Email address, or user id",
+          "value_name": "WHO",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "set",
+          "long": "set",
+          "short": null,
+          "help": "`member` or `admin`",
+          "value_name": "ROLE",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "remove"
+      ],
+      "name": "remove",
+      "about": "Remove someone from an organisation",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "who",
+          "long": null,
+          "short": null,
+          "help": "Email address, or user id",
+          "value_name": "WHO",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": null,
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "delete"
+      ],
+      "name": "delete",
+      "about": "Delete an organisation",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Delete even though seats are assigned",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": null,
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "org",
+        "leave"
+      ],
+      "name": "leave",
+      "about": "Leave an organisation",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": null,
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "org",
+          "long": "org",
+          "short": null,
+          "help": null,
+          "value_name": "SLUG",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault"
+      ],
+      "name": "vault",
+      "about": "Manage encrypted vaults",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/vault",
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "create"
+      ],
+      "name": "create",
+      "about": "Create a vault",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "name",
+          "long": null,
+          "short": null,
+          "help": "Vault name — letters, digits and hyphens",
+          "value_name": "NAME",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env",
+          "long": "env",
+          "short": "e",
+          "help": "One of: production, staging, development, test",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "list"
+      ],
+      "name": "list",
+      "about": "List the vaults you can reach",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "vault",
+        "delete"
+      ],
+      "name": "delete",
+      "about": "Delete a vault and every version in it",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault to delete: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "share"
+      ],
+      "name": "share",
+      "about": "Share a vault with another evnx account",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault to share: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "with",
+          "long": "with",
+          "short": null,
+          "help": "Email address of the evnx account to share with",
+          "value_name": "WITH",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "role",
+          "long": "role",
+          "short": null,
+          "help": "Permission level: viewer, developer, or admin",
+          "value_name": "ROLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "members"
+      ],
+      "name": "members",
+      "about": "List who can reach a vault",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault to inspect: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "role"
+      ],
+      "name": "role",
+      "about": "Change a member's role",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "user",
+          "long": "user",
+          "short": null,
+          "help": "Email address of the member whose role is changing",
+          "value_name": "USER",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "role",
+          "long": "role",
+          "short": null,
+          "help": "New role: viewer, developer, or admin",
+          "value_name": "ROLE",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "revoke"
+      ],
+      "name": "revoke",
+      "about": "Revoke a member's access, rotating the vault key",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "user",
+          "long": "user",
+          "short": null,
+          "help": "Email address of the member to remove",
+          "value_name": "USER",
+          "required": true,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_rekey",
+          "long": "no-rekey",
+          "short": null,
+          "help": "Remove the member WITHOUT rotating the vault key",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "rekey"
+      ],
+      "name": "rekey",
+      "about": "Rotate a vault's key without removing anyone",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud"
+      ],
+      "name": "cloud",
+      "about": "Sync encrypted .env files with evnx cloud",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/cloud",
+      "args": [
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "push"
+      ],
+      "name": "push",
+      "about": "Encrypt a .env and upload it as a new version",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to push to: `name`, `name/environment`, or an id",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "file",
+          "long": "file",
+          "short": "f",
+          "help": "File to push",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Use `.env.<NAME>` instead of the derived or default file",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "pull"
+      ],
+      "name": "pull",
+      "about": "Download a version and decrypt it",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to pull from: `name`, `name/environment`, or an id",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "file",
+          "long": "file",
+          "short": "f",
+          "help": "Where to write the decrypted file",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Use `.env.<NAME>` instead of the derived or default file",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Overwrite the target without asking",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "run"
+      ],
+      "name": "run",
+      "about": "Run a command with a vault's variables in its environment",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to read: `name`, `name/environment`, or an id",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "include",
+          "long": "include",
+          "short": null,
+          "help": "Inject only variables whose name matches one of these globs",
+          "value_name": "GLOB",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": "Skip variables whose name matches one of these globs",
+          "value_name": "GLOB",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "command",
+          "long": null,
+          "short": null,
+          "help": "The command to run, after `--`",
+          "value_name": "COMMAND",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": true,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "history"
+      ],
+      "name": "history",
+      "about": "List a vault's versions, newest first",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to inspect. Optional in a bound directory",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "limit",
+          "long": "limit",
+          "short": null,
+          "help": "How many versions to show",
+          "value_name": "LIMIT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "delete-version"
+      ],
+      "name": "delete-version",
+      "about": "Delete one version of a vault, and its encrypted blob",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "version_num",
+          "long": null,
+          "short": null,
+          "help": "Version number to delete, as `evnx cloud history` shows it",
+          "value_name": "VERSION",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to act on. Optional in a bound directory",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": null,
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "link"
+      ],
+      "name": "link",
+      "about": "Bind this directory to a vault, so push and pull need no --vault",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": null,
+          "short": null,
+          "help": "Vault to bind: `name`, `name/environment`, or an id",
+          "value_name": "VAULT",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "unlink"
+      ],
+      "name": "unlink",
+      "about": "Remove this directory's vault binding",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": []
+    },
+    {
+      "path": [
+        "cloud",
+        "export"
+      ],
+      "name": "export",
+      "about": "Write a vault's secrets to a directory, decrypted — the way out",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to export: `name`, `name/environment`, or an id",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "output",
+          "long": "output",
+          "short": "o",
+          "help": "Directory to write into. Defaults to ./evnx-export",
+          "value_name": "DIR",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "all_versions",
+          "long": "all-versions",
+          "short": null,
+          "help": "Export every version, not just the latest",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "to",
+          "long": "to",
+          "short": null,
+          "help": "Convert to one of `evnx convert`'s formats instead of writing the file as it was pushed",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Overwrite a directory that already holds an export",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "status"
+      ],
+      "name": "status",
+      "about": "Show whether this machine is set up for cloud sync",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "ping",
+          "long": "ping",
+          "short": null,
+          "help": "Also check that the server is reachable",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "doctor"
+      ],
+      "name": "doctor",
+      "about": "Check .env files, Git config, project structure, and security",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/doctor",
+      "args": [
+        {
+          "id": "path",
+          "long": null,
+          "short": null,
+          "help": "Project directory to analyze",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "project_path",
+          "long": "path",
+          "short": null,
+          "help": "Project directory to analyze (same as the positional argument)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "fix",
+          "long": "fix",
+          "short": null,
+          "help": "Repair what can be repaired, instead of only reporting it",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "strict",
+          "long": "strict",
+          "short": null,
+          "help": "Count warnings as problems, so they affect the exit code",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format: `pretty` or `json`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Show detailed diagnostic output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "spec"
+      ],
+      "name": "spec",
+      "about": "Declare what each variable is: required, format, secret",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/spec",
+      "args": []
+    },
+    {
+      "path": [
+        "spec",
+        "init"
+      ],
+      "name": "init",
+      "about": "Generate a first spec from this project, or from named components",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "with",
+          "long": "with",
+          "short": null,
+          "help": "Build from the component catalogue instead of the project's files",
+          "value_name": "WITH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The environment file to read sample values from",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "example",
+          "long": "example",
+          "short": null,
+          "help": "The template that decides which variables are in the contract",
+          "value_name": "EXAMPLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "stdout",
+          "long": "stdout",
+          "short": null,
+          "help": "Print the generated block instead of writing it",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Append even when `.evnx.toml` already has a `[vars]` section",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "surface"
+      ],
+      "name": "surface",
+      "about": "The whole command tree as JSON, for tooling",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": true,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "compact",
+          "long": "compact",
+          "short": null,
+          "help": "One line instead of indented JSON",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "completions"
+      ],
+      "name": "completions",
+      "about": "Generate shell completions",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "shell",
+          "long": null,
+          "short": null,
+          "help": null,
+          "value_name": "SHELL",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "update"
+      ],
+      "name": "update",
+      "about": "Show how to upgrade, and optionally whether a newer release exists",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "check",
+          "long": "check",
+          "short": null,
+          "help": "Ask api.github.com for the latest release",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    }
+  ]
+}
