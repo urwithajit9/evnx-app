@@ -77,13 +77,7 @@ function Row({ label, count }: { label: string; count: UsageCount }) {
 }
 
 export function PlanUsage() {
-  // ⚠️ `retry: false` is load-bearing here, not a preference. See the note on
-  // `networkMode` in `lib/api/query-provider.tsx`: with the shared retry policy
-  // a failing query was observed to stall at `fetchStatus: "paused"` forever,
-  // so `isError` never became true and the error branch below was unreachable.
-  // Without retries it fails cleanly and says so. One request is also enough for
-  // a card that is only ever additive information.
-  const usage = useQuery({ queryKey: ["usage"], queryFn: getUsage, retry: false });
+  const usage = useQuery({ queryKey: ["usage"], queryFn: getUsage });
 
   // ⚠️ **A 404 is the only failure worth being silent about**, and the two cases
   // are genuinely different:
