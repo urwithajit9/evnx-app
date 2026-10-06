@@ -6457,6 +6457,202 @@
     {
       "path": [
         "cloud",
+        "diff"
+      ],
+      "name": "diff",
+      "about": "What changed between two versions — key names only, never values",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to inspect. Optional in a bound directory",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "from",
+          "long": "from",
+          "short": null,
+          "help": "Older version number. Defaults to the second-newest",
+          "value_name": "N",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "to",
+          "long": "to",
+          "short": null,
+          "help": "Newer version number. Defaults to the newest",
+          "value_name": "N",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
+        "audit"
+      ],
+      "name": "audit",
+      "about": "Who did what to a vault, newest first",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to inspect. Optional in a bound directory",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "last",
+          "long": "last",
+          "short": null,
+          "help": "How far back to show: `7d`, `30d`, or `all`",
+          "value_name": "WINDOW",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "event",
+          "long": "event",
+          "short": null,
+          "help": "Show only this event type, e.g. `pull`",
+          "value_name": "TYPE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
         "delete-version"
       ],
       "name": "delete-version",
