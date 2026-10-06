@@ -6457,6 +6457,104 @@
     {
       "path": [
         "cloud",
+        "watch"
+      ],
+      "name": "watch",
+      "about": "Watch a vault and report when someone pushes a new version",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "vault",
+          "long": "vault",
+          "short": null,
+          "help": "Vault to watch. Optional in a bound directory",
+          "value_name": "VAULT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "interval",
+          "long": "interval",
+          "short": null,
+          "help": "Seconds between polls. Minimum 5",
+          "value_name": "SECONDS",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "once",
+          "long": "once",
+          "short": null,
+          "help": "Check once and exit instead of looping. For scripts and tests",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Suppress non-essential output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "cloud",
         "diff"
       ],
       "name": "diff",
