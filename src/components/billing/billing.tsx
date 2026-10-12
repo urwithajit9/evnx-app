@@ -13,12 +13,13 @@
  * and the server could not read it in order to delete it. That is said on every
  * state that could worry someone, not once at the top.
  *
- * ─── ⚠️ Six states, three of them easy to forget entirely ────────────────────
+ * ─── ⚠️ Seven states, four of them easy to forget entirely ──────────────────
  *
  * | state | why it is not obvious |
  * |---|---|
  * | **cancelled, still in period** | Paddle keeps `status: "active"` and attaches a `scheduled_change`. Reading `status` alone makes this screen say "renews" on the exact date the plan ends. |
  * | **over-seated** | A downgrade must never be refused, so more seats can be assigned than purchased. It is a warning laid over another state, never a state of its own. |
+ * | **under-assigned** | ⛔ Paid for and nobody holding a seat — so nobody's limits changed, including the buyer's. Not an edge case: the server inserts an org's owner with `seat_assigned_at = NULL` explicitly, so it is the state every new paying organisation starts in. This row was missing while the screen rendered a bare `0 / 1`. |
  * | **past due** | The limits have **not** changed yet. Saying otherwise makes people think they are already locked out. |
  *
  * ─── ⚠️ Checkout opens a new tab, deliberately ───────────────────────────────
@@ -244,6 +245,13 @@ function OrgBilling({
               subscription is perfectly healthy. */}
           {s.over_seated && <OverSeated state={s} />}
 
+          {/* ⛔ The opposite warning, and the one that was missing. Paid for,
+              nobody holding — so nobody's limits have changed, including the
+              buyer's. See UnderAssigned for why this is not an edge case. */}
+          {s.subscription.exists && s.seats.used === 0 && (
+            <UnderAssigned state={s} />
+          )}
+
           {phase === "unconfigured" && (
             <p className="text-sm text-muted-foreground">
               This deployment has no payment provider configured, so plans are
@@ -342,6 +350,57 @@ function OverSeated({ state }: { state: BillingState }) {
           ⚠️ This is reported, never enforced. A billing downgrade must not be
           refused by us, or Paddle and our records end up disagreeing with no way
           to reconcile.
+        </span>
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+/**
+ * ⛔ **Paid for, and nobody is holding a seat.**
+ *
+ * `resolve_plan` joins the member row with `AND m.seat_assigned_at IS NOT NULL`
+ * *in the JOIN condition*, so an unassigned member does not join and the
+ * account falls back to its own `users.plan`. And the server inserts an
+ * organisation's owner with `seat_assigned_at = NULL` **explicitly** — so this
+ * is not an edge case, it is the state every new paying organisation starts in.
+ *
+ * The person who just paid sees `free`, `1 / 3`, which is indistinguishable
+ * from the payment having failed. Before this, the screen said `0 / 1` and
+ * nothing else.
+ *
+ * ⚠️ The condition is `used === 0`, **not** `used < purchased`. Spare seats are
+ * ordinary — buying ten and filling four is a plan, not a problem. Zero is the
+ * one that means nothing happened.
+ */
+function UnderAssigned({ state }: { state: BillingState }) {
+  // ⚠️ Only an owner or an admin can assign. Telling a member to do it would be
+  // telling them to click something that refuses them.
+  const canAssign = state.your_role === "owner" || state.your_role === "admin";
+  return (
+    <Alert>
+      <AlertTitle>Nobody is using this plan yet</AlertTitle>
+      <AlertDescription>
+        The subscription is active, but no one holds a seat — so no one&apos;s
+        limits have changed, including yours.
+        {canAssign ? (
+          <>
+            {" "}
+            Assign one from the{" "}
+            <Link className="underline" href="/organizations/">
+              members list
+            </Link>
+            .
+          </>
+        ) : (
+          <> Ask an owner or an admin to assign you one.</>
+        )}
+        <br />
+        <span className="text-muted-foreground">
+          ⓘ Buying seats and holding one are separate. The plan belongs to the
+          organisation; a seat is what connects it to a person. It still grants
+          no access to any vault — sharing is separate, and only by someone
+          holding the key.
         </span>
       </AlertDescription>
     </Alert>
