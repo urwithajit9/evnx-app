@@ -73,6 +73,11 @@ export default function VaultsPage() {
 
   if (!unlocked || !user) return null;
 
+  // ⓘ Off the list already loaded, not a request. `owner` is set once, at
+  // creation, and cannot be granted, so it marks exactly the vaults the limit
+  // counts. Zero until the list arrives, which leaves the sentence out.
+  const sharedCount = vaults.data?.filter((v) => v.role !== "owner").length ?? 0;
+
   return (
     <AppShell>
       <div className="space-y-6">
@@ -114,12 +119,15 @@ export default function VaultsPage() {
       {/* ⚠️ Shown beside the create form, not buried in Settings. A vault limit
           discovered at the moment it refuses you is a limit nobody could plan
           around — and this is the moment it applies. */}
+      {/* ⚠️ "you own", never bare "vaults". The limit counts vaults you own,
+          while the list below also holds vaults shared with you — so a bare
+          "3 / 3" above four rows reads as a miscount. */}
       {user.emailVerified && usage.data && (
         <p className="text-sm text-muted-foreground">
           {isFull(usage.data.vaults) ? (
             <span className="font-medium text-destructive">
-              {usageLabel(usage.data.vaults)} vaults — full. Delete one you no
-              longer need to free a slot
+              {usageLabel(usage.data.vaults)} vaults you own — full. Delete one
+              you no longer need to free a slot
               {/* ⚠️ THE PADDLE PLACEHOLDER. This is the only spot in the app
                   where going live changes what a user is told, so it is the
                   only spot that reads the flag. While billing is sandbox-only
@@ -144,7 +152,15 @@ export default function VaultsPage() {
           ) : (
             <>
               <span className="font-mono">{usageLabel(usage.data.vaults)}</span>{" "}
-              vaults used on the {usage.data.plan} plan
+              vaults you own on the {usage.data.plan} plan.
+            </>
+          )}
+          {sharedCount > 0 && (
+            <>
+              {" "}
+              {sharedCount === 1
+                ? "The 1 vault shared with you doesn't count."
+                : `The ${sharedCount} vaults shared with you don't count.`}
             </>
           )}
         </p>
