@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export function CreateVault() {
+/**
+ * @param onCreated Called once the new vault is in the list — the vaults page
+ *   uses it to show the "Owned by you" tab, where the vault just appeared.
+ */
+export function CreateVault({ onCreated }: { onCreated?: () => void } = {}) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -42,6 +46,7 @@ export function CreateVault() {
       await qc.invalidateQueries({ queryKey: ["vaults"] });
       setName("");
       setOpen(false);
+      onCreated?.();
     } catch (err) {
       // A conflict on this endpoint can only be the (name, environment) pair —
       // the server enforces uniqueness per owner.
