@@ -26,6 +26,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CreateVault } from "@/components/vaults/create-vault";
 import { getUsage } from "@/lib/api/account";
 import { usageLabel, isFull } from "@/components/settings/plan-usage";
+import { SeatNotice } from "@/components/settings/seat-notice";
 import { AppShell } from "@/components/shell/app-shell";
 import { SkeletonRows } from "@/components/ui/skeleton";
 import { OnboardingChecklist } from "@/components/vaults/onboarding-checklist";
@@ -214,6 +215,11 @@ export default function VaultsPage() {
           )}
         </p>
       )}
+
+      {/* ⚠️ Beside the plan line, because that line is where "free" is read —
+          and for someone whose organisation pays, "free" is the sentence that
+          looks like a failed payment. */}
+      {user.emailVerified && usage.data && <SeatNotice usage={usage.data} />}
 
       <OnboardingChecklist
         state={onboarding}
