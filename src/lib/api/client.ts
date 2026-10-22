@@ -160,6 +160,22 @@ export function apiErrorCode(e: unknown): string | null {
 }
 
 /**
+ * The server's own sentence for a failed request, for showing to a person.
+ *
+ * The server writes `error` for people — "all 5 seats are assigned. Release
+ * one, or raise the seat count." — so it is shown as sent. `fallback` covers
+ * everything that has no such sentence: no network, a proxy's error page, a
+ * thrown `Error`. Branch on `apiErrorCode`, never on this.
+ */
+export function apiErrorMessage(
+  e: unknown,
+  fallback = "Something went wrong. Nothing was changed.",
+): string {
+  const r = e as { response?: { data?: { error?: string } } };
+  return r?.response?.data?.error ?? fallback;
+}
+
+/**
  * HTTP status, for the cases where it carries meaning the `code` does not.
  *
  * Mostly this should be `apiErrorCode`. The exception that matters is **401 vs

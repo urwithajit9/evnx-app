@@ -68,6 +68,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LoadError } from "@/components/ui/load-error";
 import { SkeletonLines } from "@/components/ui/skeleton";
+import { apiErrorMessage } from "@/lib/api/client";
 
 /** Said on every state that could worry someone. */
 const SECRETS_UNAFFECTED =
@@ -77,10 +78,6 @@ const SECRETS_UNAFFECTED =
 const MERCHANT =
   "Payment is handled by Paddle, our merchant of record. evnx never sees your card.";
 
-function apiMessage(e: unknown): string {
-  const r = e as { response?: { data?: { error?: string } } };
-  return r?.response?.data?.error ?? "Something went wrong. Nothing was changed.";
-}
 
 /** A status chip. */
 function Pill({
@@ -127,7 +124,7 @@ export function Billing({ preselectPlan }: { preselectPlan?: string }) {
     return (
       <Alert variant="destructive">
         <AlertTitle>Could not load organisations</AlertTitle>
-        <AlertDescription>{apiMessage(orgs.error)}</AlertDescription>
+        <AlertDescription>{apiErrorMessage(orgs.error)}</AlertDescription>
       </Alert>
     );
   }
@@ -204,7 +201,7 @@ function OrgBilling({
     return (
       <Alert variant="destructive">
         <AlertTitle>Could not load billing</AlertTitle>
-        <AlertDescription>{apiMessage(state.error)}</AlertDescription>
+        <AlertDescription>{apiErrorMessage(state.error)}</AlertDescription>
       </Alert>
     );
   }
@@ -432,7 +429,7 @@ function ChoosePlan({
 
   const checkout = useMutation({
     mutationFn: (id: string) => startCheckout(org.id, id, quantity),
-    onError: (e) => onError(apiMessage(e)),
+    onError: (e) => onError(apiErrorMessage(e)),
   });
 
   if (catalog.isLoading) {
@@ -442,7 +439,7 @@ function ChoosePlan({
     return (
       <Alert variant="destructive">
         <AlertTitle>Could not load plans</AlertTitle>
-        <AlertDescription>{apiMessage(catalog.error)}</AlertDescription>
+        <AlertDescription>{apiErrorMessage(catalog.error)}</AlertDescription>
       </Alert>
     );
   }
@@ -688,7 +685,7 @@ function ActiveSubscription({
       setEditing(false);
       onDone();
     },
-    onError: (e) => onError(apiMessage(e)),
+    onError: (e) => onError(apiErrorMessage(e)),
   });
 
   return (
@@ -774,7 +771,7 @@ function PortalButtons({
 }) {
   const portal = useMutation({
     mutationFn: () => getPortalUrls(org.id),
-    onError: (e) => onError(apiMessage(e)),
+    onError: (e) => onError(apiErrorMessage(e)),
   });
   const urls = portal.data;
 
@@ -867,7 +864,7 @@ function Ending({
   const resume = useMutation({
     mutationFn: () => resumeSubscription(org.id),
     onSuccess: onDone,
-    onError: (e) => onError(apiMessage(e)),
+    onError: (e) => onError(apiErrorMessage(e)),
   });
 
   return (

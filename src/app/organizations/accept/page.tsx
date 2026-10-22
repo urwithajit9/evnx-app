@@ -30,6 +30,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { acceptInvite, type AcceptedInvite } from "@/lib/api/orgs";
+import { apiErrorMessage } from "@/lib/api/client";
 import { useKeyStore } from "@/stores/keyStore";
 import { useAuthStore } from "@/stores/authStore";
 import { Button } from "@/components/ui/button";
@@ -89,10 +90,8 @@ function AcceptInvite() {
         setState("done");
       })
       .catch((e) => {
-        const r = e as { response?: { data?: { error?: string } } };
         setError(
-          r?.response?.data?.error ??
-            "That invitation is not valid for this account.",
+          apiErrorMessage(e, "That invitation is not valid for this account."),
         );
         setState("failed");
       });
