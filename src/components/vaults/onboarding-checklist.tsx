@@ -58,6 +58,23 @@ const TITLE: Record<OnboardingStep, string> = {
   pull: "Pull it somewhere else",
 };
 
+/**
+ * The vault steps 4 and 5 name: one you own, else one shared with you that you
+ * can push to, else whichever came first.
+ *
+ * ⚠️ Not simply the first in the list. That was a vault shared with you as
+ * often as not, and pushing there spends its owner's version allowance — or is
+ * refused outright when you are only a viewer. A first push belongs in your own
+ * vault.
+ */
+function pushTarget(vaults: VaultSummary[] | undefined): VaultSummary | undefined {
+  return (
+    vaults?.find((v) => v.role === "owner") ??
+    vaults?.find((v) => v.role === "admin" || v.role === "developer") ??
+    vaults?.[0]
+  );
+}
+
 export function OnboardingChecklist({
   state,
   vaults,
@@ -72,7 +89,7 @@ export function OnboardingChecklist({
   // Step 4 and 5 name a real vault where there is one. A checklist that says
   // `my-app/production` when the person called theirs something else reads as
   // documentation rather than as their account.
-  const first = vaults?.[0];
+  const first = pushTarget(vaults);
   const target = first ? `${first.name}/${first.environment}` : "my-app";
 
   return (
