@@ -74,6 +74,8 @@ export function ApiTokens() {
       setName("");
       setCreating(false);
       await qc.invalidateQueries({ queryKey: ["tokens"] });
+      // "Active API tokens" in Plan and usage counts this one now.
+      await qc.invalidateQueries({ queryKey: ["usage"] });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not create the token.");
     } finally {
@@ -143,6 +145,7 @@ export function ApiTokens() {
                   try {
                     await revokeToken(t.id);
                     await qc.invalidateQueries({ queryKey: ["tokens"] });
+                    await qc.invalidateQueries({ queryKey: ["usage"] });
                   } catch (err) {
                     setError(
                       err instanceof Error ? err.message : "Could not revoke it.",

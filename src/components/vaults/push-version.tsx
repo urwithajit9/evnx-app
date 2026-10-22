@@ -57,6 +57,8 @@ export function PushVersion({ vaultId }: { vaultId: string }) {
       if (fileInput.current) fileInput.current.value = "";
       await qc.invalidateQueries({ queryKey: ["versions", vaultId] });
       await qc.invalidateQueries({ queryKey: ["vaults"] });
+      // Versions are capped per vault, and Settings shows how close each is.
+      await qc.invalidateQueries({ queryKey: ["usage"] });
     } catch (e) {
       if (e instanceof VersionConflictError) setConflict(e);
       else setError(e instanceof Error ? e.message : "Could not push.");

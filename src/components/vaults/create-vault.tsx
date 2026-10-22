@@ -44,6 +44,9 @@ export function CreateVault({ onCreated }: { onCreated?: () => void } = {}) {
     try {
       await createVault(name, environment);
       await qc.invalidateQueries({ queryKey: ["vaults"] });
+      // ⚠️ And the plan line: it comes from its own query, and without this it
+      // went on saying "1 / 3" beside a list that already showed two.
+      await qc.invalidateQueries({ queryKey: ["usage"] });
       setName("");
       setOpen(false);
       onCreated?.();
