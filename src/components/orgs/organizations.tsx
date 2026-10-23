@@ -55,15 +55,12 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { SkeletonLines } from "@/components/ui/skeleton";
+import { apiErrorMessage } from "@/lib/api/client";
 
 /** Said wherever someone might believe otherwise. */
 const NOT_VAULT_ACCESS =
   "An organisation decides which plan's limits apply. It does not give anyone access to a vault — share one from the vault itself.";
 
-function apiMessage(e: unknown): string {
-  const r = e as { response?: { data?: { error?: string } } };
-  return r?.response?.data?.error ?? "Something went wrong. Nothing was changed.";
-}
 
 export function Organizations() {
   const qc = useQueryClient();
@@ -82,7 +79,7 @@ export function Organizations() {
     return (
       <Alert variant="destructive">
         <AlertTitle>Could not load organisations</AlertTitle>
-        <AlertDescription>{apiMessage(orgs.error)}</AlertDescription>
+        <AlertDescription>{apiErrorMessage(orgs.error)}</AlertDescription>
       </Alert>
     );
   }
@@ -153,6 +150,10 @@ function OrgDetail({
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["orgs"] });
     qc.invalidateQueries({ queryKey: ["org-members", org.id] });
+    // ⚠️ A seat is a plan change. Assigning, releasing or removing here moves
+    // someone's limits — yours, when you act on yourself — and the plan line on
+    // /vaults/ and Settings reads its own query, which nothing else refreshes.
+    qc.invalidateQueries({ queryKey: ["usage"] });
   };
 
   async function act(fn: () => Promise<unknown>) {
@@ -161,7 +162,7 @@ function OrgDetail({
       await fn();
       refresh();
     } catch (e) {
-      onError(apiMessage(e));
+      onError(apiErrorMessage(e));
     }
   }
 
@@ -256,7 +257,7 @@ function SeatCount({
               await setSeats(org.id, value.trim() === "" ? null : Number(value));
               onDone();
             } catch (e) {
-              onError(apiMessage(e));
+              onError(apiErrorMessage(e));
             } finally {
               setBusy(false);
             }
@@ -455,7 +456,7 @@ function Invites({
                 setEmail("");
                 refresh();
               } catch (e) {
-                onError(apiMessage(e));
+                onError(apiErrorMessage(e));
               } finally {
                 setBusy(false);
               }
@@ -509,7 +510,7 @@ function Invites({
                       await revokeInvite(org.id, i.id);
                       refresh();
                     } catch (e) {
-                      onError(apiMessage(e));
+                      onError(apiErrorMessage(e));
                     }
                   }}
                 >
@@ -598,7 +599,7 @@ function CreateOrg({ onDone, empty }: { onDone: () => void; empty?: boolean }) {
                 if (!empty) setOpen(false);
                 onDone();
               } catch (e) {
-                setError(apiMessage(e));
+                setError(apiErrorMessage(e));
               } finally {
                 setBusy(false);
               }
@@ -663,8 +664,10 @@ function DangerZone({
                   // refusal still protects the case this UI has not anticipated.
                   await deleteOrg(org.id, seated);
                   qc.invalidateQueries({ queryKey: ["orgs"] });
+                  // Every seat holder, you included, drops to their own plan.
+                  qc.invalidateQueries({ queryKey: ["usage"] });
                 } catch (e) {
-                  onError(apiMessage(e));
+                  onError(apiErrorMessage(e));
                 } finally {
                   setBusy(false);
                   setConfirming(false);

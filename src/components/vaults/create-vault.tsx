@@ -23,7 +23,11 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export function CreateVault() {
+/**
+ * @param onCreated Called once the new vault is in the list — the vaults page
+ *   uses it to show the "Owned by you" tab, where the vault just appeared.
+ */
+export function CreateVault({ onCreated }: { onCreated?: () => void } = {}) {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -40,8 +44,12 @@ export function CreateVault() {
     try {
       await createVault(name, environment);
       await qc.invalidateQueries({ queryKey: ["vaults"] });
+      // ⚠️ And the plan line: it comes from its own query, and without this it
+      // went on saying "1 / 3" beside a list that already showed two.
+      await qc.invalidateQueries({ queryKey: ["usage"] });
       setName("");
       setOpen(false);
+      onCreated?.();
     } catch (err) {
       // A conflict on this endpoint can only be the (name, environment) pair —
       // the server enforces uniqueness per owner.

@@ -13,7 +13,7 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -26,11 +26,33 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CreateVault } from "@/components/vaults/create-vault";
 import { getUsage } from "@/lib/api/account";
 import { usageLabel, isFull } from "@/components/settings/plan-usage";
+import { SeatNotice } from "@/components/settings/seat-notice";
 import { AppShell } from "@/components/shell/app-shell";
 import { SkeletonRows } from "@/components/ui/skeleton";
 import { OnboardingChecklist } from "@/components/vaults/onboarding-checklist";
 import { useOnboarding } from "@/lib/onboarding";
 import { upgradeHref } from "@/lib/config";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+/**
+ * Which vaults a tab lists. ⚠️ Split on ownership because that is what the
+ * plan limit counts: "Owned by you" is exactly the set the `3 / 3` above it
+ * is about, and "Shared with you" is the set that costs you nothing.
+ */
+type VaultTab = "owned" | "shared";
+
+/**
+ * The tab named in `?tab=`, if it is one of the two.
+ *
+ * ⚠️ Read from `window.location`, not `useSearchParams`: under
+ * `output: "export"` that requires a Suspense boundary around the whole page
+ * (the same reason as `/billing/`). A closed set, so an arbitrary value is
+ * ignored rather than passed on.
+ */
+function tabFromUrl(): VaultTab | undefined {
+  const raw = new URLSearchParams(window.location.search).get("tab");
+  return raw === "owned" || raw === "shared" ? raw : undefined;
+}
 
 export default function VaultsPage() {
   const router = useRouter();
@@ -71,7 +93,40 @@ export default function VaultsPage() {
   // `null` while billing is sandbox-only — see lib/config/billing.ts.
   const upgrade = upgradeHref();
 
+  // The tab in the address wins until someone picks one here; picking one
+  // writes it back, so a reload, Back from a vault, or a pasted link lands on
+  // the same tab. `replaceState`, not `pushState`: switching tabs is not a
+  // place Back should step through.
+  const urlTab = useSyncExternalStore(
+    () => () => {},
+    tabFromUrl,
+    () => undefined,
+  );
+  const [chosenTab, setChosenTab] = useState<VaultTab | undefined>(undefined);
+  function selectTab(tab: VaultTab) {
+    setChosenTab(tab);
+    const url = new URL(window.location.href);
+    if (tab === "owned") url.searchParams.delete("tab");
+    else url.searchParams.set("tab", tab);
+    window.history.replaceState(window.history.state, "", url);
+  }
+
   if (!unlocked || !user) return null;
+
+  // ⓘ Off the list already loaded, not a request. `owner` is set once, at
+  // creation, and cannot be granted, so it marks exactly the vaults the limit
+  // counts. Empty until the list arrives, which leaves the sentence out.
+  const owned = vaults.data?.filter((v) => v.role === "owner") ?? [];
+  const shared = vaults.data?.filter((v) => v.role !== "owner") ?? [];
+  const sharedCount = shared.length;
+
+  // Owned first, because it is what the plan line above is about — unless
+  // there is nothing there and something is shared, so nobody lands on an
+  // empty tab with their vaults one click away.
+  const tab: VaultTab =
+    chosenTab ??
+    urlTab ??
+    (owned.length === 0 && shared.length > 0 ? "shared" : "owned");
 
   return (
     <AppShell>
@@ -114,12 +169,15 @@ export default function VaultsPage() {
       {/* ⚠️ Shown beside the create form, not buried in Settings. A vault limit
           discovered at the moment it refuses you is a limit nobody could plan
           around — and this is the moment it applies. */}
+      {/* ⚠️ "you own", never bare "vaults". The limit counts vaults you own,
+          while the list below also holds vaults shared with you — so a bare
+          "3 / 3" above four rows reads as a miscount. */}
       {user.emailVerified && usage.data && (
         <p className="text-sm text-muted-foreground">
           {isFull(usage.data.vaults) ? (
             <span className="font-medium text-destructive">
-              {usageLabel(usage.data.vaults)} vaults — full. Delete one you no
-              longer need to free a slot
+              {usageLabel(usage.data.vaults)} vaults you own — full. Delete one
+              you no longer need to free a slot
               {/* ⚠️ THE PADDLE PLACEHOLDER. This is the only spot in the app
                   where going live changes what a user is told, so it is the
                   only spot that reads the flag. While billing is sandbox-only
@@ -144,11 +202,24 @@ export default function VaultsPage() {
           ) : (
             <>
               <span className="font-mono">{usageLabel(usage.data.vaults)}</span>{" "}
-              vaults used on the {usage.data.plan} plan
+              vaults you own on the {usage.data.plan} plan.
+            </>
+          )}
+          {sharedCount > 0 && (
+            <>
+              {" "}
+              {sharedCount === 1
+                ? "The 1 vault shared with you doesn't count."
+                : `The ${sharedCount} vaults shared with you don't count.`}
             </>
           )}
         </p>
       )}
+
+      {/* ⚠️ Beside the plan line, because that line is where "free" is read —
+          and for someone whose organisation pays, "free" is the sentence that
+          looks like a failed payment. */}
+      {user.emailVerified && usage.data && <SeatNotice usage={usage.data} />}
 
       <OnboardingChecklist
         state={onboarding}
@@ -156,7 +227,9 @@ export default function VaultsPage() {
         email={user.email}
       />
 
-      {user.emailVerified && <CreateVault />}
+      {user.emailVerified && (
+        <CreateVault onCreated={() => selectTab("owned")} />
+      )}
 
       {/* ⚠️ Row count matches what loaded last time where that is known, so the
           page does not jump twice — once from 1 line to 3 rows, then from 3 to
@@ -188,18 +261,78 @@ export default function VaultsPage() {
       )}
 
       {vaults.data && vaults.data.length > 0 && (
-        <ul className="space-y-3">
-          {vaults.data.map((v) => (
-            <VaultRow key={v.id} vault={v} />
-          ))}
-        </ul>
+        <Tabs value={tab} onValueChange={(v) => selectTab(v as VaultTab)}>
+          <TabsList aria-label="Vaults">
+            <TabsTrigger value="owned">
+              Owned by you <TabCount n={owned.length} />
+            </TabsTrigger>
+            <TabsTrigger value="shared">
+              Shared with you <TabCount n={shared.length} />
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="owned">
+            {owned.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                You do not own any vaults yet. A vault you create with{" "}
+                <strong>New vault</strong> above appears here, and counts
+                toward your plan.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {owned.map((v) => (
+                  <VaultRow key={v.id} vault={v} />
+                ))}
+              </ul>
+            )}
+          </TabsContent>
+
+          <TabsContent value="shared" className="space-y-3">
+            {shared.length === 0 ? (
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>
+                  Nothing is shared with you yet. When someone who holds a
+                  vault&apos;s key shares it with you, it appears here — and it
+                  does not count against your plan. They run:
+                </p>
+                <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">
+                  <code>{`evnx vault share <vault> --with ${user.email}`}</code>
+                </pre>
+              </div>
+            ) : (
+              <>
+                <p className="text-sm text-muted-foreground">
+                  Vaults shared with you do not count against your plan. Their
+                  versions count against the owner&apos;s.
+                </p>
+                <ul className="space-y-3">
+                  {shared.map((v) => (
+                    <VaultRow key={v.id} vault={v} />
+                  ))}
+                </ul>
+              </>
+            )}
+          </TabsContent>
+        </Tabs>
       )}
       </div>
     </AppShell>
   );
 }
 
+function TabCount({ n }: { n: number }) {
+  return (
+    <span className="rounded bg-muted px-1.5 py-0.5 text-xs tabular-nums text-muted-foreground">
+      {n}
+    </span>
+  );
+}
+
 function VaultRow({ vault }: { vault: VaultSummary }) {
+  // ⓘ On a shared vault the role leads: it is what decides whether you can
+  // push, share or delete there. On your own it is always `owner`, which the
+  // tab already says.
+  const sharedRole = vault.role === "owner" ? null : vault.role;
   return (
     <li>
       <Link
@@ -213,8 +346,13 @@ function VaultRow({ vault }: { vault: VaultSummary }) {
           </span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">
-          {vault.version_count} version{vault.version_count === 1 ? "" : "s"} ·{" "}
-          {vault.role} · updated {formatWhen(vault.updated_at)}
+          {sharedRole && (
+            <>
+              <span className="text-foreground">{sharedRole}</span> ·{" "}
+            </>
+          )}
+          {vault.version_count} version{vault.version_count === 1 ? "" : "s"} ·
+          updated {formatWhen(vault.updated_at)}
         </p>
       </Link>
     </li>

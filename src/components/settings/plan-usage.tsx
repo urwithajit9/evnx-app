@@ -37,6 +37,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { SeatNotice } from "@/components/settings/seat-notice";
 
 /** `used / limit`, or "unlimited". Exported for the vaults-page summary. */
 export function usageLabel({ used, limit }: UsageCount): string {
@@ -98,7 +99,9 @@ export function PlanUsage() {
         <CardTitle>Plan and usage</CardTitle>
         <CardDescription>
           {usage.data
-            ? `You are on the ${usage.data.plan} plan.`
+            ? usage.data.plan_via
+              ? `You are on the ${usage.data.plan} plan, through your seat in ${usage.data.plan_via.name}.`
+              : `You are on the ${usage.data.plan} plan.`
             : "What your plan allows, and how much of it you are using."}
         </CardDescription>
       </CardHeader>
@@ -117,6 +120,8 @@ export function PlanUsage() {
 
         {usage.data && (
           <>
+            <SeatNotice usage={usage.data} />
+
             <div className="divide-y">
               <Row label="Vaults you own" count={usage.data.vaults} />
               <Row label="Active API tokens" count={usage.data.api_tokens} />

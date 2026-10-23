@@ -59,6 +59,8 @@ export function DeleteVault({
     mutationFn: () => deleteVault(vaultId),
     onSuccess: async () => {
       await qc.invalidateQueries({ queryKey: ["vaults"] });
+      // The slot is free now; "— full" must not outlive the vault.
+      await qc.invalidateQueries({ queryKey: ["usage"] });
       router.push("/vaults");
     },
   });

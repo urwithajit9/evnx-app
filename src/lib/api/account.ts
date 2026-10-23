@@ -365,6 +365,13 @@ export type UsageCount = {
 
 export type Usage = {
   plan: string;
+  /**
+   * The organisation whose seat sets `plan`; `null` when it is the account's
+   * own. "You are on team" and "you are on team through Acme's seat" are
+   * different sentences, and only the second says who to ask when a limit is
+   * wrong. Optional: a server older than this field sends nothing.
+   */
+  plan_via?: { id: string; name: string; slug: string } | null;
   vaults: UsageCount;
   api_tokens: UsageCount;
   versions_per_vault: {
