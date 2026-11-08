@@ -97,7 +97,12 @@ function describe(
     case "push":
       return { text: `pushed version ${num(m, "version") ?? "?"}` };
     case "pull":
-      return { text: `pulled version ${num(m, "version") ?? "?"}` };
+      // ⚠️ A re-key reads every version, so without this a rotation looks like
+      // someone pulling the whole history one version at a time. The server marks
+      // those reads, and an auditor needs to tell the two apart.
+      return str(m, "purpose") === "rekey"
+        ? { text: `re-key read v${num(m, "version") ?? "?"}` }
+        : { text: `pulled version ${num(m, "version") ?? "?"}` };
     case "member_grant":
       return {
         text: `granted ${nameOf(str(m, "member_user_id"))} access as ${str(m, "role") ?? "a member"}`,
@@ -124,11 +129,16 @@ function describe(
     }
     case "vault_rekey": {
       const removed = str(m, "removed_user_id");
+      // The server now sends `removed_email` with the event (null once the
+      // account is gone). Prefer it: the member list cannot name someone who has
+      // already been removed, which is exactly who this entry is about. When it
+      // is absent or null, fall back to the member-list lookup as before.
+      const removedName = str(m, "removed_email") ?? (removed ? nameOf(removed) : undefined);
       return {
         text:
           `rotated the vault key — ${plural(num(m, "versions_rekeyed"), "version")} re-encrypted, ` +
           `${plural(num(m, "members_rewrapped"), "member")} re-wrapped` +
-          (removed ? `, removing ${nameOf(removed)}` : ""),
+          (removedName ? `, removing ${removedName}` : ""),
         tone: "notable",
       };
     }

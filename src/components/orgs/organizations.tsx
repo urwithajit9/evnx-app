@@ -55,7 +55,8 @@ import {
 } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { SkeletonLines } from "@/components/ui/skeleton";
-import { apiErrorMessage } from "@/lib/api/client";
+import Link from "next/link";
+import { apiErrorMessage, apiErrorReason } from "@/lib/api/client";
 
 /** Said wherever someone might believe otherwise. */
 const NOT_VAULT_ACCESS =
@@ -533,6 +534,10 @@ function CreateOrg({ onDone, empty }: { onDone: () => void; empty?: boolean }) {
   const [slug, setSlug] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // ⚠️ The server answers an over-limit create with 403 PLAN_LIMIT (it used to be
+  // 409). A taken slug is still 409 CONFLICT and keeps the server's sentence —
+  // only the limit has somewhere useful to send you.
+  const [planLimit, setPlanLimit] = useState(false);
 
   if (!open) {
     return (
@@ -551,10 +556,22 @@ function CreateOrg({ onDone, empty }: { onDone: () => void; empty?: boolean }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
-        {error && (
+        {planLimit ? (
           <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>
+              You own as many organisations as your plan allows.{" "}
+              <Link href="/billing/" className="underline underline-offset-4">
+                See plans on the billing page
+              </Link>
+              .
+            </AlertDescription>
           </Alert>
+        ) : (
+          error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )
         )}
         <input
           value={name}
@@ -591,6 +608,7 @@ function CreateOrg({ onDone, empty }: { onDone: () => void; empty?: boolean }) {
             disabled={busy || !name.trim() || !slug.trim()}
             onClick={async () => {
               setError(null);
+              setPlanLimit(false);
               setBusy(true);
               try {
                 await createOrg(name.trim(), slug.trim());
@@ -599,6 +617,7 @@ function CreateOrg({ onDone, empty }: { onDone: () => void; empty?: boolean }) {
                 if (!empty) setOpen(false);
                 onDone();
               } catch (e) {
+                setPlanLimit(apiErrorReason(e) === "PLAN_LIMIT");
                 setError(apiErrorMessage(e));
               } finally {
                 setBusy(false);
