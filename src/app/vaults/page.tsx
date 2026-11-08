@@ -32,6 +32,8 @@ import { SkeletonRows } from "@/components/ui/skeleton";
 import { OnboardingChecklist } from "@/components/vaults/onboarding-checklist";
 import { useOnboarding } from "@/lib/onboarding";
 import { upgradeHref } from "@/lib/config";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /**
@@ -110,6 +112,12 @@ export default function VaultsPage() {
     else url.searchParams.set("tab", tab);
     window.history.replaceState(window.history.state, "", url);
   }
+
+  // ⓘ Client-side only, and deliberately not in the URL: unlike the tab, a
+  // half-typed search is not somewhere to land again. One pair for both tabs,
+  // so a search survives switching tabs; it applies within whichever is open.
+  const [search, setSearch] = useState("");
+  const [envFilter, setEnvFilter] = useState(ALL_ENVS);
 
   if (!unlocked || !user) return null;
 
@@ -279,11 +287,13 @@ export default function VaultsPage() {
                 toward your plan.
               </p>
             ) : (
-              <ul className="space-y-3">
-                {owned.map((v) => (
-                  <VaultRow key={v.id} vault={v} />
-                ))}
-              </ul>
+              <FilteredVaults
+                vaults={owned}
+                search={search}
+                onSearch={setSearch}
+                env={envFilter}
+                onEnv={setEnvFilter}
+              />
             )}
           </TabsContent>
 
@@ -305,11 +315,13 @@ export default function VaultsPage() {
                   Vaults shared with you do not count against your plan. Their
                   versions count against the owner&apos;s.
                 </p>
-                <ul className="space-y-3">
-                  {shared.map((v) => (
-                    <VaultRow key={v.id} vault={v} />
-                  ))}
-                </ul>
+                <FilteredVaults
+                  vaults={shared}
+                  search={search}
+                  onSearch={setSearch}
+                  env={envFilter}
+                  onEnv={setEnvFilter}
+                />
               </>
             )}
           </TabsContent>
@@ -317,6 +329,95 @@ export default function VaultsPage() {
       )}
       </div>
     </AppShell>
+  );
+}
+
+const ALL_ENVS = "__all__";
+
+/**
+ * One tab's vaults behind a name search and an environment filter.
+ *
+ * ⚠️ The environment choices are built from this tab's vaults, not the whole
+ * list: offering "staging" on a tab with no staging vault leads straight to an
+ * empty result. A choice that has since vanished (tab switch, vault deleted)
+ * counts as "All" rather than filtering to nothing. The select is left out
+ * when there is only one environment — it would have one real option.
+ */
+function FilteredVaults({
+  vaults,
+  search,
+  onSearch,
+  env,
+  onEnv,
+}: {
+  vaults: VaultSummary[];
+  search: string;
+  onSearch: (v: string) => void;
+  env: string;
+  onEnv: (v: string) => void;
+}) {
+  const envs = [...new Set(vaults.map((v) => v.environment))].sort();
+  const activeEnv = envs.includes(env) ? env : ALL_ENVS;
+  const needle = search.trim().toLowerCase();
+  const shown = vaults.filter(
+    (v) =>
+      (activeEnv === ALL_ENVS || v.environment === activeEnv) &&
+      (needle === "" || v.name.toLowerCase().includes(needle)),
+  );
+  const filtering = needle !== "" || activeEnv !== ALL_ENVS;
+
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Input
+          type="search"
+          value={search}
+          onChange={(e) => onSearch(e.target.value)}
+          placeholder="Search by name"
+          aria-label="Search vaults by name"
+          className="max-w-xs"
+        />
+        {envs.length > 1 && (
+          <select
+            value={activeEnv}
+            onChange={(e) => onEnv(e.target.value)}
+            aria-label="Filter by environment"
+            className="h-8 rounded-lg border border-input bg-transparent px-2.5 text-sm dark:bg-input/30"
+          >
+            <option value={ALL_ENVS}>All environments</option>
+            {envs.map((e) => (
+              <option key={e} value={e}>
+                {e}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
+      {shown.length === 0 ? (
+        <div className="space-y-2 text-sm text-muted-foreground" role="status">
+          <p>No vaults match these filters.</p>
+          {filtering && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                onSearch("");
+                onEnv(ALL_ENVS);
+              }}
+            >
+              Clear filters
+            </Button>
+          )}
+        </div>
+      ) : (
+        <ul className="space-y-3">
+          {shown.map((v) => (
+            <VaultRow key={v.id} vault={v} />
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 
