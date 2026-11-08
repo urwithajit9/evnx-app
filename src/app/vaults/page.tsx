@@ -139,7 +139,15 @@ export default function VaultsPage() {
   return (
     <AppShell>
       <div className="space-y-6">
-      <h1 className="page-title text-xl font-semibold">Your vaults</h1>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h1 className="page-title text-xl font-semibold">Your vaults</h1>
+        <Link
+          href="/vaults/access/"
+          className="text-sm text-muted-foreground underline underline-offset-4"
+        >
+          Access overview
+        </Link>
+      </div>
 
       {backupCodesRemaining !== null && backupCodesRemaining <= 3 && (
         <Alert variant="destructive">
