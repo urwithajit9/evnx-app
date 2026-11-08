@@ -254,7 +254,7 @@ export default function VaultsPage() {
               same thing, and either can read the other&apos;s:
             </p>
             <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">
-              <code>{"evnx vault create my-app --env production\nevnx cloud push .env --vault my-app"}</code>
+              <code>{"evnx vault create my-app --env production\nevnx cloud push --vault my-app"}</code>
             </pre>
           </CardContent>
         </Card>

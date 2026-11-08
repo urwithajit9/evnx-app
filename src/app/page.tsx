@@ -82,7 +82,7 @@ export default function Home() {
           <p className="text-sm text-muted-foreground">
             Prefer a terminal?{" "}
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
-              evnx cloud push .env
+              evnx cloud push
             </code>{" "}
             —{" "}
             <a

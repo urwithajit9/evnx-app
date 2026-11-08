@@ -13,6 +13,7 @@ npm run dev          # http://localhost:3000
 npm run build        # static export into out/
 
 npm run surface:check      # the tour matches a real evnx binary
+npm run cli:check          # every `evnx …` snippet in src is one the CLI accepts
 npm run onboarding:check   # the /vaults/ checklist rule, every reachable state
 ```
 

@@ -187,7 +187,7 @@ function VaultDetail() {
             <CardDescription>
               This vault has no versions. Push one above, or from the CLI with{" "}
               <code className="text-xs">
-                evnx cloud push .env --vault {vault?.name ?? ""}
+                evnx cloud push --vault {vault?.name ?? ""}
               </code>{" "}
               — either client can read the other&apos;s.
             </CardDescription>
