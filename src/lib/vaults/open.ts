@@ -115,8 +115,18 @@ export async function vaultKeyFor(vaultId: string): Promise<VaultKeyRef> {
 
 export type OpenedVersion = {
   versionNum: number;
-  /** The raw file, exactly as it was pushed. */
+  /**
+   * The raw file, exactly as it was pushed — decoded for display.
+   *
+   * ⚠️ Lossy by design: invalid UTF-8 becomes U+FFFD and a BOM is swallowed. Use
+   * `bytes` for anything that writes the file back (restoring a version).
+   */
   text: string;
+  /**
+   * The decrypted bytes, untouched. ⚠️ Plaintext: keep it in a local variable
+   * for as long as the operation takes, never in React state or a cache.
+   */
+  bytes: Uint8Array;
 };
 
 /**
@@ -135,6 +145,7 @@ export async function openVersion(
   const plaintext = await decryptVault(blob, key, vaultId, versionNum);
   return {
     versionNum,
+    bytes: plaintext,
     // The CLI pushes raw file bytes, so this is the file. Decoding as UTF-8 is
     // for display only; nothing here re-encodes or writes it back.
     text: new TextDecoder().decode(plaintext),

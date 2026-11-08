@@ -64,8 +64,20 @@ export type PushResult = {
 export async function pushVersion(
   vaultId: string,
   plaintext: Uint8Array,
+  /**
+   * The latest version the caller was looking at when it decided to push. When
+   * given and the vault has moved on, this refuses before sealing anything.
+   *
+   * ⚠️ Without it the base is "whatever is current now", which is right for a
+   * fresh upload but wrong for restoring: the user confirmed "restore v3 as v8",
+   * and if someone pushed v8 meanwhile that would silently land as v9.
+   */
+  expectedBase?: number,
 ): Promise<PushResult> {
   const base = await currentVersion(vaultId);
+  if (expectedBase !== undefined && base !== expectedBase) {
+    throw new VersionConflictError(base, expectedBase);
+  }
   const target = base + 1;
 
   const key = await vaultKeyFor(vaultId);
