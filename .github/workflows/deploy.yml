@@ -47,6 +47,12 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Reads the COMMITTED command-surface.json, so it needs no evnx binary
+      # (surface:check does, and cannot run here). It stops the app showing the
+      # user a command the CLI rejects.
+      - name: Check CLI snippets
+        run: npm run cli:check
+
       - name: Build
         env:
           # Baked in at BUILD time — NEXT_PUBLIC_* is inlined into the bundle,

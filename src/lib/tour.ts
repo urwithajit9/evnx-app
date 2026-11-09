@@ -124,7 +124,7 @@ const NOTES: Record<string, { note: string; example?: string }> = {
   },
   diff: {
     note: "Shows what differs between two environments. ⚠️ It exits 1 on a healthy project too — branch on the summary counts, never the exit code.",
-    example: "evnx diff .env .env.production",
+    example: "evnx diff --env-name production --against staging",
   },
   convert: {
     note: "Turns a .env into any of fourteen deployment formats — Docker, Kubernetes, Terraform, GitHub Actions and more.",

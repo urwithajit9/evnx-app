@@ -144,35 +144,99 @@ api.interceptors.response.use(
 );
 
 /**
- * The server's error shape: `{ error, code }`.
+ * The server's error shape: `{ error, code }`, and on a 403 sometimes a `reason`.
  *
- * Branch on `code`, never on the message — the message is written for humans and
- * will change. `code` is the contract.
+ * Branch on `code` (and `reason`), never on the message — the message is written
+ * for humans and will change. `code` is the contract.
+ *
+ * ─── 403 and `reason` ────────────────────────────────────────────────────────
+ *
+ * A 403 is always `code: "FORBIDDEN"`; `reason` says which kind of refusal:
+ *
+ *   ROLE_TOO_LOW     your role is below `required_role` (vault: viewer |
+ *                    developer | admin | owner; org: member | admin | owner)
+ *   TOKEN_SCOPE      an API token without the scope this needs
+ *   TOKEN_READ_ONLY  a read-only API token tried to write
+ *   PLAN_LIMIT       the plan does not allow more of this
+ *
+ * ⚠️ No `reason` is a generic refusal, not an error — older servers and some
+ * refusals never send one. Anything unrecognised is treated the same way, so a
+ * reason added server-side later degrades to the server's own sentence instead of
+ * to a blank. A non-member gets 404, not 403: the existence of a vault is not
+ * disclosed to people who cannot see it.
  */
-export type ApiError = { error: string; code: string };
+export type ApiError = {
+  error: string;
+  code: string;
+  reason?: ApiErrorReason;
+  required_role?: string;
+};
+
+export type ApiErrorReason =
+  | "ROLE_TOO_LOW"
+  | "TOKEN_SCOPE"
+  | "TOKEN_READ_ONLY"
+  | "PLAN_LIMIT";
+
+function errorData(e: unknown): Partial<ApiError> | undefined {
+  if (!axios.isAxiosError(e)) return undefined;
+  return e.response?.data as Partial<ApiError> | undefined;
+}
 
 export function apiErrorCode(e: unknown): string | null {
-  if (axios.isAxiosError(e)) {
-    const data = e.response?.data as ApiError | undefined;
-    return data?.code ?? null;
-  }
-  return null;
+  return errorData(e)?.code ?? null;
+}
+
+/** Why a 403 was refused, or null when the server gave no reason. */
+export function apiErrorReason(e: unknown): ApiErrorReason | null {
+  const reason = errorData(e)?.reason;
+  return reason === "ROLE_TOO_LOW" ||
+    reason === "TOKEN_SCOPE" ||
+    reason === "TOKEN_READ_ONLY" ||
+    reason === "PLAN_LIMIT"
+    ? reason
+    : null;
 }
 
 /**
- * The server's own sentence for a failed request, for showing to a person.
+ * A sentence for a failed request, for showing to a person.
  *
- * The server writes `error` for people — "all 5 seats are assigned. Release
- * one, or raise the seat count." — so it is shown as sent. `fallback` covers
- * everything that has no such sentence: no network, a proxy's error page, a
- * thrown `Error`. Branch on `apiErrorCode`, never on this.
+ * Most of the time that is the server's own — it writes `error` for people ("all
+ * 5 seats are assigned. Release one, or raise the seat count.") — so it is shown
+ * as sent. A refusal with a `reason` gets a more specific sentence here, because
+ * "forbidden" alone leaves someone guessing whether to ask for a role, upgrade or
+ * give up. `fallback` covers everything that has no sentence at all: no network,
+ * a proxy's error page, a thrown `Error`. Branch on `apiErrorCode` /
+ * `apiErrorReason`, never on this.
  */
 export function apiErrorMessage(
   e: unknown,
   fallback = "Something went wrong. Nothing was changed.",
 ): string {
-  const r = e as { response?: { data?: { error?: string } } };
-  return r?.response?.data?.error ?? fallback;
+  const data = errorData(e);
+  const sent = data?.error;
+
+  switch (apiErrorReason(e)) {
+    case "ROLE_TOO_LOW": {
+      // ⚠️ `required_role` is a vault role or an org role, and the reason alone
+      // does not say which. Every org route lives under /orgs, so the request URL
+      // does.
+      const url = axios.isAxiosError(e) ? (e.config?.url ?? "") : "";
+      const where = url.startsWith("/orgs") ? "organisation" : "vault";
+      const role = data?.required_role;
+      return role
+        ? `This needs the ${role} role on this ${where}.`
+        : (sent ?? `Your role on this ${where} is too low for that.`);
+    }
+    case "PLAN_LIMIT":
+      return `${sent ?? "Your plan's limit is reached."} Upgrade or make room under Billing (/billing/).`;
+    case "TOKEN_SCOPE":
+      return "This API token does not have the scope for that. Use a token with a wider scope.";
+    case "TOKEN_READ_ONLY":
+      return "This API token is read-only, so it cannot make changes.";
+    default:
+      return sent ?? fallback;
+  }
 }
 
 /**

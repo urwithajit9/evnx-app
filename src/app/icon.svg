@@ -1,10 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- The evnx mark: rust-orange square, page-ground lettering. Matches the
-       BrandMark component and evnx.dev's header, so the browser tab, the
-       dashboard and the marketing site all show the same thing.
-       SVG rather than .ico: it stays crisp at every density, and Next's App
-       Router picks up app/icon.svg automatically. -->
-  <rect width="32" height="32" rx="7" fill="#E8652A"/>
-  <text x="16" y="21.5" font-family="ui-monospace, 'IBM Plex Mono', monospace"
-        font-size="14" font-weight="700" fill="#0D1117" text-anchor="middle">ev</text>
-</svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- The evnx mark on a dark tile, for the browser tab. The same shield, padlock
+     and key as public/brand/evnx-mark-simple.svg (which has no tile, for use
+     beside the word) and as evnx.dev's icon. SVG rather than .ico: it stays crisp
+     at every density, and Next's App Router picks up app/icon.svg automatically. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect x="4" y="4" width="192" height="192" rx="40" fill="#0D1117"/><defs>
+<linearGradient id="m3" x1="0" y1="0" x2="0.35" y2="1"><stop offset="0" stop-color="#F7F8FA"/><stop offset="0.48" stop-color="#C7CDD4"/><stop offset="0.52" stop-color="#A8B0B9"/><stop offset="1" stop-color="#7A838D"/></linearGradient>
+<linearGradient id="e3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.9"/><stop offset="1" stop-color="#5A626C" stop-opacity="0.9"/></linearGradient>
+<linearGradient id="s3" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0.25" stop-color="#FFFFFF" stop-opacity="0"/><stop offset="0.42" stop-color="#FFFFFF" stop-opacity="0.45"/><stop offset="0.58" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+<clipPath id="c3"><path d="M100,22 L163,42 L163,97 C163,142 133,169 100,181 C67,169 37,142 37,97 L37,42 Z"/></clipPath>
+<filter id="d3" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.4" flood-color="#000000" flood-opacity="0.45"/></filter>
+</defs><path d="M100,22 L163,42 L163,97 C163,142 133,169 100,181 C67,169 37,142 37,97 L37,42 Z" fill="url(#m3)" stroke="url(#e3)" stroke-width="2.5"/><path d="M100,32 L154,49 L154,97 C154,135 128,159 100,170 C72,159 46,135 46,97 L46,49 Z" fill="none" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="1.5"/><rect x="20" y="10" width="170" height="190" fill="url(#s3)" clip-path="url(#c3)"/><path transform="translate(91,112) scale(1.5)" d="M-11,-2 L-11,-12 C-11,-27 11,-27 11,-12 L11,-2" fill="none" stroke="#0A0D12" stroke-width="6" stroke-linecap="round"/><g transform="translate(117.4,108.1468) rotate(60) scale(1.1)" filter="url(#d3)">
+<circle cx="-18" cy="0" r="9.5" fill="none" stroke="#E8652A" stroke-width="7"/>
+<rect x="-10" y="-3.6" width="38" height="7.2" rx="2.5" fill="#E8652A"/>
+<rect x="19" y="2" width="5.5" height="10" rx="1.8" fill="#E8652A"/><rect x="10.5" y="2" width="5.5" height="7" rx="1.8" fill="#E8652A"/></g><path transform="translate(91,112) scale(1.5)" d="M11,-8 L11,-2" fill="none" stroke="#0A0D12" stroke-width="6" stroke-linecap="round"/><g transform="translate(91,112) scale(1.5)"><rect x="-17" y="-4" width="34" height="27" rx="5.5" fill="#0A0D12"/><circle cx="0" cy="5" r="4.2" fill="#FFFFFF"/><path d="M-2.3,6 L2.3,6 L3.2,15 L-3.2,15 Z" fill="#FFFFFF"/></g><g transform="translate(117.4,108.1468) rotate(60) scale(1.1)" filter="url(#d3)">
+<circle cx="-18" cy="0" r="0" fill="none" stroke="#E8652A" stroke-width="7"/>
+<rect x="-10" y="-3.6" width="38" height="7.2" rx="2.5" fill="#E8652A"/>
+<rect x="19" y="2" width="5.5" height="10" rx="1.8" fill="#E8652A"/><rect x="10.5" y="2" width="5.5" height="7" rx="1.8" fill="#E8652A"/></g></svg>

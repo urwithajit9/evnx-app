@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "evnx_version": "0.9.0",
+  "evnx_version": "0.13.0",
   "features": [
     "net",
     "migrate",
@@ -13,16 +13,17 @@
         "init"
       ],
       "name": "init",
-      "about": "Interactive project setup — generates .env.example",
+      "about": "Interactive project setup — the template, .env and the .evnx.toml contract",
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/init",
       "args": [
         {
           "id": "path",
           "long": "path",
-          "short": null,
+          "short": "p",
           "help": "Output path for .env files",
           "value_name": "PATH",
           "required": false,
@@ -116,6 +117,42 @@
           "hidden": false
         },
         {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be written — the template, `.env`, `.gitignore` and `.evnx.toml` — and write nothing. Asks no confirmation; a menu is still shown when nothing was named",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks). The same fields as `evnx add --json`",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "verbose",
           "long": "verbose",
           "short": "v",
@@ -131,7 +168,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -162,14 +199,63 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/add",
       "args": [
+        {
+          "id": "list",
+          "long": "list",
+          "short": null,
+          "help": "List every id `add` takes: services, infrastructure, frameworks and blueprints",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be added, skipped and kept; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
         {
           "id": "path",
           "long": "path",
           "short": "p",
           "help": "Output path (default: current directory)",
           "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write to `.env.<NAME>` instead of `.env` (one file per run; loop over names for several). Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -204,7 +290,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -232,21 +318,50 @@
         "service"
       ],
       "name": "service",
-      "about": "Add variables for a specific service",
-      "visible_aliases": [],
-      "aliases": [],
+      "about": "Add variables for a service, infrastructure target or framework",
+      "visible_aliases": [
+        "infra"
+      ],
+      "aliases": [
+        "infra"
+      ],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "service",
           "long": null,
           "short": null,
-          "help": "Service ID (e.g., \"postgresql\", \"redis\", \"stripe\")",
+          "help": "Catalogue id (e.g., \"postgresql\", \"vercel\"). `evnx add --list` lists them. Leave it out in a terminal to pick one",
           "value_name": "SERVICE",
-          "required": true,
+          "required": false,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be added, skipped and kept; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
           "multiple": false,
           "hidden": false
         },
@@ -256,6 +371,18 @@
           "short": "p",
           "help": "Output path (default: current directory)",
           "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write to `.env.<NAME>` instead of `.env` (one file per run; loop over names for several). Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -290,7 +417,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -322,15 +449,16 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "language",
           "long": "language",
           "short": "l",
-          "help": "Language ID (e.g., \"python\", \"javascript_typescript\")",
+          "help": "Language id (e.g., \"python\", \"javascript_typescript\"). Optional",
           "value_name": "LANGUAGE",
-          "required": true,
+          "required": false,
           "takes_value": true,
           "positional": false,
           "multiple": false,
@@ -340,11 +468,35 @@
           "id": "framework",
           "long": null,
           "short": null,
-          "help": "Framework ID (e.g., \"django\", \"nextjs\", \"axum_actix\")",
+          "help": "Framework id (e.g., \"django\", \"nextjs\", \"axum_actix\"). Leave it out in a terminal to pick one",
           "value_name": "FRAMEWORK",
-          "required": true,
+          "required": false,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be added, skipped and kept; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
           "multiple": false,
           "hidden": false
         },
@@ -354,6 +506,18 @@
           "short": "p",
           "help": "Output path (default: current directory)",
           "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write to `.env.<NAME>` instead of `.env` (one file per run; loop over names for several). Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -388,7 +552,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -420,17 +584,42 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "blueprint",
           "long": null,
           "short": null,
-          "help": "Blueprint ID (e.g., \"t3_modern\", \"rust_high_perf\")",
+          "help": "Blueprint id (e.g., \"t3_modern\", \"rust_high_perf\"). Leave it out in a terminal to pick one",
           "value_name": "BLUEPRINT",
-          "required": true,
+          "required": false,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be added, skipped and kept; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
           "multiple": false,
           "hidden": false
         },
@@ -440,6 +629,18 @@
           "short": "p",
           "help": "Output path (default: current directory)",
           "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write to `.env.<NAME>` instead of `.env` (one file per run; loop over names for several). Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -474,7 +675,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -502,18 +703,115 @@
         "custom"
       ],
       "name": "custom",
-      "about": "Add custom variables interactively",
+      "about": "Add your own variables: as arguments, or one prompt at a time",
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
+        {
+          "id": "vars",
+          "long": null,
+          "short": null,
+          "help": "Variables, as `NAME=value` or `NAME`. None: ask one at a time",
+          "value_name": "NAME[=VALUE]",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "desc",
+          "long": "desc",
+          "short": null,
+          "help": "A description comment for every variable given",
+          "value_name": "DESC",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "category",
+          "long": "category",
+          "short": null,
+          "help": "A category for every variable given: Application, Security, Database, Authentication, Service or Other",
+          "value_name": "CATEGORY",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "required",
+          "long": "required",
+          "short": null,
+          "help": "Mark every variable given as required",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "optional",
+          "long": "optional",
+          "short": null,
+          "help": "Mark every variable given as optional",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be added, skipped and kept; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document on stdout (needs --yes or --dry-run: it never asks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
         {
           "id": "path",
           "long": "path",
           "short": "p",
           "help": "Output path (default: current directory)",
           "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Write to `.env.<NAME>` instead of `.env` (one file per run; loop over names for several). Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -548,7 +846,193 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "remove"
+      ],
+      "name": "remove",
+      "about": "Remove variables from the env file, and the template and contract too",
+      "visible_aliases": [
+        "rm"
+      ],
+      "aliases": [
+        "rm"
+      ],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/remove",
+      "args": [
+        {
+          "id": "names",
+          "long": null,
+          "short": null,
+          "help": "Variable names, or quoted globs (`'TEST_*'`). Case-sensitive",
+          "value_name": "NAME",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "path",
+          "long": "path",
+          "short": "p",
+          "help": "Project folder (default: current directory)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Remove from `.env.<NAME>` instead of `.env`. Defaults to `[defaults] env_name`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "template",
+          "long": "template",
+          "short": null,
+          "help": "Also remove from the template (`.env.example`, or `[defaults] example`)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "contract",
+          "long": "contract",
+          "short": null,
+          "help": "Also remove the `[vars.NAME]` declaration from `.evnx.toml`",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "all",
+          "long": "all",
+          "short": null,
+          "help": "Remove from every environment file, the template and the contract",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Show what would be removed; write nothing. Needs no terminal",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Remove without asking",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "ignore_missing",
+          "long": "ignore-missing",
+          "short": null,
+          "help": "A name found nowhere is not an error (for scripts that run twice)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_backup",
+          "long": "no-backup",
+          "short": null,
+          "help": "Keep no `.bak` copy of the env files (needs --yes; refused for a file git tracks)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "Print the result as one JSON document (needs --yes or --dry-run)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -579,13 +1063,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/validate",
       "args": [
         {
           "id": "env",
           "long": "env",
           "short": null,
-          "help": "Path to the environment file to check",
+          "help": "Path to the environment file to check, or `-` to read stdin",
           "value_name": "ENV",
           "required": false,
           "takes_value": true,
@@ -599,6 +1084,18 @@
           "short": null,
           "help": "Operate on `.env.<NAME>` instead of `.env`",
           "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "input_format",
+          "long": "input-format",
+          "short": null,
+          "help": "How to read `--env`: `dotenv` or `json`",
+          "value_name": "FORMAT",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -634,6 +1131,30 @@
           "long": "fix",
           "short": null,
           "help": "Repair what can be repaired, instead of only reporting it",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "With `--fix`, show what it would change and write nothing",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "rotate_weak_secrets",
+          "long": "rotate-weak-secrets",
+          "short": null,
+          "help": "With `--fix`, also replace weak secrets that hold a **real value**",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -690,6 +1211,18 @@
           "hidden": false
         },
         {
+          "id": "fail_on",
+          "long": "fail-on",
+          "short": null,
+          "help": "The lowest severity that fails the run: `error` or `warning`",
+          "value_name": "LEVEL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "verbose",
           "long": "verbose",
           "short": "v",
@@ -705,7 +1238,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -736,13 +1269,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/scan",
       "args": [
         {
           "id": "path",
           "long": null,
           "short": null,
-          "help": null,
+          "help": "Files or folders to scan. Repeatable; defaults to the current folder",
           "value_name": "PATH",
           "required": false,
           "takes_value": true,
@@ -754,8 +1288,32 @@
           "id": "exclude",
           "long": "exclude",
           "short": null,
-          "help": null,
+          "help": "Skip paths in a folder walk. Repeatable; adds to `[scan] exclude`",
           "value_name": "EXCLUDE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "max_file_size",
+          "long": "max-file-size",
+          "short": null,
+          "help": "Skip walked files larger than this: `500K`, `5MB`, `2MiB`",
+          "value_name": "SIZE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "extensions",
+          "long": "extensions",
+          "short": null,
+          "help": "Read only files with these extensions in folders (comma-separated: `env,yml,json`). By default every file is read, and binary or very large files are skipped with a note",
+          "value_name": "EXT",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -787,8 +1345,68 @@
           "hidden": false
         },
         {
+          "id": "no_ignore_placeholders",
+          "long": "no-ignore-placeholders",
+          "short": null,
+          "help": "Report filler-looking values even when `[scan] ignore_placeholders` is `true`. The last of the two flags wins",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "severity",
           "long": "severity",
+          "short": null,
+          "help": "Lowest severity worth reporting: critical, high, medium or low",
+          "value_name": "LEVEL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "rule_files",
+          "long": "rules",
+          "short": null,
+          "help": "A rule file for this run, on top of `.evnx/rules/` and your personal rules. Repeatable. Same format as those: see `evnx scan rules new`",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "baseline",
+          "long": "baseline",
+          "short": null,
+          "help": "Findings accepted earlier: matching ones are reported as `known` and do not fail the run",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "update_baseline",
+          "long": "update-baseline",
+          "short": null,
+          "help": "Write this run's findings to the baseline (`--baseline`, or `.evnx/baseline.json`) and exit 0. Run it once to accept what a project already has; new findings fail from then on",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "confidence",
+          "long": "confidence",
           "short": null,
           "help": "Lowest confidence worth reporting: high, medium or low",
           "value_name": "LEVEL",
@@ -823,6 +1441,30 @@
           "hidden": false
         },
         {
+          "id": "include_ignored",
+          "long": "include-ignored",
+          "short": null,
+          "help": "Report findings in files git ignores and does not track",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "staged",
+          "long": "staged",
+          "short": null,
+          "help": "Scan what is staged for the next commit, read from the git index",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "verbose",
           "long": "verbose",
           "short": "v",
@@ -838,7 +1480,733 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules"
+      ],
+      "name": "rules",
+      "about": "Your own scan rules: list, create and test them",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": true,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "list"
+      ],
+      "name": "list",
+      "about": "Every rule a scan here would use: evnx's own, `.evnx/rules/`, your personal rules and `[[scan.patterns]]`, with id, source, severity and confidence, grouped by category with each rule's provider",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "category",
+          "long": "category",
+          "short": null,
+          "help": "Show only this category: cloud, source-ci, ai, payments, databases-backends, auth, messaging-email, observability, infra-secrets, saas, keys-certificates or generic",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "One JSON document on stdout; each rule carries `provider` and `category` (null when unset)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "new"
+      ],
+      "name": "new",
+      "about": "Write a rule file to fill in: `.evnx/rules/<ID>.toml`, committed so the team shares it",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "id",
+          "long": null,
+          "short": null,
+          "help": "The rule's id: lowercase letters, digits and `-`",
+          "value_name": "ID",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "personal",
+          "long": "personal",
+          "short": null,
+          "help": "Write it to your personal rules instead (never committed)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "test"
+      ],
+      "name": "test",
+      "about": "Check each rule against its own `positive` and `near_miss` values, and report every failure. Exit 1 if any fails",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "file",
+          "long": null,
+          "short": null,
+          "help": "One rule file. Default: `.evnx/rules/` and your personal rules",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "add"
+      ],
+      "name": "add",
+      "about": "Add a rule pack: a catalogue name, an https URL, or a path",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "source",
+          "long": null,
+          "short": null,
+          "help": "A catalogue pack name (`gitleaks`), an https URL, or a file",
+          "value_name": "SOURCE",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "What the source is written in. `gitleaks` converts it; rules whose regex Rust cannot compile are listed and left out",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "personal",
+          "long": "personal",
+          "short": null,
+          "help": "Add it to your personal rules instead (never committed)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "update"
+      ],
+      "name": "update",
+      "about": "Fetch added packs again, show the rules added and removed, and ask before replacing each",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "name",
+          "long": null,
+          "short": null,
+          "help": "One pack. Default: every pack added here",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "personal",
+          "long": "personal",
+          "short": null,
+          "help": "Your personal packs instead",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Replace without asking (for CI)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "rules",
+        "remove"
+      ],
+      "name": "remove",
+      "about": "Remove an added pack and its lock entry",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "name",
+          "long": null,
+          "short": null,
+          "help": "The pack's name",
+          "value_name": "NAME",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "personal",
+          "long": "personal",
+          "short": null,
+          "help": "Your personal packs instead",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "hook"
+      ],
+      "name": "hook",
+      "about": "A git `pre-commit` hook that runs `evnx scan --staged`",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": true,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "hook",
+        "install"
+      ],
+      "name": "install",
+      "about": "Add the evnx block to this repository's `pre-commit` hook",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "hook",
+        "uninstall"
+      ],
+      "name": "uninstall",
+      "about": "Remove the evnx block, and nothing else, from the `pre-commit` hook",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "scan",
+        "hook",
+        "status"
+      ],
+      "name": "status",
+      "about": "Whether the hook is installed here, and whether it is turned off",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -865,10 +2233,11 @@
         "diff"
       ],
       "name": "diff",
-      "about": "Compare .env vs .env.example — show missing/extra vars",
+      "about": "Compare two env files: keys missing or extra, and values between environments",
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/diff",
       "args": [
         {
@@ -887,7 +2256,7 @@
           "id": "example",
           "long": "example",
           "short": null,
-          "help": "The file on the right of the comparison",
+          "help": "The template on the right of the comparison: key names only",
           "value_name": "EXAMPLE",
           "required": false,
           "takes_value": true,
@@ -911,10 +2280,22 @@
           "id": "against",
           "long": "against",
           "short": null,
-          "help": "Compare against `.env.<NAME>` instead of `.env.example`",
+          "help": "Compare against the environment `.env.<NAME>`: keys and values",
           "value_name": "NAME",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "values",
+          "long": "values",
+          "short": null,
+          "help": "Compare values against a template too, not only key names",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -959,8 +2340,8 @@
           "id": "ignore_keys",
           "long": "ignore-keys",
           "short": null,
-          "help": "Ignore these keys (comma-separated) — useful for env-specific vars",
-          "value_name": "IGNORE_KEYS",
+          "help": "Leave these keys out of the comparison (comma-separated, exact case)",
+          "value_name": "KEYS",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -968,10 +2349,34 @@
           "hidden": false
         },
         {
+          "id": "fail_on",
+          "long": "fail-on",
+          "short": null,
+          "help": "What fails the run (exit 1): `missing`, `extra`, `different`",
+          "value_name": "WHAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "skip_without_env",
+          "long": "skip-without-env",
+          "short": null,
+          "help": "With no `.env`, skip (exit 0) and say so",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "with_stats",
           "long": "with-stats",
           "short": null,
-          "help": "Include extended statistics in JSON output",
+          "help": "Add a `stats` object to the JSON (`--format json` only)",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -983,7 +2388,7 @@
           "id": "interactive",
           "long": "interactive",
           "short": "i",
-          "help": "Enable interactive merge mode (patch format only)",
+          "help": "Prompt for each change and write the chosen ones (`--format patch` only)",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1007,7 +2412,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1038,6 +2443,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/convert",
       "args": [
         {
@@ -1089,11 +2495,71 @@
           "hidden": false
         },
         {
+          "id": "force",
+          "long": "force",
+          "short": null,
+          "help": "Replace FILE when it already exists (with --output)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "gitignore",
+          "long": "gitignore",
+          "short": null,
+          "help": "Add the --output file to .gitignore without asking (no prompt)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_gitignore",
+          "long": "no-gitignore",
+          "short": null,
+          "help": "Skip the .gitignore check for the --output file",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "include",
           "long": "include",
           "short": null,
-          "help": "Include only variables matching this glob pattern",
+          "help": "Include only variables whose name matches a glob pattern",
           "value_name": "PATTERN",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": "Exclude variables whose name matches a glob pattern",
+          "value_name": "PATTERN",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "only",
+          "long": "only",
+          "short": null,
+          "help": "Keep only the secrets, or only the rest",
+          "value_name": "WHICH",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -1101,13 +2567,25 @@
           "hidden": false
         },
         {
-          "id": "exclude",
-          "long": "exclude",
+          "id": "allow_empty",
+          "long": "allow-empty",
           "short": null,
-          "help": "Exclude variables matching this glob pattern",
-          "value_name": "PATTERN",
+          "help": "Convert even when no variable is left (an empty .env, or filters that match nothing). Without it that is an error, exit 2",
+          "value_name": null,
           "required": false,
-          "takes_value": true,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "allow_collisions",
+          "long": "allow-collisions",
+          "short": null,
+          "help": "When two names become one name in the output, keep the last value",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -1149,6 +2627,66 @@
           "hidden": false
         },
         {
+          "id": "project",
+          "long": "project",
+          "short": null,
+          "help": "Google Cloud project for --to gcp-secrets (required there)",
+          "value_name": "PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vault_name",
+          "long": "vault-name",
+          "short": null,
+          "help": "Azure Key Vault for --to azure-keyvault (required there)",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "heroku_app",
+          "long": "heroku-app",
+          "short": null,
+          "help": "Heroku app for --to heroku (required there)",
+          "value_name": "APP",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "name",
+          "long": "name",
+          "short": null,
+          "help": "Name of the Kubernetes Secret for --to kubernetes (required there)",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "namespace",
+          "long": "namespace",
+          "short": null,
+          "help": "Kubernetes namespace for --to kubernetes (optional)",
+          "value_name": "NAMESPACE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "verbose",
           "long": "verbose",
           "short": "v",
@@ -1164,7 +2702,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1191,17 +2729,18 @@
         "migrate"
       ],
       "name": "migrate",
-      "about": "Full migration workflow to secret managers",
+      "about": "Move a .env into a secret manager: print the commands, or upload to GitHub",
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/migrate",
       "args": [
         {
           "id": "from",
           "long": "from",
           "short": null,
-          "help": "Source system: `env-file` (default) or `environment`",
+          "help": "Source system: `env-file` or `environment`",
           "value_name": "FROM",
           "required": false,
           "takes_value": true,
@@ -1213,8 +2752,20 @@
           "id": "source_file",
           "long": "source-file",
           "short": null,
-          "help": "Path to the source .env file (used when --from env-file)",
-          "value_name": "SOURCE_FILE",
+          "help": "The .env file to read (default: .env, or `[defaults] env_name`)",
+          "value_name": "PATH",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Read `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -1246,6 +2797,18 @@
           "hidden": false
         },
         {
+          "id": "print_only",
+          "long": "print-only",
+          "short": null,
+          "help": "Write only the commands to stdout; everything else goes to stderr",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "skip_existing",
           "long": "skip-existing",
           "short": null,
@@ -1262,6 +2825,18 @@
           "long": "overwrite",
           "short": null,
           "help": "Overwrite secrets that already exist without prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Upload without asking \"Proceed with migration?\" (github-actions)",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1318,6 +2893,18 @@
           "hidden": false
         },
         {
+          "id": "allow_collisions",
+          "long": "allow-collisions",
+          "short": null,
+          "help": "When two names become one, keep the last value",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "repo",
           "long": "repo",
           "short": null,
@@ -1333,7 +2920,7 @@
           "id": "github_token",
           "long": "github-token",
           "short": null,
-          "help": "GitHub Personal Access Token (or set GITHUB_TOKEN env var)",
+          "help": "GitHub token. Prefer exporting GITHUB_TOKEN: evnx reads it when this flag is absent, and a flag value lands in shell history",
           "value_name": "GITHUB_TOKEN",
           "required": false,
           "takes_value": true,
@@ -1369,7 +2956,7 @@
           "id": "project",
           "long": "project",
           "short": null,
-          "help": "Doppler project slug or Infisical project ID",
+          "help": "Doppler project, Infisical project ID, or GCP project ID (required for gcp-secret-manager)",
           "value_name": "PROJECT",
           "required": false,
           "takes_value": true,
@@ -1429,7 +3016,7 @@
           "id": "vercel_project",
           "long": "vercel-project",
           "short": null,
-          "help": "Vercel project ID or name",
+          "help": "Vercel project ID or name (default: the linked project)",
           "value_name": "VERCEL_PROJECT",
           "required": false,
           "takes_value": true,
@@ -1441,8 +3028,32 @@
           "id": "railway_project",
           "long": "railway-project",
           "short": null,
-          "help": "Railway project ID",
+          "help": "Railway project ID (default: the linked project). Needs --railway-environment, as Railway does",
           "value_name": "RAILWAY_PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "railway_environment",
+          "long": "railway-environment",
+          "short": null,
+          "help": "Railway environment, e.g. production",
+          "value_name": "RAILWAY_ENVIRONMENT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "railway_service",
+          "long": "railway-service",
+          "short": null,
+          "help": "Railway service (default: the linked service, or the project's only one)",
+          "value_name": "RAILWAY_SERVICE",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -1465,7 +3076,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1496,6 +3107,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/sync",
       "args": [
         {
@@ -1538,7 +3150,7 @@
           "id": "direction",
           "long": "direction",
           "short": null,
-          "help": "Direction of sync operation",
+          "help": "Which file to fill: forward (the default) adds to the template, reverse adds to `.env`",
           "value_name": "DIRECTION",
           "required": false,
           "takes_value": true,
@@ -1550,7 +3162,7 @@
           "id": "placeholder",
           "long": "placeholder",
           "short": null,
-          "help": "Use placeholder values when adding new variables",
+          "help": "Deprecated: does what --force does (placeholders, no prompt)",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1598,7 +3210,19 @@
           "id": "force",
           "long": "force",
           "short": "f",
-          "help": "Skip interactive prompts (for CI/CD usage)",
+          "help": "Skip the prompts and add placeholder values",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "skip_without_env",
+          "long": "skip-without-env",
+          "short": null,
+          "help": "With no `.env` and nothing else to compare, skip (exit 0) and say so",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1610,7 +3234,7 @@
           "id": "template_config",
           "long": "template-config",
           "short": null,
-          "help": "Path to custom placeholder template config (JSON)",
+          "help": "A JSON file of placeholder rules: `patterns`, `default`, `allow_actual`",
           "value_name": "PATH",
           "required": false,
           "takes_value": true,
@@ -1622,7 +3246,7 @@
           "id": "naming_policy",
           "long": "naming-policy",
           "short": null,
-          "help": "Warn on non-standard env var naming (default: warn) Defaults to `warn`, or `[sync] naming_policy` from `.evnx.toml`",
+          "help": "What to do with a name that is not UPPER_SNAKE_CASE",
           "value_name": "NAMING_POLICY",
           "required": false,
           "takes_value": true,
@@ -1646,7 +3270,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1677,13 +3301,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/template",
       "args": [
         {
           "id": "input",
           "long": "input",
           "short": null,
-          "help": "The template to render. `{{ VAR }}` and `${VAR}` are substituted",
+          "help": "The template to render. `{{VAR}}`, `${VAR}` and `$VAR` are substituted; filters are listed below",
           "value_name": "INPUT",
           "required": true,
           "takes_value": true,
@@ -1695,10 +3320,46 @@
           "id": "output",
           "long": "output",
           "short": null,
-          "help": "Where to write the rendered file",
+          "help": "Where to write the rendered file, or `-` for stdout",
           "value_name": "OUTPUT",
           "required": true,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "mode",
+          "long": "mode",
+          "short": null,
+          "help": "File mode for the output, in octal (e.g. 0640). Applied to a new or an existing file. Without it a new file is 0600",
+          "value_name": "MODE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "mkdir",
+          "long": "mkdir",
+          "short": null,
+          "help": "Create the output's missing directories, readable by you only (0700)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "dry_run",
+          "long": "dry-run",
+          "short": null,
+          "help": "Render and report what would be written, and write nothing",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -1752,10 +3413,22 @@
           "hidden": false
         },
         {
+          "id": "allow_unresolved",
+          "long": "allow-unresolved",
+          "short": null,
+          "help": "Write an unresolved placeholder through literally and exit 0",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "strict",
           "long": "strict",
           "short": null,
-          "help": "Refuse to write when a placeholder has no value",
+          "help": "The default since 0.11.0; accepted, and removed in 1.0",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1779,7 +3452,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1810,6 +3483,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/backup",
       "args": [
         {
@@ -1900,7 +3574,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -1931,13 +3605,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/restore",
       "args": [
         {
           "id": "backup",
           "long": null,
           "short": null,
-          "help": null,
+          "help": "The backup file to decrypt, as written by `evnx backup`",
           "value_name": "BACKUP",
           "required": true,
           "takes_value": true,
@@ -1949,10 +3624,46 @@
           "id": "output",
           "long": "output",
           "short": null,
-          "help": null,
+          "help": "Where to write the restored file",
           "value_name": "OUTPUT",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Replace an existing --output without asking",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "gitignore",
+          "long": "gitignore",
+          "short": null,
+          "help": "Add the restored file to .gitignore without asking (no prompt)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_gitignore",
+          "long": "no-gitignore",
+          "short": null,
+          "help": "Skip the .gitignore check for the restored file",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -2009,7 +3720,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2040,6 +3751,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": "https://docs.evnx.dev/cli/commands/auth",
       "args": [
         {
@@ -2070,7 +3782,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2102,6 +3814,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2156,7 +3869,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2188,6 +3901,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2242,7 +3956,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2274,6 +3988,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2304,7 +4019,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2336,6 +4051,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": null,
       "args": [
         {
@@ -2366,7 +4082,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2399,6 +4115,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2441,7 +4158,7 @@
           "id": "expires_in_days",
           "long": "expires-in-days",
           "short": null,
-          "help": "Expire after this many days. Omit for a token that never expires",
+          "help": "Expire after this many days, 1 to 3650. Omit for a token that never expires",
           "value_name": "DAYS",
           "required": false,
           "takes_value": true,
@@ -2477,7 +4194,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2510,6 +4227,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2540,7 +4258,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2573,6 +4291,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2627,7 +4346,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2659,6 +4378,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": null,
       "args": [
         {
@@ -2689,7 +4409,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2722,6 +4442,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2752,7 +4473,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2785,6 +4506,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2815,7 +4537,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2848,6 +4570,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -2878,7 +4601,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2910,6 +4633,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": null,
       "args": [
         {
@@ -2940,7 +4664,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -2973,6 +4697,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3003,7 +4728,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3036,6 +4761,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3090,7 +4816,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3123,6 +4849,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3165,7 +4892,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3197,6 +4924,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": null,
       "args": [
         {
@@ -3227,7 +4955,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3260,6 +4988,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3290,7 +5019,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3323,6 +5052,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3377,7 +5107,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3409,6 +5139,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3439,7 +5170,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3471,6 +5202,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3500,7 +5232,7 @@
         {
           "id": "yes",
           "long": "yes",
-          "short": null,
+          "short": "y",
           "help": "Skip the confirmation prompt",
           "value_name": null,
           "required": false,
@@ -3537,7 +5269,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3569,6 +5301,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3623,7 +5356,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3655,6 +5388,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3709,7 +5443,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3741,6 +5475,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3783,7 +5518,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3814,6 +5549,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": "https://docs.evnx.dev/cli/commands/org",
       "args": [
         {
@@ -3844,7 +5580,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3876,6 +5612,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3930,7 +5667,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -3962,6 +5699,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -3992,7 +5730,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4024,13 +5762,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4066,7 +5805,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4098,6 +5837,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4128,7 +5868,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4164,7 +5904,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4196,13 +5936,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4238,7 +5979,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4270,6 +6011,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4288,7 +6030,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4324,7 +6066,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4356,6 +6098,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4398,7 +6141,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4430,13 +6173,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4472,7 +6216,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4504,6 +6248,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4534,7 +6279,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4570,7 +6315,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4602,6 +6347,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4620,7 +6366,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4656,7 +6402,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4688,6 +6434,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4706,7 +6453,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4742,7 +6489,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4774,6 +6521,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4804,7 +6552,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4840,7 +6588,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4872,6 +6620,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4889,7 +6638,7 @@
         {
           "id": "yes",
           "long": "yes",
-          "short": null,
+          "short": "y",
           "help": "Skip the confirmation prompt",
           "value_name": null,
           "required": false,
@@ -4902,7 +6651,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -4938,7 +6687,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -4970,6 +6719,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -4987,7 +6737,7 @@
         {
           "id": "yes",
           "long": "yes",
-          "short": null,
+          "short": "y",
           "help": "Skip the confirmation prompt",
           "value_name": null,
           "required": false,
@@ -5000,7 +6750,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -5036,7 +6786,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5068,12 +6818,13 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "yes",
           "long": "yes",
-          "short": null,
+          "short": "y",
           "help": "Skip the confirmation prompt",
           "value_name": null,
           "required": false,
@@ -5086,7 +6837,7 @@
           "id": "org",
           "long": "org",
           "short": null,
-          "help": null,
+          "help": "Organisation slug, e.g. `acme`. Needed only when you belong to more than one",
           "value_name": "SLUG",
           "required": false,
           "takes_value": true,
@@ -5122,7 +6873,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5153,6 +6904,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": "https://docs.evnx.dev/cli/commands/vault",
       "args": [
         {
@@ -5183,7 +6935,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5215,13 +6967,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
           "id": "name",
           "long": null,
           "short": null,
-          "help": "Vault name — letters, digits and hyphens",
+          "help": "Vault name — lower-case letters, digits and hyphens",
           "value_name": "NAME",
           "required": true,
           "takes_value": true,
@@ -5281,7 +7034,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5313,6 +7066,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5343,7 +7097,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5375,6 +7129,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5429,7 +7184,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5461,6 +7216,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5539,7 +7295,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5571,6 +7327,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5613,7 +7370,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5645,6 +7402,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5711,7 +7469,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5743,6 +7501,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5833,7 +7592,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5865,6 +7624,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -5931,7 +7691,94 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "vault",
+        "leave"
+      ],
+      "name": "leave",
+      "about": "Leave a vault that was shared with you",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "target",
+          "long": null,
+          "short": null,
+          "help": "Vault: `name`, `name/environment`, or an id",
+          "value_name": "TARGET",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Skip the confirmation prompt",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "server",
+          "long": "server",
+          "short": null,
+          "help": "evnx server to talk to. Overrides EVNX_SERVER and config.toml",
+          "value_name": "URL",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -5958,10 +7805,11 @@
         "cloud"
       ],
       "name": "cloud",
-      "about": "Sync encrypted .env files with evnx cloud",
+      "about": "Sync encrypted .env files with evnx cloud.",
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": "https://docs.evnx.dev/cli/commands/cloud",
       "args": [
         {
@@ -5992,7 +7840,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6024,6 +7872,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6075,6 +7924,18 @@
           "hidden": false
         },
         {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Push the default `.env` into a production vault without asking",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "server",
           "long": "server",
           "short": null,
@@ -6102,7 +7963,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6134,6 +7995,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6144,6 +8006,18 @@
           "value_name": "VAULT",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "allow_override",
+          "long": "allow-override",
+          "short": null,
+          "help": "With several `--vault`, let the later vault win a key both hold",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -6174,9 +8048,9 @@
         },
         {
           "id": "force",
-          "long": "force",
-          "short": null,
-          "help": "Overwrite the target without asking",
+          "long": "yes",
+          "short": "y",
+          "help": "Overwrite the target without asking. Also accepted as --force",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6189,6 +8063,30 @@
           "long": "password-stdin",
           "short": null,
           "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "gitignore",
+          "long": "gitignore",
+          "short": null,
+          "help": "Add the pulled file to .gitignore without asking (no prompt)",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_gitignore",
+          "long": "no-gitignore",
+          "short": null,
+          "help": "Skip the .gitignore check for the pulled file",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6224,7 +8122,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6256,6 +8154,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6266,6 +8165,18 @@
           "value_name": "VAULT",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "allow_override",
+          "long": "allow-override",
+          "short": null,
+          "help": "With several `--vault`, let the later vault win a key both hold",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -6299,6 +8210,42 @@
           "long": "password-stdin",
           "short": null,
           "help": "Read the master password from stdin instead of prompting",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "allow_unsafe_names",
+          "long": "allow-unsafe-names",
+          "short": null,
+          "help": "Inject variables that make a program load or run other code",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "mask",
+          "long": "mask",
+          "short": null,
+          "help": "Mask secret values in the command's output as `***`",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_mask",
+          "long": "no-mask",
+          "short": null,
+          "help": "Never mask the command's output",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6346,7 +8293,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6378,6 +8325,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6432,7 +8380,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6464,6 +8412,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6503,6 +8452,18 @@
           "hidden": false
         },
         {
+          "id": "include_mine",
+          "long": "include-mine",
+          "short": null,
+          "help": "Report your own pushes too. By default only someone else's are shown",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "server",
           "long": "server",
           "short": null,
@@ -6530,7 +8491,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6562,6 +8523,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6601,6 +8563,54 @@
           "hidden": false
         },
         {
+          "id": "local",
+          "long": "local",
+          "short": null,
+          "help": "Compare the local file with a version instead: key names added, removed and changed, never values. Exit 0 when they match, 1 when they differ",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "file",
+          "long": "file",
+          "short": "f",
+          "help": "With --local: the local file",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "With --local: use `.env.<NAME>`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "password_stdin",
+          "long": "password-stdin",
+          "short": null,
+          "help": "With --local: read the master password from stdin",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "server",
           "long": "server",
           "short": null,
@@ -6628,7 +8638,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6660,6 +8670,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6726,7 +8737,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6758,6 +8769,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6787,7 +8799,7 @@
         {
           "id": "yes",
           "long": "yes",
-          "short": null,
+          "short": "y",
           "help": "Skip the confirmation prompt",
           "value_name": null,
           "required": false,
@@ -6824,7 +8836,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6856,6 +8868,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6867,6 +8880,18 @@
           "required": true,
           "takes_value": true,
           "positional": true,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "file",
+          "long": "file",
+          "short": "f",
+          "help": "The file push and pull use with this vault, from any folder below the binding (`--file deploy/.env`). Stored as `[cloud] file`, relative to the folder the `.evnx.toml` is in, so it names the same file wherever the command runs. `--file` and `--env-name` on push and pull still win",
+          "value_name": "FILE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
           "multiple": false,
           "hidden": false
         },
@@ -6898,7 +8923,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6930,6 +8955,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -6960,7 +8986,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -6992,6 +9018,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -7038,6 +9065,78 @@
           "value_name": "FORMAT",
           "required": false,
           "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "project",
+          "long": "project",
+          "short": null,
+          "help": "Google Cloud project for --to gcp-secrets (required there)",
+          "value_name": "PROJECT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "vault_name",
+          "long": "vault-name",
+          "short": null,
+          "help": "Azure Key Vault for --to azure-keyvault (required there)",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "heroku_app",
+          "long": "heroku-app",
+          "short": null,
+          "help": "Heroku app for --to heroku (required there)",
+          "value_name": "APP",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "name",
+          "long": "name",
+          "short": null,
+          "help": "Name of the Kubernetes Secret for --to kubernetes (required there)",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "namespace",
+          "long": "namespace",
+          "short": null,
+          "help": "Kubernetes namespace for --to kubernetes (optional)",
+          "value_name": "NAMESPACE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "allow_collisions",
+          "long": "allow-collisions",
+          "short": null,
+          "help": "With --to: when two names become one in the target, keep the last value instead of refusing",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
           "positional": false,
           "multiple": false,
           "hidden": false
@@ -7094,7 +9193,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7126,6 +9225,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -7168,7 +9268,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7199,6 +9299,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/doctor",
       "args": [
         {
@@ -7250,6 +9351,18 @@
           "hidden": false
         },
         {
+          "id": "skip_without_env",
+          "long": "skip-without-env",
+          "short": null,
+          "help": "With no env file, skip (exit 0) and say so",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "format",
           "long": "format",
           "short": null,
@@ -7277,7 +9390,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7308,6 +9421,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": true,
       "docs_url": "https://docs.evnx.dev/cli/commands/spec",
       "args": [
         {
@@ -7326,7 +9440,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7358,6 +9472,7 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": null,
       "args": [
         {
@@ -7378,6 +9493,18 @@
           "short": null,
           "help": "The environment file to read sample values from",
           "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Read sample values from `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
           "required": false,
           "takes_value": true,
           "positional": false,
@@ -7409,10 +9536,219 @@
           "hidden": false
         },
         {
+          "id": "merge",
+          "long": "merge",
+          "short": null,
+          "help": "Add only the variables `[vars]` does not declare yet",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
           "id": "force",
           "long": "force",
           "short": null,
-          "help": "Append even when `.evnx.toml` already has a `[vars]` section",
+          "help": "Removed (I-178): it appended a second `[vars]` that TOML refuses. Kept hidden so the error can point at `--merge`",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": true
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "spec",
+        "check"
+      ],
+      "name": "check",
+      "about": "Check the contract against `.env.example`, and `.env` when there is one. Read-only; suited to a pre-commit hook and to CI",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": null,
+      "args": [
+        {
+          "id": "example",
+          "long": "example",
+          "short": null,
+          "help": "The template to check. Defaults to `.env.example`, or `[defaults] example` from `.evnx.toml`",
+          "value_name": "EXAMPLE",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The environment file to check. Defaults to `.env`, or `[defaults] env_name`. Skipped when it does not exist, unless named",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Check `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "parse"
+      ],
+      "name": "parse",
+      "about": "List what evnx reads from a `.env`: line, key and flags, never a value",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/parse",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The file to read, or `-` for stdin. Defaults to `.env`, or `[defaults] env_name`",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Read `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "format",
+          "long": "format",
+          "short": null,
+          "help": "Output format: `pretty` or `json`",
+          "value_name": "FORMAT",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "values",
+          "long": "values",
+          "short": null,
+          "help": "Print each value too, in plain text",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "yes",
+          "long": "yes",
+          "short": "y",
+          "help": "Print --values to a terminal anyway",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7436,7 +9772,153 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_color",
+          "long": "no-color",
+          "short": null,
+          "help": "Disable colored output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "run"
+      ],
+      "name": "run",
+      "about": "Run a command with a `.env`'s variables in its environment",
+      "visible_aliases": [],
+      "aliases": [],
+      "hidden": false,
+      "subcommand_required": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/run",
+      "args": [
+        {
+          "id": "env",
+          "long": "env",
+          "short": null,
+          "help": "The file to read. Defaults to `.env`, or `[defaults] env_name`",
+          "value_name": "ENV",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "env_name",
+          "long": "env-name",
+          "short": null,
+          "help": "Read `.env.<NAME>` instead of `.env`",
+          "value_name": "NAME",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "include",
+          "long": "include",
+          "short": null,
+          "help": "Inject only variables whose name matches one of these globs",
+          "value_name": "GLOB",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "exclude",
+          "long": "exclude",
+          "short": null,
+          "help": "Skip variables whose name matches one of these globs",
+          "value_name": "GLOB",
+          "required": false,
+          "takes_value": true,
+          "positional": false,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "allow_unsafe_names",
+          "long": "allow-unsafe-names",
+          "short": null,
+          "help": "Inject variables that make a program load or run other code (`PATH`, `LD_*`, `DYLD_*`, `NODE_OPTIONS`, `BASH_ENV`, …), refused by default",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "mask",
+          "long": "mask",
+          "short": null,
+          "help": "Mask secret values in the command's output as `***`",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "no_mask",
+          "long": "no-mask",
+          "short": null,
+          "help": "Never mask the command's output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "command",
+          "long": null,
+          "short": null,
+          "help": "The command to run, after `--`",
+          "value_name": "COMMAND",
+          "required": true,
+          "takes_value": true,
+          "positional": true,
+          "multiple": true,
+          "hidden": false
+        },
+        {
+          "id": "verbose",
+          "long": "verbose",
+          "short": "v",
+          "help": "Enable verbose output",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "quiet",
+          "long": "quiet",
+          "short": "q",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7471,6 +9953,7 @@
         "surface"
       ],
       "hidden": false,
+      "subcommand_required": false,
       "docs_url": "https://docs.evnx.dev/cli/commands/commands",
       "args": [
         {
@@ -7513,7 +9996,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7544,13 +10027,14 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
-      "docs_url": null,
+      "subcommand_required": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/completions",
       "args": [
         {
           "id": "shell",
           "long": null,
           "short": null,
-          "help": null,
+          "help": "The shell to write the script for, in any case",
           "value_name": "SHELL",
           "required": true,
           "takes_value": true,
@@ -7574,7 +10058,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7605,13 +10089,38 @@
       "visible_aliases": [],
       "aliases": [],
       "hidden": false,
-      "docs_url": null,
+      "subcommand_required": false,
+      "docs_url": "https://docs.evnx.dev/cli/commands/update",
       "args": [
         {
           "id": "check",
           "long": "check",
           "short": null,
           "help": "Ask api.github.com for the latest release",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "list",
+          "long": "list",
+          "short": null,
+          "help": "List every copy of evnx on this machine, and which one runs",
+          "value_name": null,
+          "required": false,
+          "takes_value": false,
+          "positional": false,
+          "multiple": false,
+          "hidden": false
+        },
+        {
+          "id": "json",
+          "long": "json",
+          "short": null,
+          "help": "With `--check` or `--list`: the answer as JSON on stdout",
           "value_name": null,
           "required": false,
           "takes_value": false,
@@ -7635,7 +10144,7 @@
           "id": "quiet",
           "long": "quiet",
           "short": "q",
-          "help": "Suppress non-essential output",
+          "help": "Print nothing on success. Findings, warnings, errors and requested data still print",
           "value_name": null,
           "required": false,
           "takes_value": false,

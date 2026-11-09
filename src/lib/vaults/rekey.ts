@@ -133,7 +133,11 @@ export async function rekeyVault(
   for (const [i, v] of versions.entries()) {
     report({ phase: "re-encrypting", done: i, total: versions.length });
 
-    const blob = await downloadBlob(vaultId, v.version_num);
+    // `purpose: "rekey"` so the audit log shows these reads as a rotation, not
+    // as someone pulling every version one by one.
+    const blob = await downloadBlob(vaultId, v.version_num, {
+      purpose: "rekey",
+    });
     const plaintext = await decryptVault(blob, oldKey, vaultId, v.version_num);
     // Same version number: the AAD binds it, so re-sealing v7 as v7 is what
     // keeps every client able to open it.

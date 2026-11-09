@@ -26,6 +26,12 @@
  * rotating separately or the member never held the key, the same escape hatch the
  * CLI spells `--no-rekey`. It was previously the only thing on offer, which made
  * it the default by accident.
+ *
+ * ─── Rotation without removal ───────────────────────────────────────────────
+ *
+ * **Rotate key** (admin and above) runs the same re-key with nobody removed — for
+ * a suspected leak, a laptop that was lost, or routine hygiene. It sits apart
+ * from the member rows because it is about the vault, not about a person.
  */
 
 "use client";
@@ -65,6 +71,7 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<VaultMember | null>(null);
+  const [confirmingRotate, setConfirmingRotate] = useState(false);
   const [shareEmail, setShareEmail] = useState("");
   const [shareRole, setShareRole] = useState<VaultRole>("developer");
   const [progress, setProgress] = useState<RekeyProgress | null>(null);
@@ -97,6 +104,27 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
       </CardHeader>
 
       <CardContent className="space-y-4">
+        {/* One progress line for both flows. It used to sit inside the removal
+            confirmation, which closes the moment the button is pressed — so the
+            progress it described was never on screen. */}
+        {progress && (
+          <p className="text-xs">
+            {progress.phase === "re-encrypting"
+              ? `Re-encrypting version ${progress.done + 1} of ${progress.total}…`
+              : progress.phase === "re-wrapping"
+                ? `Re-wrapping the key for ${progress.total} member${progress.total === 1 ? "" : "s"}…`
+                : progress.phase === "committing"
+                  ? "Swapping everything over…"
+                  : "Reading the vault…"}
+            {" "}
+            {/* Closing the tab is safe and saying so is the point: the
+                swap is one transaction, and an abandoned run leaves
+                orphaned objects nothing references, not a broken vault. */}
+            Leaving this page cancels it safely — nothing changes until the
+            final step.
+          </p>
+        )}
+
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
@@ -256,6 +284,67 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
           </ul>
         )}
 
+        {/* ── Rotate without removing ────────────────────────────────────────
+            Admin and above, matching the server's re-key guard. */}
+        {yourRank >= ROLE_RANK.admin && !confirmingRotate && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
+            <p className="text-xs text-muted-foreground">
+              Replace this vault&rsquo;s key without removing anyone.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={busy !== null}
+              onClick={() => setConfirmingRotate(true)}
+            >
+              {busy === "rotate" ? "Rotating…" : "Rotate key"}
+            </Button>
+          </div>
+        )}
+
+        {confirmingRotate && (
+          <Alert>
+            <AlertTitle>Rotate this vault&rsquo;s key?</AlertTitle>
+            <AlertDescription className="space-y-3">
+              <p>
+                Every version is re-encrypted in your browser with a new key, and
+                every current member gets the new key. Old versions stay readable
+                to current members. Anyone who copied the old key earlier can no
+                longer open new pushes.
+              </p>
+              <Irreversible title="Rotating cannot reach backwards">
+                Anyone who copied a version before now keeps that copy. Rotate
+                the affected secrets at their source too.
+              </Irreversible>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  disabled={busy !== null}
+                  onClick={async () => {
+                    setConfirmingRotate(false);
+                    await act("rotate", async () => {
+                      try {
+                        await rekeyVault(vaultId, { onProgress: setProgress });
+                      } finally {
+                        setProgress(null);
+                      }
+                    });
+                  }}
+                >
+                  Rotate key
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setConfirmingRotate(false)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+
         {confirming && (
           <Alert variant="destructive">
             <AlertTitle>
@@ -268,24 +357,6 @@ export function VaultMembers({ vaultId }: { vaultId: string }) {
                 either way, <strong>rotate the affected secrets at their
                 source</strong>. That is the step people skip.
               </Irreversible>
-
-              {progress && (
-                <p className="text-xs">
-                  {progress.phase === "re-encrypting"
-                    ? `Re-encrypting version ${progress.done + 1} of ${progress.total}…`
-                    : progress.phase === "re-wrapping"
-                      ? `Re-wrapping the key for ${progress.total} member${progress.total === 1 ? "" : "s"}…`
-                      : progress.phase === "committing"
-                        ? "Swapping everything over…"
-                        : "Reading the vault…"}
-                  {" "}
-                  {/* Closing the tab is safe and saying so is the point: the
-                      swap is one transaction, and an abandoned run leaves
-                      orphaned objects nothing references, not a broken vault. */}
-                  Leaving this page cancels it safely — nothing changes until the
-                  final step.
-                </p>
-              )}
 
               <div className="flex flex-wrap gap-2">
                 <Button

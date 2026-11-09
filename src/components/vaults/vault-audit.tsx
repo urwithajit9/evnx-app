@@ -61,12 +61,18 @@ type NameOf = (id: string | undefined) => string;
  * says nothing about who was granted access. The obvious fix is to have the server
  * write the email into `audit_events.metadata`, and that fix is **wrong**: migration
  * 006 makes the table append-only by trigger, so an email written there could never
- * be scrubbed — and account deletion would quietly stop being complete.
+ * be scrubbed — and account deletion would quietly stop being complete. Stored rows
+ * hold ids only, and must keep doing so.
  *
- * So it is resolved here, from data the page has already fetched. No new endpoint,
- * and in particular no `GET /users/:id → email`, which is an id-to-email mapping and
- * therefore an enumeration surface the moment its authorisation is anything less
- * than exact.
+ * So names are resolved on read. Most are resolved here, from data the page has
+ * already fetched: no new endpoint, and in particular no `GET /users/:id → email`,
+ * which is an id-to-email mapping and therefore an enumeration surface the moment
+ * its authorisation is anything less than exact.
+ *
+ * ⓘ The one exception is `vault_rekey`: the removed member is no longer in the
+ * member list, so the server looks up their email when the log is read and sends it
+ * as `metadata.removed_email` (null once the account is gone). It is attached to the
+ * response, never stored, which is what keeps the append-only rows free of it.
  *
  * ⚠️ A former member falls back to the short id, and that is the right answer rather
  * than a gap: they are gone, and the entry is recording that a grant happened, not
@@ -97,7 +103,12 @@ function describe(
     case "push":
       return { text: `pushed version ${num(m, "version") ?? "?"}` };
     case "pull":
-      return { text: `pulled version ${num(m, "version") ?? "?"}` };
+      // ⚠️ A re-key reads every version, so without this a rotation looks like
+      // someone pulling the whole history one version at a time. The server marks
+      // those reads, and an auditor needs to tell the two apart.
+      return str(m, "purpose") === "rekey"
+        ? { text: `re-key read v${num(m, "version") ?? "?"}` }
+        : { text: `pulled version ${num(m, "version") ?? "?"}` };
     case "member_grant":
       return {
         text: `granted ${nameOf(str(m, "member_user_id"))} access as ${str(m, "role") ?? "a member"}`,
@@ -124,11 +135,16 @@ function describe(
     }
     case "vault_rekey": {
       const removed = str(m, "removed_user_id");
+      // The server now sends `removed_email` with the event (null once the
+      // account is gone). Prefer it: the member list cannot name someone who has
+      // already been removed, which is exactly who this entry is about. When it
+      // is absent or null, fall back to the member-list lookup as before.
+      const removedName = str(m, "removed_email") ?? (removed ? nameOf(removed) : undefined);
       return {
         text:
           `rotated the vault key — ${plural(num(m, "versions_rekeyed"), "version")} re-encrypted, ` +
           `${plural(num(m, "members_rewrapped"), "member")} re-wrapped` +
-          (removed ? `, removing ${nameOf(removed)}` : ""),
+          (removedName ? `, removing ${removedName}` : ""),
         tone: "notable",
       };
     }

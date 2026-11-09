@@ -230,14 +230,25 @@ export async function getLatestVersion(vaultId: string): Promise<VersionMeta> {
  * safelisted response headers are visible to script. Not a problem: the same
  * hash is in the JSON from `listVersions`, and the server re-verifies the blob
  * against it before sending a byte.
+ *
+ * ⚠️ `purpose: "rekey"` is for the re-key path ONLY. The server records the pull
+ * in the audit log, and for an admin-or-above caller it labels it a re-key read
+ * rather than a normal pull. Passing it from an ordinary open would make a
+ * person reading their own secrets look like a rotation in the log — and the
+ * label is what lets an auditor tell a rotation from someone pulling every
+ * version.
  */
 export async function downloadBlob(
   vaultId: string,
   versionNum: number,
+  { purpose }: { purpose?: "rekey" } = {},
 ): Promise<Uint8Array> {
   const { data } = await api.get<ArrayBuffer>(
     `/vaults/${vaultId}/versions/${versionNum}/blob`,
-    { responseType: "arraybuffer" },
+    {
+      responseType: "arraybuffer",
+      ...(purpose ? { params: { purpose } } : {}),
+    },
   );
   return new Uint8Array(data);
 }

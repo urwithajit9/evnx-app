@@ -229,7 +229,7 @@ function StepDetail({
             </p>
           )}
           <Shell>
-            {`evnx auth login\nevnx cloud push .env --vault ${target}`}
+            {`evnx auth login\nevnx cloud push --vault ${target}`}
           </Shell>
           <p className={note}>
             Your master password never leaves this device, and neither does the
