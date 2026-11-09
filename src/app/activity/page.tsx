@@ -177,13 +177,22 @@ export default function ActivityPage() {
 
               {activity.data && events.length === 0 && (
                 <EmptyState
-                  title="No activity yet"
+                  // ⓘ An empty feed usually means "nothing inside the plan's
+                  // history window", not "nothing ever happened": a free plan
+                  // keeps 7 days, and the last push may be older than that.
+                  title={
+                    retentionDays !== undefined
+                      ? `No activity in the last ${retentionDays} days`
+                      : "No activity yet"
+                  }
                   action={
                     <Button asChild size="sm" variant="outline">
                       <Link href="/vaults/">Go to your vaults</Link>
                     </Button>
                   }
                 >
+                  {retentionDays !== undefined &&
+                    `Anything older is past your plan's ${retentionDays}-day history. `}
                   Pushes, pulls and sharing changes appear here as they happen.
                 </EmptyState>
               )}
@@ -261,8 +270,12 @@ function Stat({
     <Card>
       <CardContent className="space-y-1 pt-6">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="truncate text-xl font-semibold">{value}</p>
-        {hint && <p className="truncate text-xs text-muted-foreground">{hint}</p>}
+        <p className="truncate text-xl font-semibold" title={value}>
+          {value}
+        </p>
+        {/* ⓘ Wraps instead of truncating: a vault name like
+            "deployworks-web/production" is the useful part of the hint. */}
+        {hint && <p className="break-words text-xs text-muted-foreground">{hint}</p>}
       </CardContent>
     </Card>
   );
