@@ -355,3 +355,40 @@ export async function listAudit(vaultId: string): Promise<AuditEvent[]> {
   );
   return data.events;
 }
+
+// ─── Activity (every vault at once) ──────────────────────────────────────────
+
+/** A per-vault audit event plus the vault it happened in. */
+export type ActivityEvent = AuditEvent & {
+  vault_id: string;
+  vault_name: string;
+};
+
+export type ActivityPage = {
+  events: ActivityEvent[];
+  limit: number;
+  /** Opaque. Pass it back as `before`; `null` means this was the last page. */
+  next_cursor: string | null;
+  /** How far back the caller's plan keeps events. */
+  retention_days: number;
+};
+
+/**
+ * Events across every vault the caller can read, newest first.
+ *
+ * ⚠️ `vaultIds` narrows the set, and a single id the caller cannot read makes
+ * the **whole** request a 404 — so pass ids from the vault list, not from the
+ * address bar. The server accepts at most 100.
+ */
+export async function listActivity(
+  opts: { limit?: number; before?: string; vaultIds?: string[] } = {},
+): Promise<ActivityPage> {
+  const params: Record<string, string | number> = {};
+  if (opts.limit !== undefined) params.limit = opts.limit;
+  if (opts.before) params.before = opts.before;
+  if (opts.vaultIds && opts.vaultIds.length > 0) {
+    params.vault_id = opts.vaultIds.join(",");
+  }
+  const { data } = await api.get<ActivityPage>("/audit", { params });
+  return data;
+}
