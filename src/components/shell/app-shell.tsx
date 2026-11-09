@@ -51,6 +51,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { DOCS, docsUrl } from "@/lib/config";
 
 const NAV = [
+  { href: "/activity/", label: "Dashboard" },
   { href: "/vaults/", label: "Vaults" },
   { href: "/organizations/", label: "Organizations" },
   // ⚠️ Its own entry rather than a tab under Organizations, because
