@@ -16,7 +16,7 @@ export type VaultSummary = {
   id: string;
   name: string;
   environment: string;
-  /** `owner` | `admin` | `member` — only an owner may delete. */
+  /** The caller's vault role: `viewer` | `developer` | `admin` | `owner` (see `ROLE_RANK`). Only an owner may delete. */
   role: string;
   version_count: number;
   updated_at: string;

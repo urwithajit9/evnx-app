@@ -132,12 +132,12 @@ function VaultDetail() {
 
   const vault = vaults.data?.find((v) => v.id === vaultId);
 
-  // ⓘ Restoring is a push, so it is open to the same roles: developer and up.
-  // The server enforces this regardless; hiding the button just avoids offering
-  // a decrypt-then-403 to a viewer.
+  // ⓘ Pushing (and restoring, which is a push) is open to developer and up.
+  // The server enforces this regardless; hiding the controls just avoids
+  // offering a viewer an upload, or a decrypt, that ends in a 403.
   // `VaultSummary.role` is a plain string, so an unrecognised one ranks -1 and
-  // gets no button rather than a guess.
-  const canRestore =
+  // gets no controls rather than a guess.
+  const canPush =
     !!vault &&
     ((ROLE_RANK as Record<string, number>)[vault.role] ?? -1) >=
       ROLE_RANK.developer;
@@ -228,7 +228,7 @@ function VaultDetail() {
         <SkeletonRows count={3} />
       )}
 
-      <PushVersion vaultId={vaultId} />
+      {canPush && <PushVersion vaultId={vaultId} />}
 
       <VaultMembers vaultId={vaultId} />
 
@@ -286,7 +286,7 @@ function VaultDetail() {
                     active={opened?.version === v.version_num}
                     onOpen={() => open(v.version_num)}
                     onRestore={
-                      canRestore && v.version_num !== latestNum
+                      canPush && v.version_num !== latestNum
                         ? () => {
                             setRestoreError(null);
                             setRestoredAs(null);
