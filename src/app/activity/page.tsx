@@ -108,6 +108,12 @@ export default function ActivityPage() {
   const events = activity.data?.pages.flatMap((p) => p.events) ?? [];
   const retentionDays = activity.data?.pages[0]?.retention_days;
   const nameOf = eventActorResolver(events);
+  // Two vaults can share a name (dev/prod), so label rows `name/environment` like
+  // the filter above. The feed carries only the name; the environment comes from
+  // the vault list, falling back to the bare name if the vault isn't in it.
+  const vaultLabel = new Map(
+    (vaults.data ?? []).map((v) => [v.id, `${v.name}/${v.environment}`]),
+  );
 
   return (
     <AppShell>
@@ -213,7 +219,7 @@ export default function ActivityPage() {
                             href={vaultHref(e.vault_id)}
                             className="text-sm font-medium underline-offset-4 hover:underline"
                           >
-                            {e.vault_name}
+                            {vaultLabel.get(e.vault_id) ?? e.vault_name}
                           </Link>
                           <time
                             className="ml-auto shrink-0 text-xs text-muted-foreground"
