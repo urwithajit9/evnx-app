@@ -20,7 +20,24 @@ export type VaultSummary = {
   role: string;
   version_count: number;
   updated_at: string;
+  /**
+   * When the newest version was pushed; `null` when the vault has none. Unlike
+   * `updated_at` it ignores rename, member changes and rekey.
+   * Absent (`undefined`) against a server older than v0.14 — use `lastPushedAt`.
+   */
+  last_pushed_at?: string | null;
 };
+
+/**
+ * The vault's real last-push time, or `null` if it was never pushed to.
+ *
+ * Falls back to `updated_at` (which can over-report) only when the server does
+ * not send `last_pushed_at` at all, so the app keeps working mid-deploy.
+ */
+export function lastPushedAt(v: VaultSummary): string | null {
+  if (v.last_pushed_at !== undefined) return v.last_pushed_at;
+  return v.version_count > 0 ? v.updated_at : null;
+}
 
 export async function listVaults(): Promise<VaultSummary[]> {
   const { data } = await api.get<{ vaults: VaultSummary[] }>("/vaults");

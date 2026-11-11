@@ -25,7 +25,12 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { listActivity, listVaults, type VaultSummary } from "@/lib/api/vaults";
+import {
+  lastPushedAt,
+  listActivity,
+  listVaults,
+  type VaultSummary,
+} from "@/lib/api/vaults";
 import { getUsage } from "@/lib/api/account";
 import { apiErrorStatus } from "@/lib/api/client";
 import { useAuthStore } from "@/stores/authStore";
@@ -103,6 +108,12 @@ export default function ActivityPage() {
   const events = activity.data?.pages.flatMap((p) => p.events) ?? [];
   const retentionDays = activity.data?.pages[0]?.retention_days;
   const nameOf = eventActorResolver(events);
+  // Two vaults can share a name (dev/prod), so label rows `name/environment` like
+  // the filter above. The feed carries only the name; the environment comes from
+  // the vault list, falling back to the bare name if the vault isn't in it.
+  const vaultLabel = new Map(
+    (vaults.data ?? []).map((v) => [v.id, `${v.name}/${v.environment}`]),
+  );
 
   return (
     <AppShell>
@@ -208,7 +219,7 @@ export default function ActivityPage() {
                             href={vaultHref(e.vault_id)}
                             className="text-sm font-medium underline-offset-4 hover:underline"
                           >
-                            {e.vault_name}
+                            {vaultLabel.get(e.vault_id) ?? e.vault_name}
                           </Link>
                           <time
                             className="ml-auto shrink-0 text-xs text-muted-foreground"
@@ -311,12 +322,13 @@ function Summary({
   const list = vaults.data;
   const owned = list.filter((v) => v.role === "owner").length;
   const versions = list.reduce((n, v) => n + v.version_count, 0);
-  // ⚠️ `updated_at` moves on any change to the vault row, not only pushes, so
-  // restrict to vaults that have a version — "most recent push" of a vault with
-  // none would be a lie.
+  // `last_pushed_at` is the real push time (null when never pushed). Against an
+  // older server `lastPushedAt` falls back to `updated_at`, which also moves on
+  // rename / member changes, restricted to vaults that have a version.
   const pushed = list
-    .filter((v) => v.version_count > 0)
-    .sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
+    .map((v) => ({ vault: v, at: lastPushedAt(v) }))
+    .filter((p): p is { vault: VaultSummary; at: string } => p.at !== null)
+    .sort((a, b) => b.at.localeCompare(a.at))[0];
 
   return (
     <div
@@ -329,8 +341,8 @@ function Summary({
       <Stat label="Versions stored" value={String(versions)} hint="Across all vaults you can read" />
       <Stat
         label="Most recent push"
-        value={pushed ? relativeTime(pushed.updated_at) : "None yet"}
-        hint={pushed ? `${pushed.name}/${pushed.environment}` : undefined}
+        value={pushed ? relativeTime(pushed.at) : "None yet"}
+        hint={pushed ? `${pushed.vault.name}/${pushed.vault.environment}` : undefined}
       />
       {usage && (
         <Stat
